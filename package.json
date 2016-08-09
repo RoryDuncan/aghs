@@ -1,0 +1,19 @@
+{
+  "name": "aghs",
+  "version": "1.0.0",
+  "description": "A canvas wrapper that upgrades the context.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RoryDuncan/aghs.git"
+  },
+  "author": "Rory Duncan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/RoryDuncan/HTML5-Canvas-App/issues"
+  },
+  "homepage": "https://github.com/RoryDuncan/HTML5-Canvas-App#readme"
+}
