@@ -89,7 +89,7 @@ Aghs::chainingExceptions = {
   "createImageData"
 }
 
-
+# TODO: rework this so we can use offsets
 methods = []
 properties = []
 # Aghs.extendContext

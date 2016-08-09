@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/RoryDuncan/HTML5-Canvas-App/issues"
   },
-  "homepage": "https://github.com/RoryDuncan/HTML5-Canvas-App#readme"
+  "homepage": "https://github.com/RoryDuncan/HTML5-Canvas-App#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "coffee-script": "^1.10.0"
+  }
 }
