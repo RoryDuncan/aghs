@@ -1,17 +1,11 @@
 
-EventEmitter = require("./events.js")
-
-
+EventEmitter = require("../build/events.js")
+extend = require("extend")
 
 # Helpers
 
 
 noop = () -> return
-
-
-extend = (base, obj) ->
-  base[k] = obj[k] for k of obj
-  return base
 
 
 chain = (wrapper, host, func) ->
