@@ -87,19 +87,22 @@ module.exports = function extend() {
 
 
 },{}],2:[function(require,module,exports){
-var Aghs, EventEmitter, chain, extend, methods, noop, properties,
+var Aghs, EventEmitter, chain, extend, methods, noop, properties, settings, utils,
   slice = [].slice;
+
+utils = require("./utils.coffee");
 
 EventEmitter = require("./events.coffee");
 
 extend = require("extend");
 
-noop = function() {};
+settings = require("./settings.json");
 
-chain = function(wrapper, host, func) {
-  func.apply(host, args);
-  return wrapper;
-};
+console.log("settings loaded:", settings);
+
+noop = utils.noop;
+
+chain = utils.chain;
 
 Aghs = function(options) {
   var canvas, that;
@@ -578,7 +581,7 @@ window.Aghs = Aghs;
 
 module.exports = Aghs;
 
-},{"./events.coffee":3,"extend":1}],3:[function(require,module,exports){
+},{"./events.coffee":3,"./settings.json":4,"./utils.coffee":5,"extend":1}],3:[function(require,module,exports){
 var EventEmitter,
   slice = [].slice;
 
@@ -657,5 +660,108 @@ EventEmitter.prototype.disable = function(event) {
 };
 
 module.exports = EventEmitter;
+
+},{}],4:[function(require,module,exports){
+module.exports={
+  
+  "worldMethods": [
+    "translate",
+    "fillRect",
+    "strokeRect",
+    "moveTo",
+    "lineTo",
+    "quadraticCurveTo",
+    "bezierCurveTo",
+    "arcTo",
+    "rect",
+    "arc",
+    "ellipse",
+    "getImageData",
+    "putImageData",
+    "drawImage"
+  ],
+  
+  "methods": [
+    "save",
+    "restore",
+    "scale",
+    "rotate",
+    "translate",
+    "transform",
+    "setTransform",
+    "resetTransform",
+    "createLinearGradient",
+    "createRadialGradient",
+    "createPattern",
+    "clearRect",
+    "fillRect",
+    "strokeRect",
+    "beginPath",
+    "fill",
+    "stroke",
+    "drawFocusIfNeeded",
+    "clip",
+    "isPointInPath",
+    "isPointInStroke",
+    "fillText",
+    "strokeText",
+    "measureText",
+    "drawImage",
+    "createImageData",
+    "getImageData",
+    "putImageData",
+    "getContextAttributes",
+    "setLineDash",
+    "getLineDash",
+    "closePath",
+    "moveTo",
+    "lineTo",
+    "quadraticCurveTo",
+    "bezierCurveTo",
+    "arcTo",
+    "rect",
+    "arc",
+    "ellipse"
+  ],
+  
+  
+  "properties": [
+    "globalAlpha",
+    "globalCompositeOperation",
+    "webkitImageSmoothingEnabled",
+    "imageSmoothingEnabled",
+    "strokeStyle",
+    "fillStyle",
+    "shadowOffsetX",
+    "shadowOffsetY",
+    "shadowBlur",
+    "shadowColor",
+    "lineWidth",
+    "lineCap",
+    "lineJoin",
+    "miterLimit",
+    "lineDashOffset",
+    "font",
+    "textAlign",
+    "textBaseline"
+  ]
+}
+
+
+
+},{}],5:[function(require,module,exports){
+var chain, noop;
+
+noop = function() {};
+
+chain = function(wrapper, host, func) {
+  func.apply(host, args);
+  return wrapper;
+};
+
+module.exports = {
+  chain: chain,
+  noop: noop
+};
 
 },{}]},{},[2]);

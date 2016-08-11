@@ -87,12 +87,16 @@ module.exports = function extend() {
 
 
 },{}],2:[function(require,module,exports){
-var Aghs, EventEmitter, chain, extend, methods, noop, properties,
+var Aghs, EventEmitter, chain, extend, methods, noop, properties, settings,
   slice = [].slice;
 
 EventEmitter = require("./events.coffee");
 
 extend = require("extend");
+
+settings = require("./settings.json");
+
+console.log("settings loaded:", settings);
 
 noop = function() {};
 
@@ -578,7 +582,7 @@ window.Aghs = Aghs;
 
 module.exports = Aghs;
 
-},{"./events.coffee":3,"extend":1}],3:[function(require,module,exports){
+},{"./events.coffee":3,"./settings.json":4,"extend":1}],3:[function(require,module,exports){
 var EventEmitter,
   slice = [].slice;
 
@@ -659,10 +663,98 @@ EventEmitter.prototype.disable = function(event) {
 module.exports = EventEmitter;
 
 },{}],4:[function(require,module,exports){
+module.exports={
+  
+  "worldMethods": [
+    "translate",
+    "fillRect",
+    "strokeRect",
+    "moveTo",
+    "lineTo",
+    "quadraticCurveTo",
+    "bezierCurveTo",
+    "arcTo",
+    "rect",
+    "arc",
+    "ellipse",
+    "getImageData",
+    "putImageData",
+    "drawImage"
+  ],
+  
+  "methods": [
+    "save",
+    "restore",
+    "scale",
+    "rotate",
+    "translate",
+    "transform",
+    "setTransform",
+    "resetTransform",
+    "createLinearGradient",
+    "createRadialGradient",
+    "createPattern",
+    "clearRect",
+    "fillRect",
+    "strokeRect",
+    "beginPath",
+    "fill",
+    "stroke",
+    "drawFocusIfNeeded",
+    "clip",
+    "isPointInPath",
+    "isPointInStroke",
+    "fillText",
+    "strokeText",
+    "measureText",
+    "drawImage",
+    "createImageData",
+    "getImageData",
+    "putImageData",
+    "getContextAttributes",
+    "setLineDash",
+    "getLineDash",
+    "closePath",
+    "moveTo",
+    "lineTo",
+    "quadraticCurveTo",
+    "bezierCurveTo",
+    "arcTo",
+    "rect",
+    "arc",
+    "ellipse"
+  ],
+  
+  
+  "properties": [
+    "globalAlpha",
+    "globalCompositeOperation",
+    "webkitImageSmoothingEnabled",
+    "imageSmoothingEnabled",
+    "strokeStyle",
+    "fillStyle",
+    "shadowOffsetX",
+    "shadowOffsetY",
+    "shadowBlur",
+    "shadowColor",
+    "lineWidth",
+    "lineCap",
+    "lineJoin",
+    "miterLimit",
+    "lineDashOffset",
+    "font",
+    "textAlign",
+    "textBaseline"
+  ]
+}
+
+
+
+},{}],5:[function(require,module,exports){
 var Aghs, App;
 
 Aghs = require("./aghs.coffee");
 
 App = new Aghs();
 
-},{"./aghs.coffee":2}]},{},[4]);
+},{"./aghs.coffee":2}]},{},[5]);

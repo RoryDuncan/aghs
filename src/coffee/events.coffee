@@ -74,6 +74,6 @@ EventEmitter::enable = (event) ->
 EventEmitter::disable = (event) ->
   @__allowed[event] = false if @__allowed[event] isnt undefined
   return @
-  
+
 
 module.exports = EventEmitter

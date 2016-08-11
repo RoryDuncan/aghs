@@ -1,19 +1,12 @@
-
+utils = require "./utils.coffee"
 EventEmitter = require "./events.coffee"
 extend = require("extend")
+settings = require "./settings.json"
+console.log "settings loaded:", settings
 
 # Helpers
-
-
-noop = () -> return
-
-
-chain = (wrapper, host, func) ->
-  # could use fast.js optimization 
-  #    (switch statement with + .call for small args)
-  func.apply(host, args)
-  return wrapper
-
+noop = utils.noop
+chain = utils.chain
 
 
 
