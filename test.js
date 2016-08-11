@@ -658,4 +658,11 @@ EventEmitter.prototype.disable = function(event) {
 
 module.exports = EventEmitter;
 
-},{}]},{},[2]);
+},{}],4:[function(require,module,exports){
+var Aghs, App;
+
+Aghs = require("./aghs.coffee");
+
+App = new Aghs();
+
+},{"./aghs.coffee":2}]},{},[4]);

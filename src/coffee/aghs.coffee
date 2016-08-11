@@ -1,5 +1,5 @@
 
-EventEmitter = require("../build/events.js")
+EventEmitter = require "./events.coffee"
 extend = require("extend")
 
 # Helpers
@@ -406,3 +406,4 @@ Aghs::fillWith = (color = "#000") ->
   return @fillStyle(color).fill()
 
 window.Aghs = Aghs
+module.exports = Aghs
