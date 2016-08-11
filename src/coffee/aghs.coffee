@@ -1,8 +1,6 @@
 utils = require "./utils.coffee"
 EventEmitter = require "./events.coffee"
 extend = require("extend")
-settings = require "./settings.json"
-console.log "settings loaded:", settings
 
 # Helpers
 noop = utils.noop
@@ -76,9 +74,6 @@ Aghs::chainingExceptions = {
   "createImageData"
 }
 
-# TODO: rework this so we can use offsets
-methods = []
-properties = []
 # Aghs.extendContext
 #
 # Extend the Canvas.getContext("2d") prototype to also be attached to Aghs
@@ -100,7 +95,6 @@ Aghs::extendContext = () ->
   for key, value of ctx
     
     if typeof value is "function"
-      methods.push key
       hasReturn = false
       for exceptionName of @chainingExceptions
         if key is exceptionName
@@ -108,10 +102,7 @@ Aghs::extendContext = () ->
       @[key] = @chain(value, hasReturn)
     else 
       if key isnt "canvas"
-        properties.push key
         @[key] = makeSetGetFunction(key)
-  console.log methods.toString()
-  console.log properties.toString()
   return @
 
 # Aghs.ready()

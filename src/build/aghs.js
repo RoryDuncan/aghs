@@ -87,7 +87,7 @@ module.exports = function extend() {
 
 
 },{}],2:[function(require,module,exports){
-var Aghs, EventEmitter, chain, extend, methods, noop, properties, settings, utils,
+var Aghs, EventEmitter, chain, extend, noop, utils,
   slice = [].slice;
 
 utils = require("./utils.coffee");
@@ -95,10 +95,6 @@ utils = require("./utils.coffee");
 EventEmitter = require("./events.coffee");
 
 extend = require("extend");
-
-settings = require("./settings.json");
-
-console.log("settings loaded:", settings);
 
 noop = utils.noop;
 
@@ -172,10 +168,6 @@ Aghs.prototype.chainingExceptions = {
   "createImageData": "createImageData"
 };
 
-methods = [];
-
-properties = [];
-
 Aghs.prototype.extendContext = function() {
   var ctx, exceptionName, hasReturn, key, makeSetGetFunction, that, value;
   that = this;
@@ -195,7 +187,6 @@ Aghs.prototype.extendContext = function() {
   for (key in ctx) {
     value = ctx[key];
     if (typeof value === "function") {
-      methods.push(key);
       hasReturn = false;
       for (exceptionName in this.chainingExceptions) {
         if (key === exceptionName) {
@@ -205,13 +196,10 @@ Aghs.prototype.extendContext = function() {
       this[key] = this.chain(value, hasReturn);
     } else {
       if (key !== "canvas") {
-        properties.push(key);
         this[key] = makeSetGetFunction(key);
       }
     }
   }
-  console.log(methods.toString());
-  console.log(properties.toString());
   return this;
 };
 
@@ -581,7 +569,7 @@ window.Aghs = Aghs;
 
 module.exports = Aghs;
 
-},{"./events.coffee":3,"./settings.json":4,"./utils.coffee":5,"extend":1}],3:[function(require,module,exports){
+},{"./events.coffee":3,"./utils.coffee":4,"extend":1}],3:[function(require,module,exports){
 var EventEmitter,
   slice = [].slice;
 
@@ -662,94 +650,6 @@ EventEmitter.prototype.disable = function(event) {
 module.exports = EventEmitter;
 
 },{}],4:[function(require,module,exports){
-module.exports={
-  
-  "worldMethods": [
-    "translate",
-    "fillRect",
-    "strokeRect",
-    "moveTo",
-    "lineTo",
-    "quadraticCurveTo",
-    "bezierCurveTo",
-    "arcTo",
-    "rect",
-    "arc",
-    "ellipse",
-    "getImageData",
-    "putImageData",
-    "drawImage"
-  ],
-  
-  "methods": [
-    "save",
-    "restore",
-    "scale",
-    "rotate",
-    "translate",
-    "transform",
-    "setTransform",
-    "resetTransform",
-    "createLinearGradient",
-    "createRadialGradient",
-    "createPattern",
-    "clearRect",
-    "fillRect",
-    "strokeRect",
-    "beginPath",
-    "fill",
-    "stroke",
-    "drawFocusIfNeeded",
-    "clip",
-    "isPointInPath",
-    "isPointInStroke",
-    "fillText",
-    "strokeText",
-    "measureText",
-    "drawImage",
-    "createImageData",
-    "getImageData",
-    "putImageData",
-    "getContextAttributes",
-    "setLineDash",
-    "getLineDash",
-    "closePath",
-    "moveTo",
-    "lineTo",
-    "quadraticCurveTo",
-    "bezierCurveTo",
-    "arcTo",
-    "rect",
-    "arc",
-    "ellipse"
-  ],
-  
-  
-  "properties": [
-    "globalAlpha",
-    "globalCompositeOperation",
-    "webkitImageSmoothingEnabled",
-    "imageSmoothingEnabled",
-    "strokeStyle",
-    "fillStyle",
-    "shadowOffsetX",
-    "shadowOffsetY",
-    "shadowBlur",
-    "shadowColor",
-    "lineWidth",
-    "lineCap",
-    "lineJoin",
-    "miterLimit",
-    "lineDashOffset",
-    "font",
-    "textAlign",
-    "textBaseline"
-  ]
-}
-
-
-
-},{}],5:[function(require,module,exports){
 var chain, noop;
 
 noop = function() {};

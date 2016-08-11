@@ -1,22 +1,4 @@
 {
-  
-  "worldMethods": [
-    "translate",
-    "fillRect",
-    "strokeRect",
-    "moveTo",
-    "lineTo",
-    "quadraticCurveTo",
-    "bezierCurveTo",
-    "arcTo",
-    "rect",
-    "arc",
-    "ellipse",
-    "getImageData",
-    "putImageData",
-    "drawImage"
-  ],
-  
   "methods": [
     "save",
     "restore",
