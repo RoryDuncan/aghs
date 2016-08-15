@@ -119,11 +119,10 @@ World::set = (x, y) ->
     
   return @
 
-#
-#
+# World.debug()
+# show relevant information rendered onto the canvas.
 World::debug = () ->
-  
-  size = 20
+  size = 12
   @aghs.fillStyle "#000"
   .font("#{size}px Small Fonts")
   .fillText("view: x: #{@view.x}, y: #{@view.y} w: #{@view.width} h: #{@view.height}", size, @view.height - size*2)
