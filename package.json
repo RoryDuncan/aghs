@@ -13,9 +13,9 @@
   "author": "Rory Duncan",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/RoryDuncan/HTML5-Canvas-App/issues"
+    "url": "https://github.com/RoryDuncan/aghs/issues"
   },
-  "homepage": "https://github.com/RoryDuncan/HTML5-Canvas-App#readme",
+  "homepage": "https://github.com/RoryDuncan/aghs#readme",
   "dependencies": {
     "extend": "^3.0.0"
   },
