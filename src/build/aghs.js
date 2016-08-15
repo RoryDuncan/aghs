@@ -87,12 +87,14 @@ module.exports = function extend() {
 
 
 },{}],2:[function(require,module,exports){
-var Aghs, chain, config, extend, noop, utils,
+var Aghs, EventEmitter, chain, config, extend, noop, utils,
   slice = [].slice;
 
 utils = require("./utils.coffee");
 
 extend = require("extend");
+
+EventEmitter = require("./events.coffee");
 
 noop = utils.noop;
 
@@ -113,13 +115,10 @@ config = {};
     scale: 1
  */
 
-Aghs = function(options, EventEmitter) {
+Aghs = function(options) {
   var canvas, context, that;
   if (options == null) {
     options = {};
-  }
-  if (EventEmitter == null) {
-    EventEmitter = null;
   }
   that = this;
   if (options.el === void 0) {
@@ -132,6 +131,12 @@ Aghs = function(options, EventEmitter) {
     canvas = options.el;
   }
   this.isReady = false;
+  this.canvas = canvas;
+  this.module("events", new EventEmitter());
+  this.context = this._ = context = canvas.getContext("2d");
+  if (options.wrapContext !== false) {
+    this.extendContext();
+  }
   document.onreadystatechange = function() {
     if (document.readyState === "complete") {
       return utils.defer(function() {
@@ -142,11 +147,6 @@ Aghs = function(options, EventEmitter) {
       });
     }
   };
-  this.canvas = canvas;
-  this.context = this._ = context = canvas.getContext("2d");
-  if (options.wrapContext !== false) {
-    this.extendContext();
-  }
   this.config = {
     "fullscreen": options.fullscreen || true,
     "wrappedContext": options.wrapContext || true,
@@ -173,6 +173,10 @@ Aghs = function(options, EventEmitter) {
       context: context
     }
   };
+  this.events.on("aghs:resize", function() {
+    that.config.width = that.canvas.width;
+    return that.config.height = that.canvas.width;
+  });
   return this;
 };
 
@@ -357,6 +361,7 @@ Aghs.prototype.unattach = function(modulename) {
 Aghs.prototype.maximize = function() {
   this.canvas.width = window.innerWidth;
   this.canvas.height = window.innerHeight;
+  this.events.trigger("aghs:resize");
   return this;
 };
 
@@ -453,9 +458,8 @@ Aghs.prototype.resize = function(width, height, allLayers) {
     }
   } else {
     cacheResizeAndRender(this.layers[this.currentLayer] || this._);
+    this.events.trigger("resize");
   }
-  this.config.width = w;
-  this.config.height = h;
   return this;
 };
 
@@ -580,7 +584,87 @@ window.Aghs = Aghs;
 
 module.exports = Aghs;
 
-},{"./utils.coffee":3,"extend":1}],3:[function(require,module,exports){
+},{"./events.coffee":3,"./utils.coffee":4,"extend":1}],3:[function(require,module,exports){
+var EventEmitter,
+  slice = [].slice;
+
+EventEmitter = function() {
+  this.__events = [];
+  this.__allowed = {};
+  return this;
+};
+
+EventEmitter.prototype.on = EventEmitter.prototype.addEventListener = function(name, fn, context) {
+  if (context == null) {
+    context = null;
+  }
+  if (name === void 0 || fn === void 0) {
+    throw new SyntaxError("EventEmitter.on is missing a required parameter.");
+  }
+  this.__events[name] = this.__events[name] || [];
+  this.__events[name].push({
+    event: event,
+    fn: fn,
+    context: context
+  });
+  if (this.__allowed[name] === void 0) {
+    this.__allowed[name] = true;
+  }
+  return this;
+};
+
+EventEmitter.prototype.off = EventEmitter.prototype.removeEventListener = function(name, fn) {
+  var events;
+  if (name === void 0) {
+    throw new SyntaxError("EventEmitter.off is missing a required parameter.");
+  }
+  if (fn === void 0) {
+    this.__events[name] = [];
+    delete this.__allowed[name];
+  } else {
+    events = this.__events[name] || [];
+    this.__events[name] = events.filter(function(el, i, arr) {
+      if (el.fn === fn) {
+        return false;
+      }
+      return true;
+    });
+  }
+  return this;
+};
+
+EventEmitter.prototype.trigger = function() {
+  var data, event;
+  event = arguments[0], data = 2 <= arguments.length ? slice.call(arguments, 1) : [];
+  if (event === void 0) {
+    throw new SyntaxError("EventEmitter.trigger is missing or has an invalid parameter.");
+  }
+  if (this.__allowed[event] !== true) {
+    return this;
+  }
+  this.__events[event].forEach(function(el, i, arr) {
+    return el.fn.apply(el.context, data);
+  });
+  return this;
+};
+
+EventEmitter.prototype.enable = function(event) {
+  if (this.__allowed[event] !== void 0) {
+    this.__allowed[event] = true;
+  }
+  return this;
+};
+
+EventEmitter.prototype.disable = function(event) {
+  if (this.__allowed[event] !== void 0) {
+    this.__allowed[event] = false;
+  }
+  return this;
+};
+
+module.exports = EventEmitter;
+
+},{}],4:[function(require,module,exports){
 var chain, defer, noop, throttle,
   slice = [].slice;
 

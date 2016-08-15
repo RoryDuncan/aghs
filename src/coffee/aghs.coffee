@@ -1,6 +1,6 @@
 utils = require "./utils.coffee"
 extend = require "extend"
-EventEmitter = require "./events.js"
+EventEmitter = require "./events.coffee"
 
 
 # Helpers
@@ -43,7 +43,8 @@ Aghs = (options = {}) ->
   @module("events", new EventEmitter())
   @context = @_ = context = canvas.getContext "2d"
   @extendContext() unless options.wrapContext is false
-  # detect readiness
+  
+  # begin readiness detection
   document.onreadystatechange = () ->
     if document.readyState is "complete"
       utils.defer () ->
