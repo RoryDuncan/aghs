@@ -1,5 +1,4 @@
 utils = require "./utils.coffee"
-EventEmitter = require "./events.coffee"
 extend = require("extend")
 
 # Helpers
@@ -36,10 +35,9 @@ Aghs = (@options = {}) ->
 
   document.onreadystatechange = () ->
     if document.readyState is "complete"
-      setTimeout () ->
+      utils.defer () ->
         that.isReady = true
-        that.events.trigger "ready"
-      , 17
+        that.events.trigger "ready" if that.events?
         
   @canvas = canvas
   @context = @_ = canvas.getContext "2d"
@@ -48,11 +46,21 @@ Aghs = (@options = {}) ->
   
   @width = canvas.width
   @height = canvas.height
-  @events = new EventEmitter();
-  @__modules = {};
+  
+  @events = null
+  @__attached = {};
   @layers = {};
   @currentLayer = "screen";
   return @
+
+# Aghs.module
+#
+# Add a module to the Aghs object
+Aghs::module = (name, obj) ->
+  throw new Error "Missing module parameter 1 or parameter 2" unless name and obj
+  @[name] = obj
+  return @
+
 
 # Aghs.chain
 #
@@ -194,7 +202,7 @@ Aghs::render = (render) ->
 Aghs::attach = (obj, modulename) ->
   return @ unless obj
   name = modulename or Object.getPrototypeOf(obj).constructor.name
-  @__modules[name] = obj
+  @__attached[name] = obj
   console.log "Attaching module as '#{name}"
   @events.on("step", obj.step, obj) if obj.step
   @events.on("render", obj.render, obj) if obj.render
@@ -205,7 +213,7 @@ Aghs::attach = (obj, modulename) ->
 # Undoes Aghs.attach
 Aghs::unattach = (modulename) ->
   return @ unless modulename
-  module = @__modules[modulename]
+  module = @__attached[modulename]
   if module
     @events.off("step", module.step) if module.step
     @events.off("render", module.render) if module.render
@@ -218,19 +226,6 @@ Aghs::maximize = () ->
   @canvas.width = window.innerWidth
   @canvas.height = window.innerHeight
   return @
-
-# Aghs.throttle
-#
-#
-Aghs::throttle = (func = null, delay = 250, ctx = null, returnValue = null) ->
-  return unless func
-  lastCalled = performance.now()
-  now = null
-  return (args...) ->
-    if (lastCalled + delay) > (now = performance.now())
-      return returnValue
-    lastCalled = now
-    return func.apply(ctx, args)
 
 # Aghs.layer()
 # Switch to another canvas and context

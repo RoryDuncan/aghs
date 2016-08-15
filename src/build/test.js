@@ -1,4 +1,25 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+var Aghs, EventEmitter, World, app, utils;
+
+Aghs = require("./src/coffee/aghs.coffee");
+
+utils = require("./src/coffee/utils.coffee");
+
+EventEmitter = require("./src/coffee/events.coffee");
+
+World = require("./src/coffee/world.coffee");
+
+app = new Aghs();
+
+app.module("events", new EventEmitter());
+
+app.module("world", new World(app));
+
+app.module("utils", utils);
+
+module.exports = app;
+
+},{"./src/coffee/aghs.coffee":3,"./src/coffee/events.coffee":4,"./src/coffee/utils.coffee":6,"./src/coffee/world.coffee":7}],2:[function(require,module,exports){
 'use strict';
 
 var hasOwn = Object.prototype.hasOwnProperty;
@@ -86,13 +107,11 @@ module.exports = function extend() {
 };
 
 
-},{}],2:[function(require,module,exports){
-var Aghs, EventEmitter, chain, extend, noop, utils,
+},{}],3:[function(require,module,exports){
+var Aghs, chain, extend, noop, utils,
   slice = [].slice;
 
 utils = require("./utils.coffee");
-
-EventEmitter = require("./events.coffee");
 
 extend = require("extend");
 
@@ -121,10 +140,12 @@ Aghs = function(options) {
   this.isReady = false;
   document.onreadystatechange = function() {
     if (document.readyState === "complete") {
-      return setTimeout(function() {
+      return utils.defer(function() {
         that.isReady = true;
-        return that.events.trigger("ready");
-      }, 17);
+        if (that.events != null) {
+          return that.events.trigger("ready");
+        }
+      });
     }
   };
   this.canvas = canvas;
@@ -137,10 +158,18 @@ Aghs = function(options) {
   }
   this.width = canvas.width;
   this.height = canvas.height;
-  this.events = new EventEmitter();
-  this.__modules = {};
+  this.events = null;
+  this.__attached = {};
   this.layers = {};
   this.currentLayer = "screen";
+  return this;
+};
+
+Aghs.prototype.module = function(name, obj) {
+  if (!(name && obj)) {
+    throw new Error("Missing module parameter 1 or parameter 2");
+  }
+  this[name] = obj;
   return this;
 };
 
@@ -286,7 +315,7 @@ Aghs.prototype.attach = function(obj, modulename) {
     return this;
   }
   name = modulename || Object.getPrototypeOf(obj).constructor.name;
-  this.__modules[name] = obj;
+  this.__attached[name] = obj;
   console.log("Attaching module as '" + name);
   if (obj.step) {
     this.events.on("step", obj.step, obj);
@@ -302,7 +331,7 @@ Aghs.prototype.unattach = function(modulename) {
   if (!modulename) {
     return this;
   }
-  module = this.__modules[modulename];
+  module = this.__attached[modulename];
   if (module) {
     if (module.step) {
       this.events.off("step", module.step);
@@ -318,36 +347,6 @@ Aghs.prototype.maximize = function() {
   this.canvas.width = window.innerWidth;
   this.canvas.height = window.innerHeight;
   return this;
-};
-
-Aghs.prototype.throttle = function(func, delay, ctx, returnValue) {
-  var lastCalled, now;
-  if (func == null) {
-    func = null;
-  }
-  if (delay == null) {
-    delay = 250;
-  }
-  if (ctx == null) {
-    ctx = null;
-  }
-  if (returnValue == null) {
-    returnValue = null;
-  }
-  if (!func) {
-    return;
-  }
-  lastCalled = performance.now();
-  now = null;
-  return function() {
-    var args;
-    args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-    if ((lastCalled + delay) > (now = performance.now())) {
-      return returnValue;
-    }
-    lastCalled = now;
-    return func.apply(ctx, args);
-  };
 };
 
 Aghs.prototype.layer = function(name, width, height) {
@@ -569,7 +568,7 @@ window.Aghs = Aghs;
 
 module.exports = Aghs;
 
-},{"./events.coffee":3,"./utils.coffee":5,"extend":1}],3:[function(require,module,exports){
+},{"./utils.coffee":6,"extend":2}],4:[function(require,module,exports){
 var EventEmitter,
   slice = [].slice;
 
@@ -649,16 +648,12 @@ EventEmitter.prototype.disable = function(event) {
 
 module.exports = EventEmitter;
 
-},{}],4:[function(require,module,exports){
-var Aghs, World, app, world;
+},{}],5:[function(require,module,exports){
+var app, world;
 
-Aghs = require("./aghs.coffee");
+app = require("../../index.coffee");
 
-World = require("./world.coffee");
-
-app = new Aghs();
-
-world = new World(app);
+world = app.world;
 
 app.render(function(time) {
   app.clear("#fff");
@@ -666,17 +661,52 @@ app.render(function(time) {
   if (world.view.x * -1 > world.view.width) {
     world.set(200, 0);
   }
-  app.fillStyle("#000");
+  app.fillStyle("#ccc");
   world.fillRect(0, 100, 200, 200);
   return world.debug();
 });
 
 app.start();
 
-},{"./aghs.coffee":2,"./world.coffee":6}],5:[function(require,module,exports){
-var chain, noop;
+},{"../../index.coffee":1}],6:[function(require,module,exports){
+var chain, defer, noop, throttle,
+  slice = [].slice;
 
 noop = function() {};
+
+defer = function(fn) {
+  return setTimeout(fn, 17);
+};
+
+throttle = function(func, delay, ctx, returnValue) {
+  var lastCalled, now;
+  if (func == null) {
+    func = null;
+  }
+  if (delay == null) {
+    delay = 250;
+  }
+  if (ctx == null) {
+    ctx = null;
+  }
+  if (returnValue == null) {
+    returnValue = null;
+  }
+  if (!func) {
+    return;
+  }
+  lastCalled = performance.now();
+  now = null;
+  return function() {
+    var args;
+    args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    if ((lastCalled + delay) > (now = performance.now())) {
+      return returnValue;
+    }
+    lastCalled = now;
+    return func.apply(ctx, args);
+  };
+};
 
 chain = function(wrapper, host, func) {
   func.apply(host, args);
@@ -685,10 +715,12 @@ chain = function(wrapper, host, func) {
 
 module.exports = {
   chain: chain,
-  noop: noop
+  noop: noop,
+  defer: defer,
+  throttle: throttle
 };
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 var World, location, utils;
 
 utils = require("./utils.coffee");
@@ -938,4 +970,4 @@ World.prototype.drawImage = function(image) {
 
 module.exports = World;
 
-},{"./utils.coffee":5}]},{},[4]);
+},{"./utils.coffee":6}]},{},[5]);

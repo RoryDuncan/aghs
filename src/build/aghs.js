@@ -87,12 +87,10 @@ module.exports = function extend() {
 
 
 },{}],2:[function(require,module,exports){
-var Aghs, EventEmitter, chain, extend, noop, utils,
+var Aghs, chain, extend, noop, utils,
   slice = [].slice;
 
 utils = require("./utils.coffee");
-
-EventEmitter = require("./events.coffee");
 
 extend = require("extend");
 
@@ -121,10 +119,12 @@ Aghs = function(options) {
   this.isReady = false;
   document.onreadystatechange = function() {
     if (document.readyState === "complete") {
-      return setTimeout(function() {
+      return utils.defer(function() {
         that.isReady = true;
-        return that.events.trigger("ready");
-      }, 17);
+        if (that.events != null) {
+          return that.events.trigger("ready");
+        }
+      });
     }
   };
   this.canvas = canvas;
@@ -137,10 +137,18 @@ Aghs = function(options) {
   }
   this.width = canvas.width;
   this.height = canvas.height;
-  this.events = new EventEmitter();
-  this.__modules = {};
+  this.events = null;
+  this.__attached = {};
   this.layers = {};
   this.currentLayer = "screen";
+  return this;
+};
+
+Aghs.prototype.module = function(name, obj) {
+  if (!(name && obj)) {
+    throw new Error("Missing module parameter 1 or parameter 2");
+  }
+  this[name] = obj;
   return this;
 };
 
@@ -286,7 +294,7 @@ Aghs.prototype.attach = function(obj, modulename) {
     return this;
   }
   name = modulename || Object.getPrototypeOf(obj).constructor.name;
-  this.__modules[name] = obj;
+  this.__attached[name] = obj;
   console.log("Attaching module as '" + name);
   if (obj.step) {
     this.events.on("step", obj.step, obj);
@@ -302,7 +310,7 @@ Aghs.prototype.unattach = function(modulename) {
   if (!modulename) {
     return this;
   }
-  module = this.__modules[modulename];
+  module = this.__attached[modulename];
   if (module) {
     if (module.step) {
       this.events.off("step", module.step);
@@ -318,36 +326,6 @@ Aghs.prototype.maximize = function() {
   this.canvas.width = window.innerWidth;
   this.canvas.height = window.innerHeight;
   return this;
-};
-
-Aghs.prototype.throttle = function(func, delay, ctx, returnValue) {
-  var lastCalled, now;
-  if (func == null) {
-    func = null;
-  }
-  if (delay == null) {
-    delay = 250;
-  }
-  if (ctx == null) {
-    ctx = null;
-  }
-  if (returnValue == null) {
-    returnValue = null;
-  }
-  if (!func) {
-    return;
-  }
-  lastCalled = performance.now();
-  now = null;
-  return function() {
-    var args;
-    args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-    if ((lastCalled + delay) > (now = performance.now())) {
-      return returnValue;
-    }
-    lastCalled = now;
-    return func.apply(ctx, args);
-  };
 };
 
 Aghs.prototype.layer = function(name, width, height) {
@@ -569,90 +547,45 @@ window.Aghs = Aghs;
 
 module.exports = Aghs;
 
-},{"./events.coffee":3,"./utils.coffee":4,"extend":1}],3:[function(require,module,exports){
-var EventEmitter,
+},{"./utils.coffee":3,"extend":1}],3:[function(require,module,exports){
+var chain, defer, noop, throttle,
   slice = [].slice;
 
-EventEmitter = function() {
-  this.__events = [];
-  this.__allowed = {};
-  return this;
-};
-
-EventEmitter.prototype.on = EventEmitter.prototype.addEventListener = function(name, fn, context) {
-  if (context == null) {
-    context = null;
-  }
-  if (name === void 0 || fn === void 0) {
-    throw new SyntaxError("EventEmitter.on is missing a required parameter.");
-  }
-  this.__events[name] = this.__events[name] || [];
-  this.__events[name].push({
-    event: event,
-    fn: fn,
-    context: context
-  });
-  if (this.__allowed[name] === void 0) {
-    this.__allowed[name] = true;
-  }
-  return this;
-};
-
-EventEmitter.prototype.off = EventEmitter.prototype.removeEventListener = function(name, fn) {
-  var events;
-  if (name === void 0) {
-    throw new SyntaxError("EventEmitter.off is missing a required parameter.");
-  }
-  if (fn === void 0) {
-    this.__events[name] = [];
-    delete this.__allowed[name];
-  } else {
-    events = this.__events[name] || [];
-    this.__events[name] = events.filter(function(el, i, arr) {
-      if (el.fn === fn) {
-        return false;
-      }
-      return true;
-    });
-  }
-  return this;
-};
-
-EventEmitter.prototype.trigger = function() {
-  var data, event;
-  event = arguments[0], data = 2 <= arguments.length ? slice.call(arguments, 1) : [];
-  if (event === void 0) {
-    throw new SyntaxError("EventEmitter.trigger is missing or has an invalid parameter.");
-  }
-  if (this.__allowed[event] !== true) {
-    return this;
-  }
-  this.__events[event].forEach(function(el, i, arr) {
-    return el.fn.apply(el.context, data);
-  });
-  return this;
-};
-
-EventEmitter.prototype.enable = function(event) {
-  if (this.__allowed[event] !== void 0) {
-    this.__allowed[event] = true;
-  }
-  return this;
-};
-
-EventEmitter.prototype.disable = function(event) {
-  if (this.__allowed[event] !== void 0) {
-    this.__allowed[event] = false;
-  }
-  return this;
-};
-
-module.exports = EventEmitter;
-
-},{}],4:[function(require,module,exports){
-var chain, noop;
-
 noop = function() {};
+
+defer = function(fn) {
+  return setTimeout(fn, 17);
+};
+
+throttle = function(func, delay, ctx, returnValue) {
+  var lastCalled, now;
+  if (func == null) {
+    func = null;
+  }
+  if (delay == null) {
+    delay = 250;
+  }
+  if (ctx == null) {
+    ctx = null;
+  }
+  if (returnValue == null) {
+    returnValue = null;
+  }
+  if (!func) {
+    return;
+  }
+  lastCalled = performance.now();
+  now = null;
+  return function() {
+    var args;
+    args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    if ((lastCalled + delay) > (now = performance.now())) {
+      return returnValue;
+    }
+    lastCalled = now;
+    return func.apply(ctx, args);
+  };
+};
 
 chain = function(wrapper, host, func) {
   func.apply(host, args);
@@ -661,7 +594,9 @@ chain = function(wrapper, host, func) {
 
 module.exports = {
   chain: chain,
-  noop: noop
+  noop: noop,
+  defer: defer,
+  throttle: throttle
 };
 
 },{}]},{},[2]);
