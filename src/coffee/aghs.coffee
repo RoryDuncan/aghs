@@ -38,20 +38,18 @@ Aghs = (options = {}) ->
   else
     canvas = options.el
 
-
   @isReady = false
-
+  @canvas = canvas
+  @module("events", new EventEmitter())
+  @context = @_ = context = canvas.getContext "2d"
+  @extendContext() unless options.wrapContext is false
+  # detect readiness
   document.onreadystatechange = () ->
     if document.readyState is "complete"
       utils.defer () ->
         that.isReady = true
         that.events.trigger "ready" if that.events?
   
-  
-  @module("events", EventEmitter)
-  @canvas = canvas
-  @context = @_ = context = canvas.getContext "2d"
-  @extendContext() unless options.wrapContext is false
   
   @config = 
     "fullscreen": options.fullscreen or true
@@ -80,7 +78,6 @@ Aghs = (options = {}) ->
   @events.on "aghs:resize", () ->
     that.config.width   = that.canvas.width
     that.config.height  = that.canvas.width
-  
   
   return @
 
