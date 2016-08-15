@@ -805,7 +805,7 @@ World.prototype.set = function(x, y) {
 
 World.prototype.debug = function() {
   var size;
-  size = 20;
+  size = 12;
   return this.aghs.fillStyle("#000").font(size + "px Small Fonts").fillText("view: x: " + this.view.x + ", y: " + this.view.y + " w: " + this.view.width + " h: " + this.view.height, size, this.view.height - size * 2).fillText("offset: " + this.offset.x + ", " + this.offset.y, size, this.view.height - size);
 };
 
