@@ -15,12 +15,13 @@ location = (world, _x, _y) ->
       
   return [x, y]
 
+
 # World Object
 # An object to execute CanvasRenderingContext2D methods relative to a coordinate system.
 #
 World = (@aghs = null, options = {}) ->
 
-  throw new TypeError "Missing Agh.js Instance as third parameter." unless @aghs
+  throw new TypeError "Missing Agh.js Instance as first parameter." unless @aghs
   
   # operate on the primary context, not other layers
   @_ = @aghs._
@@ -37,6 +38,8 @@ World = (@aghs = null, options = {}) ->
   @view = 
     x: 0
     y: 0
+    z: 0
+    perspective: 1000
     width: options.width or @aghs.width
     height: options.height or @aghs.height
   
@@ -46,7 +49,6 @@ World = (@aghs = null, options = {}) ->
     y: 0
   
   return @
-
 
 # World.viewport()
 # Set the viewport size
@@ -81,6 +83,7 @@ World::type = (preset) ->
     
   return @
 
+
 # World.clean()
 # Keeps our world grid decimal-free by making sure all numbers are integers
 World::clean = () ->
@@ -103,7 +106,6 @@ World::move = (x = 0, y = 0) ->
 # World.calc()
 # curried version of the location function
 World::calc = (x, y) -> return location(@, x, y)
-
 
 # World.set()
 # Sets the world coordinates to a specific location

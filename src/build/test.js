@@ -660,6 +660,7 @@ app.render(function(time) {
   world.move(-15, 0);
   if (world.view.x * -1 > world.view.width) {
     world.set(200, 0);
+    world.distance(0);
   }
   app.fillStyle("#ccc");
   world.fillRect(0, 100, 200, 200);
@@ -740,7 +741,7 @@ World = function(aghs, options) {
     options = {};
   }
   if (!this.aghs) {
-    throw new TypeError("Missing Agh.js Instance as third parameter.");
+    throw new TypeError("Missing Agh.js Instance as first parameter.");
   }
   this._ = this.aghs._;
   this.orientation = {
@@ -754,6 +755,8 @@ World = function(aghs, options) {
   this.view = {
     x: 0,
     y: 0,
+    z: 0,
+    perspective: 1000,
     width: options.width || this.aghs.width,
     height: options.height || this.aghs.height
   };
