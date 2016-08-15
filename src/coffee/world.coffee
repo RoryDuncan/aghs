@@ -56,8 +56,9 @@ World::viewport = (w, h)  ->
   return @ unless w
   h = w if not h
   
-  @view.width = @aghs.canvas.width = w
-  @view.height = @aghs.canvas.height = h
+  @view.width = w
+  @view.height = h
+  @aghs.resize(w, h)
 
 # World.inView()
 # Check if the coordinates are within the current view

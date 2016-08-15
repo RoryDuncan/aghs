@@ -1,35 +1,43 @@
 utils = require "./utils.coffee"
-extend = require("extend")
+extend = require "extend"
+EventEmitter = require "./events.js"
+
 
 # Helpers
 noop = utils.noop
 chain = utils.chain
 
-
-
+config = {}
 
 # Aghs Object
-#
-#
-Aghs = (@options = {}) ->
+# 
+### 
+
+@parem:
+  options = 
+    fullscreen: true
+    width: <viewport width>
+    height <viewport height>
+    frameskip: true
+    smoothing: false
+    scale: 1
+
+###
+
+Aghs = (options = {}) ->
   
   that = @
   
   # create a canvas element if an element or selector is not passed in
-  if @options.el is undefined
+  if options.el is undefined
     canvas = document.createElement('canvas')
     canvas.id = "screen"
     document.body.appendChild(canvas)
-  else if typeof @options.el is "string" and @options.el[0] is "#"
-    canvas = document.getElementById @options.el
+  else if typeof options.el is "string" and options.el[0] is "#"
+    canvas = document.getElementById options.el
   else
-    canvas = @options.el
-  
-  @frameSkipping = {
-    skippedFrames: 0,
-    allow: @options.frameSkip or true,
-    threshold: 120
-  }
+    canvas = options.el
+
 
   @isReady = false
 
@@ -38,19 +46,42 @@ Aghs = (@options = {}) ->
       utils.defer () ->
         that.isReady = true
         that.events.trigger "ready" if that.events?
-        
+  
+  
+  @module("events", EventEmitter)
   @canvas = canvas
-  @context = @_ = canvas.getContext "2d"
-  @extendContext() unless @options.wrapContext is false
-  @maximize() unless @options.fullscreen is false
+  @context = @_ = context = canvas.getContext "2d"
+  @extendContext() unless options.wrapContext is false
   
-  @width = canvas.width
-  @height = canvas.height
+  @config = 
+    "fullscreen": options.fullscreen or true
+    "wrappedContext": options.wrapContext or true
+    "width": 0
+    "height": 0
+    "scale": options.scale or 1
+    'smoothing': options.smoothing or true
+    "frameskip":
+      "count": 0
+      "enabled": options.frameskip or true
+      "threshold": 120
   
-  @events = null
+  @maximize() unless options.fullscreen is false
+    
+  @config.width = options.width or canvas.width
+  @config.height = options.height or canvas.height
+  
   @__attached = {};
-  @layers = {};
   @currentLayer = "screen";
+  @layers = 
+    "screen": {canvas, context}
+  
+  # internal events
+  
+  @events.on "aghs:resize", () ->
+    that.config.width   = that.canvas.width
+    that.config.height  = that.canvas.width
+  
+  
   return @
 
 # Aghs.module
@@ -130,14 +161,12 @@ Aghs::start = () ->
     return Date.now()
   
   # build our frame skipping mechanism
-  frameSkippingThreshold = @frameSkipping.threshold
+  frameSkippingThreshold = @config.frameskip.threshold
   
-  if @frameSkipping.allow 
-    
-    skipFrame = (dt) ->
-      return (dt > frameSkippingThreshold)
-    
-  else skipFrame = (dt) -> return false
+  if @config.frameskip.allow 
+    skipFrame = (dt) -> return (dt > frameSkippingThreshold)
+  else
+    skipFrame = (dt) -> return false
     
   
   start = now()
@@ -163,7 +192,7 @@ Aghs::start = () ->
 
     
     if skipFrame(time.delta)
-      @frameSkipping.skippedFrames += 1
+      @config.frameskip.count += 1
       time.elapsed -= time.delta
     else
       @events.trigger "prerender", time
@@ -225,12 +254,13 @@ Aghs::unattach = (modulename) ->
 Aghs::maximize = () ->
   @canvas.width = window.innerWidth
   @canvas.height = window.innerHeight
+  @events.trigger "aghs:resize"
   return @
 
 # Aghs.layer()
 # Switch to another canvas and context
 #
-Aghs::layer = (name, width = @width, height = @height) ->
+Aghs::layer = (name, width = @config.width, height = @config.height) ->
   
   if not name or name is "screen"
     @context = @_
@@ -245,7 +275,6 @@ Aghs::layer = (name, width = @width, height = @height) ->
     canvas.height = height
     context = canvas.getContext "2d"
     @layers[name] = {canvas, context}
-    console.log @layers[name]
     @context = @layers[name].context
   else
     @context = @layers[name].context
@@ -286,25 +315,27 @@ Aghs::draw = (source = {x: 0, y: 0}, target = {x: 0, y: 0}) ->
 # changes the size of the current context's canvas
 Aghs::resize = (width, height, allLayers = false) ->
   
-  w = window.innerWidth unless width
-  h = window.innerHeight unless height
+  
+  w = @config.width unless width
+  h = @config.height unless height
   
   cacheResizeAndRender = (layer) ->
-    data = layer.context.getImageData(0, 0, width, height)
-    layer.canvas.width = width
-    layer.canvas.height = height
+    data = layer.context.getImageData(0, 0, w, h)
+    layer.canvas.width = w
+    layer.canvas.height = h
     layer.context.putImageData(data, 0, 0)
   
   if allLayers 
     cacheResizeAndRender(layer) for name, layer of @layers
   else 
-    cacheResizeAndRender(@layers[@currentLayer])
+    cacheResizeAndRender(@layers[@currentLayer] or @_)
+    @events.trigger "resize"
 
   return @
 
 # Aghs.polygon()
 #
-#
+# Draw a polygonal path from a matrix
 Aghs::polygon = (data) ->
   
   @beginPath()
@@ -336,12 +367,12 @@ Aghs::triangle = (pt1 = {x: 0, y: 0}, pt2 = {x:0, y:0}, pt3 = {x:0, y:0}) ->
 
 # Aghs.align
 #
-#
+# OBSOLETE: Use the world.js module for this
 Aghs::align = (x, y) ->
   return @ if x is undefined or x is null
   if y is undefined
     y = x
-  @translate(@width * x, @height * y)
+  @translate(@config.width * x, @config.height * y)
   return @
 
 #
@@ -377,7 +408,7 @@ Aghs::do = (actions...) ->
 #
 # 
 Aghs::clear = (fill = "#fff") ->
-  return @fillStyle(fill).fillRect(0, 0, @width, @height)
+  return @fillStyle(fill).fillRect(0, 0, @config.width, @config.height)
 
 #
 #

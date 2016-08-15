@@ -108,7 +108,7 @@ module.exports = function extend() {
 
 
 },{}],3:[function(require,module,exports){
-var Aghs, chain, extend, noop, utils,
+var Aghs, chain, config, extend, noop, utils,
   slice = [].slice;
 
 utils = require("./utils.coffee");
@@ -119,24 +119,34 @@ noop = utils.noop;
 
 chain = utils.chain;
 
+config = {};
+
 Aghs = function(options) {
-  var canvas, that;
-  this.options = options != null ? options : {};
+  var canvas, context, that;
+  if (options == null) {
+    options = {};
+  }
+
+  /* config default values
+  
+  config = 
+    fullscreen: true
+    width: <viewport width>
+    height <viewport height>
+    frameSkipping: true
+    smoothing: true
+    scale: 1
+   */
   that = this;
-  if (this.options.el === void 0) {
+  if (options.el === void 0) {
     canvas = document.createElement('canvas');
     canvas.id = "screen";
     document.body.appendChild(canvas);
-  } else if (typeof this.options.el === "string" && this.options.el[0] === "#") {
-    canvas = document.getElementById(this.options.el);
+  } else if (typeof options.el === "string" && options.el[0] === "#") {
+    canvas = document.getElementById(options.el);
   } else {
-    canvas = this.options.el;
+    canvas = options.el;
   }
-  this.frameSkipping = {
-    skippedFrames: 0,
-    allow: this.options.frameSkip || true,
-    threshold: 120
-  };
   this.isReady = false;
   document.onreadystatechange = function() {
     if (document.readyState === "complete") {
@@ -149,19 +159,35 @@ Aghs = function(options) {
     }
   };
   this.canvas = canvas;
-  this.context = this._ = canvas.getContext("2d");
-  if (this.options.wrapContext !== false) {
+  this.context = this._ = context = canvas.getContext("2d");
+  if (options.wrapContext !== false) {
     this.extendContext();
   }
-  if (this.options.fullscreen !== false) {
+  this.config = {
+    "fullscreen": options.fullscreen || true,
+    "wrappedContext": options.wrapContext || true,
+    "width": 0,
+    "height": 0,
+    "frameskip": {
+      "count": 0,
+      "enabled": options.frameskip || true,
+      "threshold": 120
+    }
+  };
+  if (options.fullscreen !== false) {
     this.maximize();
   }
-  this.width = canvas.width;
-  this.height = canvas.height;
+  this.config.width = options.width || canvas.width;
+  this.config.height = options.height || canvas.height;
   this.events = null;
   this.__attached = {};
-  this.layers = {};
   this.currentLayer = "screen";
+  this.layers = {
+    "screen": {
+      canvas: canvas,
+      context: context
+    }
+  };
   return this;
 };
 
@@ -246,8 +272,8 @@ Aghs.prototype.start = function() {
   now = function() {
     return Date.now();
   };
-  frameSkippingThreshold = this.frameSkipping.threshold;
-  if (this.frameSkipping.allow) {
+  frameSkippingThreshold = this.config.frameskip.threshold;
+  if (this.config.frameskip.allow) {
     skipFrame = function(dt) {
       return dt > frameSkippingThreshold;
     };
@@ -276,7 +302,7 @@ Aghs.prototype.start = function() {
     time.delta = _now - time.lastCalled;
     time.elapsed += time.delta;
     if (skipFrame(time.delta)) {
-      this.frameSkipping.skippedFrames += 1;
+      this.config.frameskip.count += 1;
       time.elapsed -= time.delta;
     } else {
       this.events.trigger("prerender", time);
@@ -352,10 +378,10 @@ Aghs.prototype.maximize = function() {
 Aghs.prototype.layer = function(name, width, height) {
   var canvas, context;
   if (width == null) {
-    width = this.width;
+    width = this.config.width;
   }
   if (height == null) {
-    height = this.height;
+    height = this.config.height;
   }
   if (!name || name === "screen") {
     this.context = this._;
@@ -372,7 +398,6 @@ Aghs.prototype.layer = function(name, width, height) {
       canvas: canvas,
       context: context
     };
-    console.log(this.layers[name]);
     this.context = this.layers[name].context;
   } else {
     this.context = this.layers[name].context;
@@ -442,7 +467,7 @@ Aghs.prototype.resize = function(width, height, allLayers) {
       cacheResizeAndRender(layer);
     }
   } else {
-    cacheResizeAndRender(this.layers[this.currentLayer]);
+    cacheResizeAndRender(this.layers[this.currentLayer] || this._);
   }
   return this;
 };
@@ -499,7 +524,7 @@ Aghs.prototype.align = function(x, y) {
   if (y === void 0) {
     y = x;
   }
-  this.translate(this.width * x, this.height * y);
+  this.translate(this.config.width * x, this.config.height * y);
   return this;
 };
 
@@ -554,7 +579,7 @@ Aghs.prototype.clear = function(fill) {
   if (fill == null) {
     fill = "#fff";
   }
-  return this.fillStyle(fill).fillRect(0, 0, this.width, this.height);
+  return this.fillStyle(fill).fillRect(0, 0, this.config.width, this.config.height);
 };
 
 Aghs.prototype.fillWith = function(color) {
@@ -653,16 +678,22 @@ var app, world;
 
 app = require("../../index.coffee");
 
+app.imageSmoothingEnabled(false).webkitImageSmoothingEnabled(false);
+
+console.log(app);
+
 world = app.world;
+
+world.viewport(400, 400);
 
 app.render(function(time) {
   app.clear("#fff");
-  world.move(-15, 0);
+  world.move(-5, 0);
   if (world.view.x * -1 > world.view.width) {
     world.set(200, 0);
   }
   app.fillStyle("#ccc");
-  world.fillRect(0, 100, 200, 200);
+  world.fillRect(0, 0, 20, 20);
   return world.debug();
 });
 
@@ -773,8 +804,9 @@ World.prototype.viewport = function(w, h) {
   if (!h) {
     h = w;
   }
-  this.view.width = this.aghs.canvas.width = w;
-  return this.view.height = this.aghs.canvas.height = h;
+  this.view.width = w;
+  this.view.height = h;
+  return this.aghs.resize(w, h);
 };
 
 World.prototype.inView = function(x, y) {

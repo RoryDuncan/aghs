@@ -103,8 +103,9 @@ World.prototype.viewport = function(w, h) {
   if (!h) {
     h = w;
   }
-  this.view.width = this.aghs.canvas.width = w;
-  return this.view.height = this.aghs.canvas.height = h;
+  this.view.width = w;
+  this.view.height = h;
+  return this.aghs.resize(w, h);
 };
 
 World.prototype.inView = function(x, y) {

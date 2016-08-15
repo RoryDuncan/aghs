@@ -87,7 +87,7 @@ module.exports = function extend() {
 
 
 },{}],2:[function(require,module,exports){
-var Aghs, chain, extend, noop, utils,
+var Aghs, chain, config, extend, noop, utils,
   slice = [].slice;
 
 utils = require("./utils.coffee");
@@ -98,24 +98,39 @@ noop = utils.noop;
 
 chain = utils.chain;
 
-Aghs = function(options) {
-  var canvas, that;
-  this.options = options != null ? options : {};
+config = {};
+
+
+/* 
+
+@parem:
+  options = 
+    fullscreen: true
+    width: <viewport width>
+    height <viewport height>
+    frameskip: true
+    smoothing: false
+    scale: 1
+ */
+
+Aghs = function(options, EventEmitter) {
+  var canvas, context, that;
+  if (options == null) {
+    options = {};
+  }
+  if (EventEmitter == null) {
+    EventEmitter = null;
+  }
   that = this;
-  if (this.options.el === void 0) {
+  if (options.el === void 0) {
     canvas = document.createElement('canvas');
     canvas.id = "screen";
     document.body.appendChild(canvas);
-  } else if (typeof this.options.el === "string" && this.options.el[0] === "#") {
-    canvas = document.getElementById(this.options.el);
+  } else if (typeof options.el === "string" && options.el[0] === "#") {
+    canvas = document.getElementById(options.el);
   } else {
-    canvas = this.options.el;
+    canvas = options.el;
   }
-  this.frameSkipping = {
-    skippedFrames: 0,
-    allow: this.options.frameSkip || true,
-    threshold: 120
-  };
   this.isReady = false;
   document.onreadystatechange = function() {
     if (document.readyState === "complete") {
@@ -128,19 +143,36 @@ Aghs = function(options) {
     }
   };
   this.canvas = canvas;
-  this.context = this._ = canvas.getContext("2d");
-  if (this.options.wrapContext !== false) {
+  this.context = this._ = context = canvas.getContext("2d");
+  if (options.wrapContext !== false) {
     this.extendContext();
   }
-  if (this.options.fullscreen !== false) {
+  this.config = {
+    "fullscreen": options.fullscreen || true,
+    "wrappedContext": options.wrapContext || true,
+    "width": 0,
+    "height": 0,
+    "scale": options.scale || 1,
+    'smoothing': options.smoothing || true,
+    "frameskip": {
+      "count": 0,
+      "enabled": options.frameskip || true,
+      "threshold": 120
+    }
+  };
+  if (options.fullscreen !== false) {
     this.maximize();
   }
-  this.width = canvas.width;
-  this.height = canvas.height;
-  this.events = null;
+  this.config.width = options.width || canvas.width;
+  this.config.height = options.height || canvas.height;
   this.__attached = {};
-  this.layers = {};
   this.currentLayer = "screen";
+  this.layers = {
+    "screen": {
+      canvas: canvas,
+      context: context
+    }
+  };
   return this;
 };
 
@@ -225,8 +257,8 @@ Aghs.prototype.start = function() {
   now = function() {
     return Date.now();
   };
-  frameSkippingThreshold = this.frameSkipping.threshold;
-  if (this.frameSkipping.allow) {
+  frameSkippingThreshold = this.config.frameskip.threshold;
+  if (this.config.frameskip.allow) {
     skipFrame = function(dt) {
       return dt > frameSkippingThreshold;
     };
@@ -255,7 +287,7 @@ Aghs.prototype.start = function() {
     time.delta = _now - time.lastCalled;
     time.elapsed += time.delta;
     if (skipFrame(time.delta)) {
-      this.frameSkipping.skippedFrames += 1;
+      this.config.frameskip.count += 1;
       time.elapsed -= time.delta;
     } else {
       this.events.trigger("prerender", time);
@@ -331,10 +363,10 @@ Aghs.prototype.maximize = function() {
 Aghs.prototype.layer = function(name, width, height) {
   var canvas, context;
   if (width == null) {
-    width = this.width;
+    width = this.config.width;
   }
   if (height == null) {
-    height = this.height;
+    height = this.config.height;
   }
   if (!name || name === "screen") {
     this.context = this._;
@@ -351,7 +383,6 @@ Aghs.prototype.layer = function(name, width, height) {
       canvas: canvas,
       context: context
     };
-    console.log(this.layers[name]);
     this.context = this.layers[name].context;
   } else {
     this.context = this.layers[name].context;
@@ -402,16 +433,16 @@ Aghs.prototype.resize = function(width, height, allLayers) {
     allLayers = false;
   }
   if (!width) {
-    w = window.innerWidth;
+    w = this.config.width;
   }
   if (!height) {
-    h = window.innerHeight;
+    h = this.config.height;
   }
   cacheResizeAndRender = function(layer) {
     var data;
-    data = layer.context.getImageData(0, 0, width, height);
-    layer.canvas.width = width;
-    layer.canvas.height = height;
+    data = layer.context.getImageData(0, 0, w, h);
+    layer.canvas.width = w;
+    layer.canvas.height = h;
     return layer.context.putImageData(data, 0, 0);
   };
   if (allLayers) {
@@ -421,8 +452,10 @@ Aghs.prototype.resize = function(width, height, allLayers) {
       cacheResizeAndRender(layer);
     }
   } else {
-    cacheResizeAndRender(this.layers[this.currentLayer]);
+    cacheResizeAndRender(this.layers[this.currentLayer] || this._);
   }
+  this.config.width = w;
+  this.config.height = h;
   return this;
 };
 
@@ -478,7 +511,7 @@ Aghs.prototype.align = function(x, y) {
   if (y === void 0) {
     y = x;
   }
-  this.translate(this.width * x, this.height * y);
+  this.translate(this.config.width * x, this.config.height * y);
   return this;
 };
 
@@ -533,7 +566,7 @@ Aghs.prototype.clear = function(fill) {
   if (fill == null) {
     fill = "#fff";
   }
-  return this.fillStyle(fill).fillRect(0, 0, this.width, this.height);
+  return this.fillStyle(fill).fillRect(0, 0, this.config.width, this.config.height);
 };
 
 Aghs.prototype.fillWith = function(color) {
