@@ -1,5 +1,5 @@
-utils = require "./utils.coffee"
 extend = require "extend"
+utils = require "./utils.coffee"
 EventEmitter = require "./events.coffee"
 
 
@@ -7,7 +7,7 @@ EventEmitter = require "./events.coffee"
 noop = utils.noop
 chain = utils.chain
 
-config = {}
+# config = {}
 
 # Aghs Object
 # 
@@ -27,7 +27,6 @@ config = {}
 Aghs = (options = {}) ->
   
   that = @
-  
   # create a canvas element if an element or selector is not passed in
   if options.el is undefined
     canvas = document.createElement('canvas')
@@ -42,6 +41,7 @@ Aghs = (options = {}) ->
   @canvas = canvas
   @module("events", new EventEmitter())
   @context = @_ = context = canvas.getContext "2d"
+  # only do on instantiation
   @extendContext() unless options.wrapContext is false
   
   # begin readiness detection
@@ -49,39 +49,45 @@ Aghs = (options = {}) ->
     if document.readyState is "complete"
       utils.defer () ->
         that.isReady = true
-        that.events.trigger "ready" if that.events?
+        that.events.trigger "ready"
   
-  
-  @config = 
-    "fullscreen": options.fullscreen or true
-    "wrappedContext": options.wrapContext or true
-    "width": 0
-    "height": 0
-    "scale": options.scale or 1
-    'smoothing': options.smoothing or true
-    "frameskip":
-      "count": 0
-      "enabled": options.frameskip or true
-      "threshold": 120
-  
-  @maximize() unless options.fullscreen is false
-    
-  @config.width = options.width or canvas.width
-  @config.height = options.height or canvas.height
-  
+  # layers, modules
   @__attached = {};
   @currentLayer = "screen";
   @layers = 
     "screen": {canvas, context}
   
   # internal events
-  
-  @events.on "aghs:resize", () ->
+  @events.on "resize", () ->
     that.config.width   = that.canvas.width
     that.config.height  = that.canvas.width
   
+  # apply the config
+  config = 
+    "fullscreen":     true
+    "wrappedContext": true
+    'smoothing':      true
+    "width":          options.width or canvas.width
+    "height":         options.height or canvas.height
+    "scale":          options.scale or 1
+    
+    "frameskip":
+      "count":        0
+      "enabled":      options.frameskip or true
+      "threshold":    120
+  
+  @config = extend {}, @config, config
+  
+  # these settings default to true, so overwrite if they exist in the options
+  config.fullscreen = options.fullscreen if options.fullscreen?
+  config.wrappedContext = options.wrappedContext if options.wrappedContext?
+  config.smoothing = options.smoothing if options.smoothing?
+  
+  @settings(config)
   return @
+  
 
+console.log "Prototype Stuffs:"
 # Aghs.module
 #
 # Add a module to the Aghs object
@@ -155,8 +161,8 @@ Aghs::ready = (fn) ->
 #
 # Start the rendering calls and timers
 Aghs::start = () ->
-  now = () ->
-    return Date.now()
+  
+  now = () -> return Date.now()
   
   # build our frame skipping mechanism
   frameSkippingThreshold = @config.frameskip.threshold
@@ -207,6 +213,7 @@ Aghs::start = () ->
   @running = true
   time.id = window.requestAnimationFrame boundStep
   return @
+
 #
 #
 Aghs::stop = () ->
@@ -252,13 +259,38 @@ Aghs::unattach = (modulename) ->
 Aghs::maximize = () ->
   @canvas.width = window.innerWidth
   @canvas.height = window.innerHeight
-  @events.trigger "aghs:resize"
+  @events.trigger "resize"
+  return @
+
+# Aghs.antialias()
+#
+# Sets or reinforces the configured smoothing setting
+Aghs::antialias = () ->
+  @imageSmoothingEnabled(@config.smoothing)
+  return @
+
+# Aghs.settings()
+#
+# Quick-apply a new configuration
+Aghs::settings = (config = {}) ->
+  extend @config, config
+  @screen()
+  if @config.fullscreen
+    @maximize()
+  else
+    @resize(@config.width, @config.height)
+  
+  @scale(@config.scale, @config.scale)
+  @antialias()
   return @
 
 # Aghs.layer()
 # Switch to another canvas and context
 #
-Aghs::layer = (name, width = @config.width, height = @config.height) ->
+Aghs::layer = (name, width, height = @config.height) ->
+  
+  width = @config.width unless width?
+  height = @config.height unless height?
   
   if not name or name is "screen"
     @context = @_
@@ -312,7 +344,6 @@ Aghs::draw = (source = {x: 0, y: 0}, target = {x: 0, y: 0}) ->
 #
 # changes the size of the current context's canvas
 Aghs::resize = (width, height, allLayers = false) ->
-  
   
   w = @config.width unless width
   h = @config.height unless height
@@ -413,5 +444,6 @@ Aghs::clear = (fill = "#fff") ->
 Aghs::fillWith = (color = "#000") ->
   return @fillStyle(color).fill()
 
-window.Aghs = Aghs
+
+
 module.exports = Aghs

@@ -1,25 +1,37 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var Aghs, EventEmitter, World, app, utils;
+var Aghs, StateMachine, World, app, utils;
 
-Aghs = require("./src/coffee/aghs.coffee");
+utils = require("./src/utils.coffee");
 
-utils = require("./src/coffee/utils.coffee");
+World = require("./src/world.coffee");
 
-EventEmitter = require("./src/coffee/events.coffee");
+StateMachine = require("./src/state.coffee");
 
-World = require("./src/coffee/world.coffee");
+Aghs = require("./src/aghs.coffee");
+
+console.log(utils);
+
+console.log(World);
+
+console.log(StateMachine);
+
+console.log(Aghs);
 
 app = new Aghs();
-
-app.module("events", new EventEmitter());
 
 app.module("world", new World(app));
 
 app.module("utils", utils);
 
+app.module("state", new StateMachine(app).proxy);
+
+window.Aghs = function() {
+  return app;
+};
+
 module.exports = app;
 
-},{"./src/coffee/aghs.coffee":3,"./src/coffee/events.coffee":4,"./src/coffee/utils.coffee":5,"./src/coffee/world.coffee":6}],2:[function(require,module,exports){
+},{"./src/aghs.coffee":3,"./src/state.coffee":5,"./src/utils.coffee":6,"./src/world.coffee":7}],2:[function(require,module,exports){
 'use strict';
 
 var hasOwn = Object.prototype.hasOwnProperty;
@@ -108,62 +120,102 @@ module.exports = function extend() {
 
 
 },{}],3:[function(require,module,exports){
-var Aghs, chain, extend, noop, utils,
+var Aghs, EventEmitter, chain, extend, noop, utils,
   slice = [].slice;
+
+extend = require("extend");
 
 utils = require("./utils.coffee");
 
-extend = require("extend");
+EventEmitter = require("./events.coffee");
 
 noop = utils.noop;
 
 chain = utils.chain;
 
+
+/* 
+
+@parem:
+  options = 
+    fullscreen: true
+    width: <viewport width>
+    height <viewport height>
+    frameskip: true
+    smoothing: false
+    scale: 1
+ */
+
 Aghs = function(options) {
-  var canvas, that;
-  this.options = options != null ? options : {};
+  var canvas, config, context, that;
+  if (options == null) {
+    options = {};
+  }
   that = this;
-  if (this.options.el === void 0) {
+  if (options.el === void 0) {
     canvas = document.createElement('canvas');
     canvas.id = "screen";
     document.body.appendChild(canvas);
-  } else if (typeof this.options.el === "string" && this.options.el[0] === "#") {
-    canvas = document.getElementById(this.options.el);
+  } else if (typeof options.el === "string" && options.el[0] === "#") {
+    canvas = document.getElementById(options.el);
   } else {
-    canvas = this.options.el;
+    canvas = options.el;
   }
-  this.frameSkipping = {
-    skippedFrames: 0,
-    allow: this.options.frameSkip || true,
-    threshold: 120
-  };
   this.isReady = false;
+  this.canvas = canvas;
+  this.module("events", new EventEmitter());
+  this.context = this._ = context = canvas.getContext("2d");
+  if (options.wrapContext !== false) {
+    this.extendContext();
+  }
   document.onreadystatechange = function() {
     if (document.readyState === "complete") {
       return utils.defer(function() {
         that.isReady = true;
-        if (that.events != null) {
-          return that.events.trigger("ready");
-        }
+        return that.events.trigger("ready");
       });
     }
   };
-  this.canvas = canvas;
-  this.context = this._ = canvas.getContext("2d");
-  if (this.options.wrapContext !== false) {
-    this.extendContext();
-  }
-  if (this.options.fullscreen !== false) {
-    this.maximize();
-  }
-  this.width = canvas.width;
-  this.height = canvas.height;
-  this.events = null;
   this.__attached = {};
-  this.layers = {};
   this.currentLayer = "screen";
+  this.layers = {
+    "screen": {
+      canvas: canvas,
+      context: context
+    }
+  };
+  this.events.on("resize", function() {
+    that.config.width = that.canvas.width;
+    return that.config.height = that.canvas.width;
+  });
+  config = {
+    "fullscreen": true,
+    "wrappedContext": true,
+    'smoothing': true,
+    "width": options.width || canvas.width,
+    "height": options.height || canvas.height,
+    "scale": options.scale || 1,
+    "frameskip": {
+      "count": 0,
+      "enabled": options.frameskip || true,
+      "threshold": 120
+    }
+  };
+  this.config = extend({}, this.config, config);
+  if (options.fullscreen != null) {
+    config.fullscreen = options.fullscreen;
+  }
+  if (options.wrappedContext != null) {
+    config.wrappedContext = options.wrappedContext;
+  }
+  if (options.smoothing != null) {
+    config.smoothing = options.smoothing;
+  }
+  this.settings(config);
   return this;
 };
+
+console.log("Prototype Stuffs:");
 
 Aghs.prototype.module = function(name, obj) {
   if (!(name && obj)) {
@@ -246,8 +298,8 @@ Aghs.prototype.start = function() {
   now = function() {
     return Date.now();
   };
-  frameSkippingThreshold = this.frameSkipping.threshold;
-  if (this.frameSkipping.allow) {
+  frameSkippingThreshold = this.config.frameskip.threshold;
+  if (this.config.frameskip.allow) {
     skipFrame = function(dt) {
       return dt > frameSkippingThreshold;
     };
@@ -276,7 +328,7 @@ Aghs.prototype.start = function() {
     time.delta = _now - time.lastCalled;
     time.elapsed += time.delta;
     if (skipFrame(time.delta)) {
-      this.frameSkipping.skippedFrames += 1;
+      this.config.frameskip.count += 1;
       time.elapsed -= time.delta;
     } else {
       this.events.trigger("prerender", time);
@@ -346,16 +398,41 @@ Aghs.prototype.unattach = function(modulename) {
 Aghs.prototype.maximize = function() {
   this.canvas.width = window.innerWidth;
   this.canvas.height = window.innerHeight;
+  this.events.trigger("resize");
+  return this;
+};
+
+Aghs.prototype.antialias = function() {
+  this.imageSmoothingEnabled(this.config.smoothing);
+  return this;
+};
+
+Aghs.prototype.settings = function(config) {
+  if (config == null) {
+    config = {};
+  }
+  extend(this.config, config);
+  this.screen();
+  if (this.config.fullscreen) {
+    this.maximize();
+  } else {
+    this.resize(this.config.width, this.config.height);
+  }
+  this.scale(this.config.scale, this.config.scale);
+  this.antialias();
   return this;
 };
 
 Aghs.prototype.layer = function(name, width, height) {
   var canvas, context;
+  if (height == null) {
+    height = this.config.height;
+  }
   if (width == null) {
-    width = this.width;
+    width = this.config.width;
   }
   if (height == null) {
-    height = this.height;
+    height = this.config.height;
   }
   if (!name || name === "screen") {
     this.context = this._;
@@ -372,7 +449,6 @@ Aghs.prototype.layer = function(name, width, height) {
       canvas: canvas,
       context: context
     };
-    console.log(this.layers[name]);
     this.context = this.layers[name].context;
   } else {
     this.context = this.layers[name].context;
@@ -423,16 +499,16 @@ Aghs.prototype.resize = function(width, height, allLayers) {
     allLayers = false;
   }
   if (!width) {
-    w = window.innerWidth;
+    w = this.config.width;
   }
   if (!height) {
-    h = window.innerHeight;
+    h = this.config.height;
   }
   cacheResizeAndRender = function(layer) {
     var data;
-    data = layer.context.getImageData(0, 0, width, height);
-    layer.canvas.width = width;
-    layer.canvas.height = height;
+    data = layer.context.getImageData(0, 0, w, h);
+    layer.canvas.width = w;
+    layer.canvas.height = h;
     return layer.context.putImageData(data, 0, 0);
   };
   if (allLayers) {
@@ -442,7 +518,8 @@ Aghs.prototype.resize = function(width, height, allLayers) {
       cacheResizeAndRender(layer);
     }
   } else {
-    cacheResizeAndRender(this.layers[this.currentLayer]);
+    cacheResizeAndRender(this.layers[this.currentLayer] || this._);
+    this.events.trigger("resize");
   }
   return this;
 };
@@ -499,7 +576,7 @@ Aghs.prototype.align = function(x, y) {
   if (y === void 0) {
     y = x;
   }
-  this.translate(this.width * x, this.height * y);
+  this.translate(this.config.width * x, this.config.height * y);
   return this;
 };
 
@@ -554,7 +631,7 @@ Aghs.prototype.clear = function(fill) {
   if (fill == null) {
     fill = "#fff";
   }
-  return this.fillStyle(fill).fillRect(0, 0, this.width, this.height);
+  return this.fillStyle(fill).fillRect(0, 0, this.config.width, this.config.height);
 };
 
 Aghs.prototype.fillWith = function(color) {
@@ -564,11 +641,9 @@ Aghs.prototype.fillWith = function(color) {
   return this.fillStyle(color).fill();
 };
 
-window.Aghs = Aghs;
-
 module.exports = Aghs;
 
-},{"./utils.coffee":5,"extend":2}],4:[function(require,module,exports){
+},{"./events.coffee":4,"./utils.coffee":6,"extend":2}],4:[function(require,module,exports){
 var EventEmitter,
   slice = [].slice;
 
@@ -649,6 +724,172 @@ EventEmitter.prototype.disable = function(event) {
 module.exports = EventEmitter;
 
 },{}],5:[function(require,module,exports){
+var State, StateMachine, events, extend, utils;
+
+extend = require("extend");
+
+utils = require("./utils.coffee");
+
+events = {
+  "state:init": function() {
+    var done, state, that;
+    state = this.states[this.active];
+    that = this;
+    done = function() {
+      state.isReady = true;
+      return that.events.trigger("state:ready");
+    };
+    state.initialized = true;
+    return state.init.call(state, done);
+  },
+  "step": function(time) {
+    var state;
+    state = this.states[this.active];
+    return state.step.call(state, time);
+  },
+  "prerender": function(time) {
+    var state;
+    state = this.states[this.active];
+    return state.prerender.call(state, time);
+  },
+  "render": function(time) {
+    var state;
+    state = this.states[this.active];
+    return state.render.call(state, time);
+  },
+  "postrender": function(time) {
+    var state;
+    state = this.states[this.active];
+    return state.postrender.call(state, time);
+  },
+  "state:ready": function() {
+    var state;
+    state = this.states[this.active];
+    return state.ready.call(state);
+  },
+  "state:enter": function() {
+    var state;
+    state = this.states[this.active];
+    this.aghs.settings(state.config);
+    return state.enter.call(state);
+  },
+  "state:leave": function() {
+    var state;
+    state = this.states[this.active];
+    return state.leave.call(state);
+  },
+  "state:destroy": function() {
+    var state;
+    state = this.states[this.active];
+    return state.destroy.call(state);
+  }
+};
+
+State = function(aghs, options) {
+  var config;
+  if (options == null) {
+    options = {};
+  }
+  this.name = options.name;
+  config = {
+    "fullscreen": options.fullscreen,
+    "width": options.width,
+    "height": options.height,
+    "frameskip": options.frameskip,
+    "smoothing": options.smoothing,
+    "scale": options.scaling
+  };
+  extend(this, options);
+  this.initialized = false;
+  this.isReady = false;
+  this.config = extend(config, aghs.config);
+  return this;
+};
+
+State.prototype.init = utils.noop;
+
+State.prototype.ready = utils.noop;
+
+State.prototype.enter = utils.noop;
+
+State.prototype.leave = utils.noop;
+
+State.prototype.destroy = utils.noop;
+
+State.prototype.prerender = utils.noop;
+
+State.prototype.render = utils.noop;
+
+State.prototype.postrender = utils.noop;
+
+State.prototype.step = utils.noop;
+
+StateMachine = function(aghs1) {
+  var callback, eventname;
+  this.aghs = aghs1;
+  this.events = this.aghs.events;
+  this.states = {};
+  this.active = null;
+  this.length = 0;
+  for (eventname in events) {
+    callback = events[eventname];
+    this.events.on(eventname, callback, this);
+  }
+  return this;
+};
+
+StateMachine.prototype.add = function(options) {
+  var state;
+  if (options == null) {
+    options = {};
+  }
+  if (options.name != null) {
+    throw new Error("state 'name' is missing from options parameter.");
+  }
+  state = new State(this.aghs, options);
+  this.states[state.name] = state;
+  this.length += 1;
+  if (length === 1) {
+    this.set(name);
+  }
+  return state;
+};
+
+StateMachine.prototype.set = function(name) {
+  var state;
+  if (this.states[name] != null) {
+    this.events.trigger("state:leave");
+    this.active = name;
+    state = this.states[this.active];
+    if (state.initialized === false) {
+      this.events.trigger("state:init");
+    }
+    if (state.isReady) {
+      this.events.trigger("state:ready");
+      this.events.trigger("state:enter");
+    }
+  }
+  return this;
+};
+
+StateMachine.prototype.get = function(name) {
+  return this.states[name] || null;
+};
+
+StateMachine.prototype.proxy = function() {
+  if (arguments.length === 0) {
+    return this;
+  }
+  if (typeof arguments[0] === "string") {
+    this.set(arguments[0]);
+    return this;
+  }
+  return this.add(arguments[0]);
+};
+
+module.exports = StateMachine;
+
+},{"./utils.coffee":6,"extend":2}],6:[function(require,module,exports){
 var chain, defer, noop, throttle,
   slice = [].slice;
 
@@ -689,8 +930,12 @@ throttle = function(func, delay, ctx, returnValue) {
 };
 
 chain = function(wrapper, host, func) {
-  func.apply(host, args);
-  return wrapper;
+  return function() {
+    var args;
+    args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    func.apply(host, args);
+    return wrapper;
+  };
 };
 
 module.exports = {
@@ -700,7 +945,7 @@ module.exports = {
   throttle: throttle
 };
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 var World, location, utils;
 
 utils = require("./utils.coffee");
@@ -720,7 +965,7 @@ World = function(aghs, options) {
     options = {};
   }
   if (!this.aghs) {
-    throw new TypeError("Missing Agh.js Instance as third parameter.");
+    throw new TypeError("Missing Agh.js Instance as first parameter.");
   }
   this._ = this.aghs._;
   this.orientation = {
@@ -734,6 +979,8 @@ World = function(aghs, options) {
   this.view = {
     x: 0,
     y: 0,
+    z: 0,
+    perspective: 1000,
     width: options.width || this.aghs.width,
     height: options.height || this.aghs.height
   };
@@ -751,8 +998,9 @@ World.prototype.viewport = function(w, h) {
   if (!h) {
     h = w;
   }
-  this.view.width = this.aghs.canvas.width = w;
-  return this.view.height = this.aghs.canvas.height = h;
+  this.view.width = w;
+  this.view.height = h;
+  return this.aghs.resize(w, h);
 };
 
 World.prototype.inView = function(x, y) {
@@ -950,4 +1198,4 @@ World.prototype.drawImage = function(image) {
 
 module.exports = World;
 
-},{"./utils.coffee":5}]},{},[1]);
+},{"./utils.coffee":6}]},{},[1]);

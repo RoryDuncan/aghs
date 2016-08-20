@@ -1,26 +1,28 @@
 var gulp = require('gulp');
 var watch = require('gulp-watch');
+var coffee = require('gulp-coffee');
 var coffeeify = require('gulp-coffeeify');
-var rename = require('gulp-rename');
  
 gulp.task('build', function() {
   
-  gulp.src('./src/coffee/**/*.coffee')
-    .pipe(coffeeify())
-    .pipe(gulp.dest('src/build/'));
-    
-  gulp.src('./index.coffee')
+  gulp.src('index.coffee')
     .pipe(coffeeify())
     .pipe(gulp.dest('./'));
+    
+  gulp.src('tests/test.coffee')
+    .pipe(coffee({bare:true}))
+    .pipe(gulp.dest('./tests'));
+    
 });
 
 gulp.task('dev', function() {
   
-  watch('./src/coffee/**/*.coffee')
-    .pipe(coffeeify())
-    .pipe(gulp.dest('src/build/'));
-    
-  watch('./index.coffee')
+  watch('index.coffee')
     .pipe(coffeeify())
     .pipe(gulp.dest('./'));
+    
+  watch('tests/test.coffee')
+    .pipe(coffee({bare:true}))
+    .pipe(gulp.dest('./tests'));
 });
+
