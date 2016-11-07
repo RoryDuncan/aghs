@@ -4,7 +4,10 @@
   "description": "A canvas wrapper that upgrades the context.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "gulp dev",
+    "build": "gulp build",
+    "start": "npm run dev"
   },
   "repository": {
     "type": "git",
