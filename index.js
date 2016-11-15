@@ -9,14 +9,6 @@ StateMachine = require("./src/state.coffee");
 
 Aghs = require("./src/aghs.coffee");
 
-console.log(utils);
-
-console.log(World);
-
-console.log(StateMachine);
-
-console.log(Aghs);
-
 app = new Aghs();
 
 app.module("world", new World(app));
@@ -214,8 +206,6 @@ Aghs = function(options) {
   this.settings(config);
   return this;
 };
-
-console.log("Prototype Stuffs:");
 
 Aghs.prototype.module = function(name, obj) {
   if (!(name && obj)) {
@@ -498,12 +488,8 @@ Aghs.prototype.resize = function(width, height, allLayers) {
   if (allLayers == null) {
     allLayers = false;
   }
-  if (!width) {
-    w = this.config.width;
-  }
-  if (!height) {
-    h = this.config.height;
-  }
+  w = width || this.config.width;
+  h = height || this.config.height;
   cacheResizeAndRender = function(layer) {
     var data;
     data = layer.context.getImageData(0, 0, w, h);
@@ -825,16 +811,20 @@ State.prototype.postrender = utils.noop;
 State.prototype.step = utils.noop;
 
 StateMachine = function(aghs1) {
-  var callback, eventname;
+  var callback, emptyState, eventname;
   this.aghs = aghs1;
   this.events = this.aghs.events;
   this.states = {};
-  this.active = null;
   this.length = 0;
   for (eventname in events) {
     callback = events[eventname];
     this.events.on(eventname, callback, this);
   }
+  emptyState = "empty";
+  this.add({
+    name: emptyState
+  });
+  this.active = emptyState;
   return this;
 };
 
@@ -843,7 +833,7 @@ StateMachine.prototype.add = function(options) {
   if (options == null) {
     options = {};
   }
-  if (options.name != null) {
+  if (options.name == null) {
     throw new Error("state 'name' is missing from options parameter.");
   }
   state = new State(this.aghs, options);

@@ -89,17 +89,22 @@ State::step       = utils.noop
 StateMachine = (@aghs) ->
   @events = @aghs.events
   @states = {}
-  @active = null
   @length = 0
   # bind all events
   @events.on eventname, callback, @ for eventname, callback of events
   
+  # the state when first initialized
+  emptyState = "empty"
+  @add({name: emptyState})
+  @active = emptyState
+  
   return @
 
-#
-#
+# StateMachine.add()
+# Add a new state
+# param: {name, <any state event above as a function (ie, "step")>}
 StateMachine::add = (options = {}) ->
-  if options.name? 
+  if not options.name?
     throw new Error "state 'name' is missing from options parameter."
   
   state = new State(@aghs, options)
@@ -137,8 +142,8 @@ StateMachine::get = (name) ->
 # if you would like a different usage model
 StateMachine::proxy = () ->
   
-  
-  # aghs.state().get()
+  # returns "this", for usage such as:
+  # aghs.state().get() or aghs.state().set("loading")
   return @ if arguments.length is 0
   
   if typeof arguments[0] is "string"

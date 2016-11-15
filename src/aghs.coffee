@@ -87,7 +87,6 @@ Aghs = (options = {}) ->
   return @
   
 
-console.log "Prototype Stuffs:"
 # Aghs.module
 #
 # Add a module to the Aghs object
@@ -345,8 +344,8 @@ Aghs::draw = (source = {x: 0, y: 0}, target = {x: 0, y: 0}) ->
 # changes the size of the current context's canvas
 Aghs::resize = (width, height, allLayers = false) ->
   
-  w = @config.width unless width
-  h = @config.height unless height
+  w = width or @config.width
+  h = height or @config.height
   
   cacheResizeAndRender = (layer) ->
     data = layer.context.getImageData(0, 0, w, h)
