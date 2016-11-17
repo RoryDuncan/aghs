@@ -3,26 +3,32 @@ var watch = require('gulp-watch');
 var coffee = require('gulp-coffee');
 var coffeeify = require('gulp-coffeeify');
  
-gulp.task('build', function() {
+var build = {
   
-  gulp.src('index.coffee')
-    .pipe(coffeeify())
-    .pipe(gulp.dest('./'));
-    
-  gulp.src('tests/test.coffee')
-    .pipe(coffee({bare:true}))
-    .pipe(gulp.dest('./tests'));
-    
+  main: function(){
+    gulp.src('index.coffee')
+      .pipe(coffeeify())
+      .pipe(gulp.dest('./'));
+  } ,
+  
+  livedev: function(){
+      gulp.src('dev/dev.coffee')
+        .pipe(coffee({bare:true}))
+        .pipe(gulp.dest('./dev'));
+  }
+}
+
+gulp.task('build', function() {
+  build.main();
 });
 
 gulp.task('dev', function() {
   
-  watch('index.coffee')
-    .pipe(coffeeify())
-    .pipe(gulp.dest('./'));
-    
-  watch('tests/test.coffee')
-    .pipe(coffee({bare:true}))
-    .pipe(gulp.dest('./tests'));
+  watch('./**/*.coffee', function(){
+    console.log("Building from source.")
+    build.main();
+    console.log("Building dev/dev.coffee")
+    build.livedev();
+  })
 });
 
