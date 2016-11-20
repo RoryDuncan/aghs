@@ -1,6 +1,6 @@
 
 extend = require "extend"
-utils = require "./utils.coffee"
+utils = require "../core/utils.coffee"
 
 #  triggered event functions
 events =

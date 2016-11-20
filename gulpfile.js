@@ -8,10 +8,15 @@ var build = {
   main: function(){
     gulp.src('index.coffee')
       .pipe(coffeeify())
-      .pipe(gulp.dest('./'));
+      .pipe(gulp.dest('./bin'));
   } ,
   
   livedev: function(){
+    gulp.src('index.coffee')
+      .pipe(coffeeify())
+      .pipe(gulp.dest('./')); // outputs as 'index.js', but is ignored in .gitignore
+      
+    
       gulp.src('dev/dev.coffee')
         .pipe(coffee({bare:true}))
         .pipe(gulp.dest('./dev'));
@@ -25,9 +30,6 @@ gulp.task('build', function() {
 gulp.task('dev', function() {
   
   watch('./**/*.coffee', function(){
-    console.log("Building from source.")
-    build.main();
-    console.log("Building dev/dev.coffee")
     build.livedev();
   })
 });

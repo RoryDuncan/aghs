@@ -1,12 +1,12 @@
 
 
 # module requires
-utils         = require "./src/utils.coffee"
-World         = require "./src/world.coffee"
-StateMachine  = require "./src/state.coffee"
+utils         = require "./src/core/utils.coffee"
+World         = require "./src/plugins/world.coffee"
+StateMachine  = require "./src/plugins/state.coffee"
 
-# our framework
-Aghs = require "./src/aghs.coffee"
+# our core wrapper
+Aghs = require "./src/core/aghs.coffee"
 
 # instantiate
 app = new Aghs()
