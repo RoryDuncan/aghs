@@ -1,7 +1,8 @@
 utils = require "../core/utils.coffee"
 
-
-# calculates
+# ### Helpers
+# location
+# calculates the relative location
 location = (world, _x, _y) ->
   
   offset = world.offset

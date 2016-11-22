@@ -1,0 +1,315 @@
+<!DOCTYPE html><html lang="en"><head><title>src/core/aghs</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="src/core/aghs"><meta name="groc-project-path" content="src/core/aghs.coffee"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/core/aghs.coffee</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper">extend = <span class="hljs-built_in">require</span> <span class="hljs-string">"extend"</span>
+utils = <span class="hljs-built_in">require</span> <span class="hljs-string">"./utils.coffee"</span>
+EventEmitter = <span class="hljs-built_in">require</span> <span class="hljs-string">"./events.coffee"</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Helpers</p></div></div><div class="code"><div class="wrapper">noop = utils.noop
+chain = utils.chain</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Aghs Namespace Object
+Parameter: option `Object</p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p> param:
+  options = 
+    fullscreen: true
+    width: <viewport width>
+    height <viewport height>
+    frameskip: true
+    smoothing: false
+    scale: 1</p></div></div><div class="code"><div class="wrapper"><span class="hljs-function">
+<span class="hljs-title">Aghs</span> = <span class="hljs-params">(options = {})</span> -&gt;</span>
+  
+  that = @</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>create a canvas element if an element or selector is not passed in</p></div></div><div class="code"><div class="wrapper">  <span class="hljs-keyword">if</span> options.el <span class="hljs-keyword">is</span> <span class="hljs-literal">undefined</span>
+    canvas = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'canvas'</span>)
+    canvas.id = <span class="hljs-string">"screen"</span>
+    <span class="hljs-built_in">document</span>.body.appendChild(canvas)
+  <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> options.el <span class="hljs-keyword">is</span> <span class="hljs-string">"string"</span> <span class="hljs-keyword">and</span> options.el[<span class="hljs-number">0</span>] <span class="hljs-keyword">is</span> <span class="hljs-string">"#"</span>
+    canvas = <span class="hljs-built_in">document</span>.getElementById options.el
+  <span class="hljs-keyword">else</span>
+    canvas = options.el
+
+  <span class="hljs-property">@isReady</span> = <span class="hljs-literal">false</span>
+  <span class="hljs-property">@canvas</span> = canvas
+  <span class="hljs-property">@module</span>(<span class="hljs-string">"events"</span>, <span class="hljs-keyword">new</span> EventEmitter())
+  <span class="hljs-property">@context</span> = <span class="hljs-property">@_</span> = context = canvas.getContext <span class="hljs-string">"2d"</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>only do on instantiation</p></div></div><div class="code"><div class="wrapper">  <span class="hljs-property">@extendContext</span>() <span class="hljs-keyword">unless</span> options.wrapContext <span class="hljs-keyword">is</span> <span class="hljs-literal">false</span>
+  </div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>begin readiness detection</p></div></div><div class="code"><div class="wrapper">  <span class="hljs-built_in">document</span>.onreadystatechange = <span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span>
+    <span class="hljs-keyword">if</span> <span class="hljs-built_in">document</span>.readyState <span class="hljs-keyword">is</span> <span class="hljs-string">"complete"</span>
+      utils.defer () -&gt;
+        that.isReady = <span class="hljs-literal">true</span>
+        that.events.trigger <span class="hljs-string">"ready"</span>
+  </div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>layers, modules</p></div></div><div class="code"><div class="wrapper">  <span class="hljs-property">@__attached</span> = {};
+  <span class="hljs-property">@currentLayer</span> = <span class="hljs-string">"screen"</span>;
+  <span class="hljs-property">@layers</span> = 
+    <span class="hljs-string">"screen"</span>: {canvas, context}
+  </div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>internal events</p></div></div><div class="code"><div class="wrapper">  <span class="hljs-property">@events</span>.<span class="hljs-literal">on</span> <span class="hljs-string">"resize"</span>, <span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span>
+    that.config.width   = that.canvas.width
+    that.config.height  = that.canvas.width
+  </div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>apply the config</p></div></div><div class="code"><div class="wrapper">  config = 
+    <span class="hljs-string">"fullscreen"</span>:     <span class="hljs-literal">true</span>
+    <span class="hljs-string">"wrappedContext"</span>: <span class="hljs-literal">true</span>
+    <span class="hljs-string">'smoothing'</span>:      <span class="hljs-literal">true</span>
+    <span class="hljs-string">"width"</span>:          options.width <span class="hljs-keyword">or</span> canvas.width
+    <span class="hljs-string">"height"</span>:         options.height <span class="hljs-keyword">or</span> canvas.height
+    <span class="hljs-string">"scale"</span>:          options.scale <span class="hljs-keyword">or</span> <span class="hljs-number">1</span>
+    
+    <span class="hljs-string">"frameskip"</span>:
+      <span class="hljs-string">"count"</span>:        <span class="hljs-number">0</span>
+      <span class="hljs-string">"enabled"</span>:      options.frameskip <span class="hljs-keyword">or</span> <span class="hljs-literal">true</span>
+      <span class="hljs-string">"threshold"</span>:    <span class="hljs-number">120</span>
+  
+  <span class="hljs-property">@config</span> = extend {}, <span class="hljs-property">@config</span>, config
+  </div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>these settings default to true, so overwrite if they exist in the options</p></div></div><div class="code"><div class="wrapper">  config.fullscreen = options.fullscreen <span class="hljs-keyword">if</span> options.fullscreen?
+  config.wrappedContext = options.wrappedContext <span class="hljs-keyword">if</span> options.wrappedContext?
+  config.smoothing = options.smoothing <span class="hljs-keyword">if</span> options.smoothing?
+  
+  <span class="hljs-property">@settings</span>(config)
+  <span class="hljs-keyword">return</span> @
+  </div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Aghs.module</p>
+<p>Add a module to the Aghs object</p></div></div><div class="code"><div class="wrapper"><span class="hljs-attribute">Aghs</span>::<span class="hljs-built_in">module</span> = <span class="hljs-function"><span class="hljs-params">(name, obj)</span> -&gt;</span>
+  <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Error <span class="hljs-string">"Missing module parameter 1 or parameter 2"</span> <span class="hljs-keyword">unless</span> name <span class="hljs-keyword">and</span> obj
+  @[name] = obj
+  <span class="hljs-keyword">return</span> @</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Aghs.chain</p>
+<p>Meta programming function, used internally. Can be used to chain any function to Aghs</p></div></div><div class="code"><div class="wrapper"><span class="hljs-attribute">Aghs</span>::chain = <span class="hljs-function"><span class="hljs-params">(func, hasReturnValue)</span> -&gt;</span>
+  source = @
+  <span class="hljs-keyword">if</span> hasReturnValue
+    <span class="hljs-keyword">return</span> (args...) -&gt;
+      <span class="hljs-keyword">return</span> func.apply(source.context, args)
+  <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span> (args...) -&gt;
+    func.apply(source.context, args)
+    <span class="hljs-keyword">return</span> source</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Aghs</p>
+<p>these functions have meaningful return values (don&#39;t chain them)</p></div></div><div class="code"><div class="wrapper"><span class="hljs-attribute">Aghs</span>::chainingExceptions = {
+  <span class="hljs-string">"getImageData"</span>,
+  <span class="hljs-string">"createImageData"</span>
+}</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Aghs.extendContext</p>
+<p>Extend the Canvas.getContext(&quot;2d&quot;) prototype to also be attached to Aghs</p></div></div><div class="code"><div class="wrapper"><span class="hljs-attribute">Aghs</span>::extendContext = <span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span>
+
+  that = @
+  ctx = <span class="hljs-property">@context</span>
+<span class="hljs-function">  
+  <span class="hljs-title">makeSetGetFunction</span> = <span class="hljs-params">(keyname)</span> -&gt;</span>
+    <span class="hljs-keyword">return</span> (value) -&gt;
+      <span class="hljs-keyword">return</span> that.context[keyname] <span class="hljs-keyword">if</span> value <span class="hljs-keyword">is</span> <span class="hljs-literal">undefined</span>
+      that.context[keyname] = value
+      <span class="hljs-keyword">return</span> that
+
+  <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> ctx
+    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Error(<span class="hljs-string">"Illegal Invocation: extendContext. Call after instantiation."</span>)</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Iterate over all canvas context methods</p></div></div><div class="code"><div class="wrapper">  <span class="hljs-keyword">for</span> key, value <span class="hljs-keyword">of</span> ctx
+    
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> value <span class="hljs-keyword">is</span> <span class="hljs-string">"function"</span>
+      hasReturn = <span class="hljs-literal">false</span>
+      <span class="hljs-keyword">for</span> exceptionName <span class="hljs-keyword">of</span> <span class="hljs-property">@chainingExceptions</span>
+        <span class="hljs-keyword">if</span> key <span class="hljs-keyword">is</span> exceptionName
+          hasReturn = <span class="hljs-literal">true</span>
+      @[key] = <span class="hljs-property">@chain</span>(value, hasReturn)
+    <span class="hljs-keyword">else</span> 
+      <span class="hljs-keyword">if</span> key <span class="hljs-keyword">isnt</span> <span class="hljs-string">"canvas"</span>
+        @[key] = makeSetGetFunction(key)
+  <span class="hljs-keyword">return</span> @</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Aghs.ready()</p>
+<p>Fire the passed-in function when the document and canvas are ready</p></div></div><div class="code"><div class="wrapper"><span class="hljs-attribute">Aghs</span>::ready = <span class="hljs-function"><span class="hljs-params">(fn)</span> -&gt;</span>
+  <span class="hljs-keyword">if</span> <span class="hljs-property">@isReady</span> <span class="hljs-keyword">then</span> fn.call(@)
+  <span class="hljs-keyword">else</span>
+    <span class="hljs-property">@events</span>.<span class="hljs-literal">on</span> <span class="hljs-string">"ready"</span>, fn, @
+  <span class="hljs-keyword">return</span> @</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Aghs.start()</p>
+<p>Start the rendering calls and timers</p></div></div><div class="code"><div class="wrapper"><span class="hljs-attribute">Aghs</span>::start = <span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span>
+<span class="hljs-function">  
+  <span class="hljs-title">now</span> = <span class="hljs-params">()</span> -&gt;</span> <span class="hljs-keyword">return</span> Date.now()
+  </div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>build our frame skipping mechanism</p></div></div><div class="code"><div class="wrapper">  frameSkippingThreshold = <span class="hljs-property">@config</span>.frameskip.threshold
+  
+  <span class="hljs-keyword">if</span> <span class="hljs-property">@config</span>.frameskip.allow 
+<span class="hljs-function">    <span class="hljs-title">skipFrame</span> = <span class="hljs-params">(dt)</span> -&gt;</span> <span class="hljs-keyword">return</span> (dt &gt; frameSkippingThreshold)
+  <span class="hljs-keyword">else</span>
+<span class="hljs-function">    <span class="hljs-title">skipFrame</span> = <span class="hljs-params">(dt)</span> -&gt;</span> <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>
+    
+  
+  start = now()</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>this format helps v8 engine build optimized classes</p></div></div><div class="code"><div class="wrapper">  time = {
+    <span class="hljs-string">'elapsed'</span>:        <span class="hljs-number">0</span>,
+    <span class="hljs-string">'lastCalled'</span>:     now(),
+    <span class="hljs-string">'now'</span>:            now(),
+    <span class="hljs-string">'start'</span>:          now(),
+    <span class="hljs-string">'delta'</span>:          <span class="hljs-literal">null</span>,
+    <span class="hljs-string">'id'</span>:             <span class="hljs-literal">null</span>
+  }
+  </div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>called before the user-defined render</p></div></div><div class="code"><div class="wrapper"><span class="hljs-function">
+  <span class="hljs-title">step</span> = <span class="hljs-params">(e)</span> -&gt;</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">unless</span> <span class="hljs-property">@running</span> <span class="hljs-keyword">is</span> <span class="hljs-literal">true</span>
+    <span class="hljs-property">@events</span>.trigger <span class="hljs-string">"step"</span>, time
+    _now = now()
+    time.now = _now
+    time.delta = (_now - time.lastCalled)
+    time.elapsed += time.delta
+
+    
+    <span class="hljs-keyword">if</span> skipFrame(time.delta)
+      <span class="hljs-property">@config</span>.frameskip.count += <span class="hljs-number">1</span>
+      time.elapsed -= time.delta
+    <span class="hljs-keyword">else</span>
+      <span class="hljs-property">@events</span>.trigger <span class="hljs-string">"prerender"</span>, time
+      <span class="hljs-property">@render</span>.call(@, time)
+      <span class="hljs-property">@events</span>.trigger <span class="hljs-string">"render"</span>, time
+    time.lastCalled = _now
+    <span class="hljs-property">@events</span>.trigger <span class="hljs-string">"postrender"</span>, time
+    
+    time.id = <span class="hljs-built_in">window</span>.requestAnimationFrame boundStep
+    <span class="hljs-property">@__frame</span> = time.id
+    
+  
+  boundStep = step.bind(@)
+  <span class="hljs-property">@running</span> = <span class="hljs-literal">true</span>
+  time.id = <span class="hljs-built_in">window</span>.requestAnimationFrame boundStep
+  <span class="hljs-keyword">return</span> @
+
+<span class="hljs-attribute">Aghs</span>::stop = <span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span>
+  <span class="hljs-built_in">window</span>.cancelAnimationFrame <span class="hljs-property">@__frame</span>
+  <span class="hljs-property">@running</span> = <span class="hljs-literal">false</span>
+  <span class="hljs-keyword">return</span> @
+
+<span class="hljs-attribute">Aghs</span>::render = <span class="hljs-function"><span class="hljs-params">(render)</span> -&gt;</span>
+  <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> render <span class="hljs-keyword">is</span> <span class="hljs-string">"function"</span>
+    <span class="hljs-property">@render</span> = render 
+  <span class="hljs-keyword">else</span> <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Error <span class="hljs-string">"Render function is not set."</span>
+
+  <span class="hljs-keyword">return</span> @</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Aghs.attach</p>
+<p>Add an object that has a step and/or render function to Aghs&#39;s step and/or render function</p></div></div><div class="code"><div class="wrapper"><span class="hljs-attribute">Aghs</span>::attach = <span class="hljs-function"><span class="hljs-params">(obj, modulename)</span> -&gt;</span>
+  <span class="hljs-keyword">return</span> @ <span class="hljs-keyword">unless</span> obj
+  name = modulename <span class="hljs-keyword">or</span> Object.getPrototypeOf(obj).constructor.name
+  <span class="hljs-property">@__attached</span>[name] = obj
+  <span class="hljs-built_in">console</span>.log <span class="hljs-string">"Attaching module as '<span class="hljs-subst">#{name}</span>"</span>
+  <span class="hljs-property">@events</span>.<span class="hljs-literal">on</span>(<span class="hljs-string">"step"</span>, obj.step, obj) <span class="hljs-keyword">if</span> obj.step
+  <span class="hljs-property">@events</span>.<span class="hljs-literal">on</span>(<span class="hljs-string">"render"</span>, obj.render, obj) <span class="hljs-keyword">if</span> obj.render
+  <span class="hljs-keyword">return</span> @</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Aghs.unattach</p>
+<p>Undoes Aghs.attach</p></div></div><div class="code"><div class="wrapper"><span class="hljs-attribute">Aghs</span>::unattach = <span class="hljs-function"><span class="hljs-params">(modulename)</span> -&gt;</span>
+  <span class="hljs-keyword">return</span> @ <span class="hljs-keyword">unless</span> modulename
+  <span class="hljs-built_in">module</span> = <span class="hljs-property">@__attached</span>[modulename]
+  <span class="hljs-keyword">if</span> <span class="hljs-built_in">module</span>
+    <span class="hljs-property">@events</span>.<span class="hljs-literal">off</span>(<span class="hljs-string">"step"</span>, <span class="hljs-built_in">module</span>.step) <span class="hljs-keyword">if</span> <span class="hljs-built_in">module</span>.step
+    <span class="hljs-property">@events</span>.<span class="hljs-literal">off</span>(<span class="hljs-string">"render"</span>, <span class="hljs-built_in">module</span>.render) <span class="hljs-keyword">if</span> <span class="hljs-built_in">module</span>.render
+  <span class="hljs-keyword">return</span> @</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Aghs.maximize()</p>
+<p>change the canvas to fit the viewport</p></div></div><div class="code"><div class="wrapper"><span class="hljs-attribute">Aghs</span>::maximize = <span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span>
+  <span class="hljs-property">@canvas</span>.width = <span class="hljs-built_in">window</span>.innerWidth
+  <span class="hljs-property">@canvas</span>.height = <span class="hljs-built_in">window</span>.innerHeight
+  <span class="hljs-property">@events</span>.trigger <span class="hljs-string">"resize"</span>
+  <span class="hljs-keyword">return</span> @</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Aghs.antialias()</p>
+<p>Sets or reinforces the configured smoothing setting</p></div></div><div class="code"><div class="wrapper"><span class="hljs-attribute">Aghs</span>::antialias = <span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span>
+  <span class="hljs-property">@imageSmoothingEnabled</span>(<span class="hljs-property">@config</span>.smoothing)
+  <span class="hljs-keyword">return</span> @</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Aghs.settings()</p>
+<p>Quick-apply a new configuration</p></div></div><div class="code"><div class="wrapper"><span class="hljs-attribute">Aghs</span>::settings = <span class="hljs-function"><span class="hljs-params">(config = {})</span> -&gt;</span>
+  extend <span class="hljs-property">@config</span>, config
+  <span class="hljs-property">@screen</span>()
+  <span class="hljs-keyword">if</span> <span class="hljs-property">@config</span>.fullscreen
+    <span class="hljs-property">@maximize</span>()
+  <span class="hljs-keyword">else</span>
+    <span class="hljs-property">@resize</span>(<span class="hljs-property">@config</span>.width, <span class="hljs-property">@config</span>.height)
+  
+  <span class="hljs-property">@scale</span>(<span class="hljs-property">@config</span>.scale, <span class="hljs-property">@config</span>.scale)
+  <span class="hljs-property">@antialias</span>()
+  <span class="hljs-keyword">return</span> @</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Aghs.layer()
+Switch to another canvas and context</p></div></div><div class="code"><div class="wrapper"><span class="hljs-attribute">Aghs</span>::layer = <span class="hljs-function"><span class="hljs-params">(name, width, height = <span class="hljs-property">@config</span>.height)</span> -&gt;</span>
+  
+  width = <span class="hljs-property">@config</span>.width <span class="hljs-keyword">unless</span> width?
+  height = <span class="hljs-property">@config</span>.height <span class="hljs-keyword">unless</span> height?
+  
+  <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> name <span class="hljs-keyword">or</span> name <span class="hljs-keyword">is</span> <span class="hljs-string">"screen"</span>
+    <span class="hljs-property">@context</span> = <span class="hljs-property">@_</span>
+    <span class="hljs-property">@currentLayer</span> = <span class="hljs-string">"screen"</span>
+    <span class="hljs-keyword">return</span> @
+  
+  <span class="hljs-property">@currentLayer</span> = name
+  
+  <span class="hljs-keyword">unless</span> <span class="hljs-property">@layers</span>[name] <span class="hljs-comment"># create a new layer</span>
+    canvas = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">"canvas"</span>)
+    canvas.width = width
+    canvas.height = height
+    context = canvas.getContext <span class="hljs-string">"2d"</span>
+    <span class="hljs-property">@layers</span>[name] = {canvas, context}
+    <span class="hljs-property">@context</span> = <span class="hljs-property">@layers</span>[name].context
+  <span class="hljs-keyword">else</span>
+    <span class="hljs-property">@context</span> = <span class="hljs-property">@layers</span>[name].context
+  <span class="hljs-keyword">return</span> @</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Aghs.screen</p>
+<p>a shorthand for switching to the primary canvas</p></div></div><div class="code"><div class="wrapper"><span class="hljs-attribute">Aghs</span>::screen = <span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span> <span class="hljs-keyword">return</span> <span class="hljs-property">@layer</span>(<span class="hljs-string">"screen"</span>)</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Aghs.draw()</p>
+<p>retrieve the current layer as imagedata and draw it on the primary canvas</p></div></div><div class="code"><div class="wrapper"><span class="hljs-attribute">Aghs</span>::draw = <span class="hljs-function"><span class="hljs-params">(source = {x: <span class="hljs-number">0</span>, y: <span class="hljs-number">0</span>}, target = {x: <span class="hljs-number">0</span>, y: <span class="hljs-number">0</span>})</span> -&gt;</span>
+  
+  layer = <span class="hljs-property">@layers</span>[<span class="hljs-property">@currentLayer</span>]
+  
+  <span class="hljs-keyword">unless</span> target.layer
+    target.layer = <span class="hljs-property">@_</span>
+  <span class="hljs-keyword">else</span>
+    <span class="hljs-keyword">if</span> <span class="hljs-property">@layers</span>[target.layer]
+      target.layer = <span class="hljs-property">@layers</span>[target.layer].context
+  
+  <span class="hljs-keyword">unless</span> source.width
+    source.width = layer.canvas.width
+  
+  <span class="hljs-keyword">unless</span> source.height
+    source.height = layer.canvas.height
+  
+  data = <span class="hljs-property">@context</span>.getImageData(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, source.width, source.height)
+  target.layer.putImageData(data, target.x, target.y)
+  
+  <span class="hljs-keyword">return</span> @</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Aghs.resize()</p>
+<p>changes the size of the current context&#39;s canvas</p></div></div><div class="code"><div class="wrapper"><span class="hljs-attribute">Aghs</span>::resize = <span class="hljs-function"><span class="hljs-params">(width, height, allLayers = <span class="hljs-literal">false</span>)</span> -&gt;</span>
+  
+  w = width <span class="hljs-keyword">or</span> <span class="hljs-property">@config</span>.width
+  h = height <span class="hljs-keyword">or</span> <span class="hljs-property">@config</span>.height
+<span class="hljs-function">  
+  <span class="hljs-title">cacheResizeAndRender</span> = <span class="hljs-params">(layer)</span> -&gt;</span>
+    data = layer.context.getImageData(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, w, h)
+    layer.canvas.width = w
+    layer.canvas.height = h
+    layer.context.putImageData(data, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>)
+  
+  <span class="hljs-keyword">if</span> allLayers 
+    cacheResizeAndRender(layer) <span class="hljs-keyword">for</span> name, layer <span class="hljs-keyword">of</span> <span class="hljs-property">@layers</span>
+  <span class="hljs-keyword">else</span> 
+    cacheResizeAndRender(<span class="hljs-property">@layers</span>[<span class="hljs-property">@currentLayer</span>] <span class="hljs-keyword">or</span> <span class="hljs-property">@_</span>)
+    <span class="hljs-property">@events</span>.trigger <span class="hljs-string">"resize"</span>
+
+  <span class="hljs-keyword">return</span> @</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Aghs.polygon()</p>
+<p>Draw a polygonal path from a matrix</p></div></div><div class="code"><div class="wrapper"><span class="hljs-attribute">Aghs</span>::polygon = <span class="hljs-function"><span class="hljs-params">(data)</span> -&gt;</span>
+  
+  <span class="hljs-property">@beginPath</span>()
+  x = data[<span class="hljs-number">0</span>][<span class="hljs-number">0</span>]
+  y = data[<span class="hljs-number">0</span>][<span class="hljs-number">1</span>]
+  <span class="hljs-property">@moveTo</span>(x, y)
+  
+  <span class="hljs-keyword">for</span> datum <span class="hljs-keyword">in</span> data
+    x = datum[<span class="hljs-number">0</span>]
+    y = datum[<span class="hljs-number">1</span>]
+    <span class="hljs-property">@lineTo</span>(x, y)
+    
+  <span class="hljs-keyword">return</span> <span class="hljs-property">@closePath</span>()</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Aghs.triangle()</p>
+<p>shorthand and alternate syntax for creating a triangle path</p></div></div><div class="code"><div class="wrapper"><span class="hljs-attribute">Aghs</span>::triangle = <span class="hljs-function"><span class="hljs-params">(pt1 = {x: <span class="hljs-number">0</span>, y: <span class="hljs-number">0</span>}, pt2 = {x:<span class="hljs-number">0</span>, y:<span class="hljs-number">0</span>}, pt3 = {x:<span class="hljs-number">0</span>, y:<span class="hljs-number">0</span>})</span> -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>if a matrix is passed in</p></div></div><div class="code"><div class="wrapper">  <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> pt1 <span class="hljs-keyword">is</span> <span class="hljs-string">"object"</span> <span class="hljs-keyword">and</span> pt1.length <span class="hljs-keyword">isnt</span> <span class="hljs-literal">undefined</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-property">@polygon</span>(pt1)</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>else do</p></div></div><div class="code"><div class="wrapper">  <span class="hljs-property">@beginPath</span>()
+  <span class="hljs-property">@moveTo</span>(pt1.x, pt1.y)
+  <span class="hljs-property">@lineTo</span>(pt2.x, pt2.y)
+  <span class="hljs-property">@lineTo</span>(pt3.x, pt3.y)
+  <span class="hljs-property">@closePath</span>()
+  <span class="hljs-keyword">return</span> @</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Aghs.align</p>
+<p>OBSOLETE: Use the world.js module for this</p></div></div><div class="code"><div class="wrapper"><span class="hljs-attribute">Aghs</span>::align = <span class="hljs-function"><span class="hljs-params">(x, y)</span> -&gt;</span>
+  <span class="hljs-keyword">return</span> @ <span class="hljs-keyword">if</span> x <span class="hljs-keyword">is</span> <span class="hljs-literal">undefined</span> <span class="hljs-keyword">or</span> x <span class="hljs-keyword">is</span> <span class="hljs-literal">null</span>
+  <span class="hljs-keyword">if</span> y <span class="hljs-keyword">is</span> <span class="hljs-literal">undefined</span>
+    y = x
+  <span class="hljs-property">@translate</span>(<span class="hljs-property">@config</span>.width * x, <span class="hljs-property">@config</span>.height * y)
+  <span class="hljs-keyword">return</span> @</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>alias</p></div></div><div class="code"><div class="wrapper"><span class="hljs-attribute">Aghs</span>::origin = <span class="hljs-attribute">Aghs</span>::align
+
+<span class="hljs-attribute">Aghs</span>::stars = <span class="hljs-function"><span class="hljs-params">(args...)</span> -&gt;</span>
+  <span class="hljs-property">@save</span>()
+  <span class="hljs-keyword">return</span> <span class="hljs-property">@tars</span>.apply(@, args)
+  
+<span class="hljs-attribute">Aghs</span>::tars = <span class="hljs-function"><span class="hljs-params">(x = <span class="hljs-number">0</span>, y = <span class="hljs-number">0</span>, alignX = <span class="hljs-number">0</span>, alignY = <span class="hljs-number">0</span>, rotation = <span class="hljs-number">0</span>, scale = <span class="hljs-number">1</span>)</span> -&gt;</span>
+  <span class="hljs-property">@translate</span> x, y
+  .align alignX, alignY
+  .rotate(rotation)
+  .scale(scale, scale)
+  <span class="hljs-keyword">return</span> @
+
+<span class="hljs-attribute">Aghs</span>::<span class="hljs-keyword">do</span> = <span class="hljs-function"><span class="hljs-params">(actions...)</span> -&gt;</span>
+  
+  <span class="hljs-property">@save</span>()
+  actions[<span class="hljs-number">0</span>]()
+  <span class="hljs-keyword">if</span> actions.length &gt; <span class="hljs-number">1</span>
+    action() <span class="hljs-keyword">for</span> action <span class="hljs-keyword">in</span> actions
+  <span class="hljs-property">@restore</span>()
+  <span class="hljs-keyword">return</span> @
+
+<span class="hljs-attribute">Aghs</span>::clear = <span class="hljs-function"><span class="hljs-params">(fill = <span class="hljs-string">"#fff"</span>)</span> -&gt;</span>
+  <span class="hljs-keyword">return</span> <span class="hljs-property">@fillStyle</span>(fill).fillRect(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-property">@config</span>.width, <span class="hljs-property">@config</span>.height)
+
+<span class="hljs-attribute">Aghs</span>::fillWith = <span class="hljs-function"><span class="hljs-params">(color = <span class="hljs-string">"#000"</span>)</span> -&gt;</span>
+  <span class="hljs-keyword">return</span> <span class="hljs-property">@fillStyle</span>(color).fill()
+
+
+
+<span class="hljs-built_in">module</span>.exports = Aghs</div></div></div></div></body></html>

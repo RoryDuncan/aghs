@@ -7,22 +7,19 @@ EventEmitter = require "./events.coffee"
 noop = utils.noop
 chain = utils.chain
 
-# config = {}
 
-# Aghs Object
-# 
-### 
 
-@parem:
-  options = 
-    fullscreen: true
-    width: <viewport width>
-    height <viewport height>
-    frameskip: true
-    smoothing: false
-    scale: 1
+# Aghs Namespace Object
+# Parameter: option `Object
 
-###
+#  param:
+#   options = 
+#     fullscreen: true
+#     width: <viewport width>
+#     height <viewport height>
+#     frameskip: true
+#     smoothing: false
+#     scale: 1
 
 Aghs = (options = {}) ->
   

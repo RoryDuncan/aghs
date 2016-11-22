@@ -1,13 +1,13 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var Aghs, StateMachine, World, app, utils;
 
-utils = require("./src/utils.coffee");
+utils = require("./src/core/utils.coffee");
 
-World = require("./src/world.coffee");
+World = require("./src/plugins/world.coffee");
 
-StateMachine = require("./src/state.coffee");
+StateMachine = require("./src/plugins/state.coffee");
 
-Aghs = require("./src/aghs.coffee");
+Aghs = require("./src/core/aghs.coffee");
 
 app = new Aghs();
 
@@ -23,7 +23,7 @@ window.Aghs = function() {
 
 module.exports = app;
 
-},{"./src/aghs.coffee":3,"./src/state.coffee":5,"./src/utils.coffee":6,"./src/world.coffee":7}],2:[function(require,module,exports){
+},{"./src/core/aghs.coffee":3,"./src/core/utils.coffee":5,"./src/plugins/state.coffee":6,"./src/plugins/world.coffee":7}],2:[function(require,module,exports){
 'use strict';
 
 var hasOwn = Object.prototype.hasOwnProperty;
@@ -124,19 +124,6 @@ EventEmitter = require("./events.coffee");
 noop = utils.noop;
 
 chain = utils.chain;
-
-
-/* 
-
-@parem:
-  options = 
-    fullscreen: true
-    width: <viewport width>
-    height <viewport height>
-    frameskip: true
-    smoothing: false
-    scale: 1
- */
 
 Aghs = function(options) {
   var canvas, config, context, that;
@@ -629,7 +616,7 @@ Aghs.prototype.fillWith = function(color) {
 
 module.exports = Aghs;
 
-},{"./events.coffee":4,"./utils.coffee":6,"extend":2}],4:[function(require,module,exports){
+},{"./events.coffee":4,"./utils.coffee":5,"extend":2}],4:[function(require,module,exports){
 var EventEmitter,
   slice = [].slice;
 
@@ -710,11 +697,67 @@ EventEmitter.prototype.disable = function(event) {
 module.exports = EventEmitter;
 
 },{}],5:[function(require,module,exports){
+var chain, defer, noop, throttle,
+  slice = [].slice;
+
+noop = function() {};
+
+defer = function(fn) {
+  return setTimeout(fn, 17);
+};
+
+throttle = function(func, delay, ctx, returnValue) {
+  var lastCalled, now;
+  if (func == null) {
+    func = null;
+  }
+  if (delay == null) {
+    delay = 250;
+  }
+  if (ctx == null) {
+    ctx = null;
+  }
+  if (returnValue == null) {
+    returnValue = null;
+  }
+  if (!func) {
+    return;
+  }
+  lastCalled = performance.now();
+  now = null;
+  return function() {
+    var args;
+    args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    if ((lastCalled + delay) > (now = performance.now())) {
+      return returnValue;
+    }
+    lastCalled = now;
+    return func.apply(ctx, args);
+  };
+};
+
+chain = function(wrapper, host, func) {
+  return function() {
+    var args;
+    args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+    func.apply(host, args);
+    return wrapper;
+  };
+};
+
+module.exports = {
+  chain: chain,
+  noop: noop,
+  defer: defer,
+  throttle: throttle
+};
+
+},{}],6:[function(require,module,exports){
 var State, StateMachine, events, extend, utils;
 
 extend = require("extend");
 
-utils = require("./utils.coffee");
+utils = require("../core/utils.coffee");
 
 events = {
   "state:init": function() {
@@ -879,66 +922,10 @@ StateMachine.prototype.proxy = function() {
 
 module.exports = StateMachine;
 
-},{"./utils.coffee":6,"extend":2}],6:[function(require,module,exports){
-var chain, defer, noop, throttle,
-  slice = [].slice;
-
-noop = function() {};
-
-defer = function(fn) {
-  return setTimeout(fn, 17);
-};
-
-throttle = function(func, delay, ctx, returnValue) {
-  var lastCalled, now;
-  if (func == null) {
-    func = null;
-  }
-  if (delay == null) {
-    delay = 250;
-  }
-  if (ctx == null) {
-    ctx = null;
-  }
-  if (returnValue == null) {
-    returnValue = null;
-  }
-  if (!func) {
-    return;
-  }
-  lastCalled = performance.now();
-  now = null;
-  return function() {
-    var args;
-    args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-    if ((lastCalled + delay) > (now = performance.now())) {
-      return returnValue;
-    }
-    lastCalled = now;
-    return func.apply(ctx, args);
-  };
-};
-
-chain = function(wrapper, host, func) {
-  return function() {
-    var args;
-    args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-    func.apply(host, args);
-    return wrapper;
-  };
-};
-
-module.exports = {
-  chain: chain,
-  noop: noop,
-  defer: defer,
-  throttle: throttle
-};
-
-},{}],7:[function(require,module,exports){
+},{"../core/utils.coffee":5,"extend":2}],7:[function(require,module,exports){
 var World, location, utils;
 
-utils = require("./utils.coffee");
+utils = require("../core/utils.coffee");
 
 location = function(world, _x, _y) {
   var offset, origin, x, y;
@@ -1188,4 +1175,4 @@ World.prototype.drawImage = function(image) {
 
 module.exports = World;
 
-},{"./utils.coffee":6}]},{},[1]);
+},{"../core/utils.coffee":5}]},{},[1]);
