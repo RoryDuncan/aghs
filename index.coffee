@@ -1,4 +1,7 @@
-
+#
+# This file instantiates our framework,
+# then connects all of our plugins together
+#
 
 # module requires
 utils         = require "./src/core/utils.coffee"

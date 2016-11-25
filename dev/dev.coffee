@@ -1,3 +1,8 @@
+# the error to display if window.Aghs is undefined.
+errorMessage = "index.js may be missing. Make sure to run 'npm run dev' to begin development." 
+return console.alert(errorMessage) unless window.Aghs
+
+# begin dev below
 
 app = window.Aghs()
 world = app.world
