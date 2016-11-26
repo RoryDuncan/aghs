@@ -12,21 +12,21 @@ StateMachine  = require "./src/plugins/state.coffee"
 Aghs = require "./src/core/aghs.coffee"
 
 # instantiate
-app = new Aghs()
+aghs = new Aghs()
 
+# you can now use aghs how you wish
+# in this case, we'll add a few modules and then attach to the window object:
 
-# modules
-app.module "world", new World(app)
-app.module "utils", utils
-app.module "state", new StateMachine(app).proxy
+# the modules
+aghs.module "world", new World(aghs)
+aghs.module "utils", utils
+aghs.module "state", new StateMachine(aghs).proxy
 
-
-
-
+# Add window accessibility.
 window.Aghs = () -> 
-  return app
+  return aghs
 
 
 
 
-module.exports = app
+module.exports = aghs
