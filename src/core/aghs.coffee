@@ -43,12 +43,19 @@ Aghs = (options = {}) ->
   @extendContext() unless options.wrapContext is false
   
   # begin readiness detection
-  document.onreadystatechange = () ->
-    if document.readyState is "complete"
-      utils.defer () ->
-        that.isReady = true
-        that.events.trigger "ready"
+  triggerReady = () ->
+    utils.defer () ->
+      that.isReady = true
+      that.events.trigger "ready"
+    return
   
+  # if already ready..
+  if document.readyState is "complete" 
+    triggerReady()
+  else # wait for readiness
+    document.onreadystatechange = () ->
+      triggerReady() if document.readyState is "complete"
+
   # layers, modules
   @__attached = {};
   @currentLayer = "screen";
