@@ -36,6 +36,7 @@ Aghs = (options = {}) ->
 
   @isReady = false
   @canvas = canvas
+  @modules = []
   @module("events", new EventEmitter())
   @context = @_ = context = canvas.getContext "2d"
   # only do on instantiation
@@ -89,6 +90,8 @@ Aghs = (options = {}) ->
 # Add a module to the Aghs object
 Aghs::module = (name, obj) ->
   throw new Error "Missing module parameter 1 or parameter 2" unless name and obj
+  throw new Error "Module Exists: #{name} already exists." if @name?
+  @modules.push name
   @[name] = obj
   return @
 
