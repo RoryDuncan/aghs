@@ -115,12 +115,14 @@ Aghs::chain = (func, hasReturnValue) ->
     func.apply(source.context, args)
     return source
 
-# Aghs
+# Aghs.chainingExceptions
 #
 # these functions have meaningful return values (don't chain them)
 Aghs::chainingExceptions = {
   "getImageData",
-  "createImageData"
+  "createImageData",
+  "isPointInStroke",
+  "isPointInPath"
 }
 
 # Aghs.extendContext
@@ -206,7 +208,6 @@ Aghs::start = () ->
       time.elapsed -= time.delta
     else
       @events.trigger "prerender", time
-      @render.call(@, time)
       @events.trigger "render", time
     time.lastCalled = _now
     @events.trigger "postrender", time
@@ -227,19 +228,25 @@ Aghs::stop = () ->
   @running = false
   return @
 
+
+# Aghs.step
 #
+Aghs::step = (step) ->
+  @events.on "step", step if typeof step is "function"
+  return @
+    
+
+# Aghs.render
 #
 Aghs::render = (render) ->
-  if typeof render is "function"
-    @render = render 
-  else throw new Error "Render function is not set."
-
+  @events.on "render", render if typeof render is "function"
   return @
+    
 
 # Aghs.attach
 #
 # Add an object that has a step and/or render function to Aghs's step and/or render function
-Aghs::attach = (obj, modulename) ->
+Aghs::attach = (modulename, obj) ->
   return @ unless obj
   name = modulename or Object.getPrototypeOf(obj).constructor.name
   @__attached[name] = obj
@@ -293,7 +300,7 @@ Aghs::settings = (config = {}) ->
 # Aghs.layer()
 # Switch to another canvas and context
 #
-Aghs::layer = (name, width, height = @config.height) ->
+Aghs::layer = (name, width, height) ->
   
   width = @config.width unless width?
   height = @config.height unless height?
@@ -310,7 +317,7 @@ Aghs::layer = (name, width, height = @config.height) ->
     canvas.width = width
     canvas.height = height
     context = canvas.getContext "2d"
-    @layers[name] = {canvas, context}
+    @layers[name] = {name, canvas, context}
     @context = @layers[name].context
   else
     @context = @layers[name].context
@@ -370,19 +377,21 @@ Aghs::resize = (width, height, allLayers = false) ->
 
 # Aghs.polygon()
 #
-# Draw a polygonal path from a matrix
-Aghs::polygon = (data) ->
+# Draw a polygonal path from a a chain of coordinates
+Aghs::polygon = (points = []) ->
   
+  unless points.length > 0 
+    console.warn "Missing Parameter 1 in Aghs.polygon"
+    return @ # do nothing
+  
+  
+  # init path, then move to the starting point
   @beginPath()
-  x = data[0][0]
-  y = data[0][1]
-  @moveTo(x, y)
-  
-  for datum in data
-    x = datum[0]
-    y = datum[1]
-    @lineTo(x, y)
-    
+  @moveTo(points[0].x, points[0].y)
+  # lineTo all points
+  points.forEach (pt) -> @lineTo(pt.x, pt.y)
+  # closePath automatically closes returns from the last point to the first one
+  # so yay to that
   return @closePath()
 
 # Aghs.triangle()
@@ -400,43 +409,28 @@ Aghs::triangle = (pt1 = {x: 0, y: 0}, pt2 = {x:0, y:0}, pt3 = {x:0, y:0}) ->
   @closePath()
   return @
 
-# Aghs.align
-#
-# OBSOLETE: Use the world.js module for this
-Aghs::align = (x, y) ->
-  return @ if x is undefined or x is null
-  if y is undefined
-    y = x
-  @translate(@config.width * x, @config.height * y)
-  return @
 
-#
-# alias
-Aghs::origin = Aghs::align
-
-#
-#
-Aghs::stars = (args...) ->
+# Aghs.strs()
+# save, translate, rotate, scale!
+Aghs::strs = (args...) ->
   @save()
   return @tars.apply(@, args)
   
-#
-#
-Aghs::tars = (x = 0, y = 0, alignX = 0, alignY = 0, rotation = 0, scale = 1) ->
+# Aghs.tars
+# Translate, rotate, scale!
+Aghs::trs = (x = 0, y = 0, rotation = 0, scale = 1) ->
   @translate x, y
-  .align alignX, alignY
   .rotate(rotation)
   .scale(scale, scale)
   return @
 
-#
-#
+
+# Aghs.do()
+# Execute a fn or set of fn's in between a save and restore.
 Aghs::do = (actions...) ->
   
   @save()
-  actions[0]()
-  if actions.length > 1
-    action() for action in actions
+  action() for action in actions
   @restore()
   return @
 
@@ -449,6 +443,11 @@ Aghs::clear = (fill = "#fff") ->
 #
 Aghs::fillWith = (color = "#000") ->
   return @fillStyle(color).fill()
+  
+#
+#
+Aghs::strokeWith = (color = "#000") ->
+  return @strokeStyle(color).stroke()
 
 
 

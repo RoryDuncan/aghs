@@ -1,5 +1,5 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var Aghs, StateMachine, World, app, utils;
+var Aghs, StateMachine, World, aghs, utils;
 
 utils = require("./src/core/utils.coffee");
 
@@ -9,19 +9,19 @@ StateMachine = require("./src/plugins/state.coffee");
 
 Aghs = require("./src/core/aghs.coffee");
 
-app = new Aghs();
+aghs = new Aghs();
 
-app.module("world", new World(app));
+aghs.module("world", new World(aghs));
 
-app.module("utils", utils);
+aghs.module("utils", utils);
 
-app.module("state", new StateMachine(app).proxy);
+aghs.module("state", new StateMachine(aghs).proxy);
 
 window.Aghs = function() {
-  return app;
+  return aghs;
 };
 
-module.exports = app;
+module.exports = aghs;
 
 },{"./src/core/aghs.coffee":3,"./src/core/utils.coffee":5,"./src/plugins/state.coffee":6,"./src/plugins/world.coffee":7}],2:[function(require,module,exports){
 'use strict';
@@ -125,21 +125,8 @@ noop = utils.noop;
 
 chain = utils.chain;
 
-
-/* 
-
-@parem:
-  options = 
-    fullscreen: true
-    width: <viewport width>
-    height <viewport height>
-    frameskip: true
-    smoothing: false
-    scale: 1
- */
-
 Aghs = function(options) {
-  var canvas, config, context, that;
+  var canvas, config, context, that, triggerReady;
   if (options == null) {
     options = {};
   }
@@ -155,19 +142,27 @@ Aghs = function(options) {
   }
   this.isReady = false;
   this.canvas = canvas;
+  this.modules = [];
   this.module("events", new EventEmitter());
   this.context = this._ = context = canvas.getContext("2d");
   if (options.wrapContext !== false) {
     this.extendContext();
   }
-  document.onreadystatechange = function() {
-    if (document.readyState === "complete") {
-      return utils.defer(function() {
-        that.isReady = true;
-        return that.events.trigger("ready");
-      });
-    }
+  triggerReady = function() {
+    utils.defer(function() {
+      that.isReady = true;
+      return that.events.trigger("ready");
+    });
   };
+  if (document.readyState === "complete") {
+    triggerReady();
+  } else {
+    document.onreadystatechange = function() {
+      if (document.readyState === "complete") {
+        return triggerReady();
+      }
+    };
+  }
   this.__attached = {};
   this.currentLayer = "screen";
   this.layers = {
@@ -211,6 +206,10 @@ Aghs.prototype.module = function(name, obj) {
   if (!(name && obj)) {
     throw new Error("Missing module parameter 1 or parameter 2");
   }
+  if (this.name != null) {
+    throw new Error("Module Exists: " + name + " already exists.");
+  }
+  this.modules.push(name);
   this[name] = obj;
   return this;
 };
@@ -236,7 +235,9 @@ Aghs.prototype.chain = function(func, hasReturnValue) {
 
 Aghs.prototype.chainingExceptions = {
   "getImageData": "getImageData",
-  "createImageData": "createImageData"
+  "createImageData": "createImageData",
+  "isPointInStroke": "isPointInStroke",
+  "isPointInPath": "isPointInPath"
 };
 
 Aghs.prototype.extendContext = function() {
@@ -322,7 +323,6 @@ Aghs.prototype.start = function() {
       time.elapsed -= time.delta;
     } else {
       this.events.trigger("prerender", time);
-      this.render.call(this, time);
       this.events.trigger("render", time);
     }
     time.lastCalled = _now;
@@ -342,16 +342,21 @@ Aghs.prototype.stop = function() {
   return this;
 };
 
-Aghs.prototype.render = function(render) {
-  if (typeof render === "function") {
-    this.render = render;
-  } else {
-    throw new Error("Render function is not set.");
+Aghs.prototype.step = function(step) {
+  if (typeof step === "function") {
+    this.events.on("step", step);
   }
   return this;
 };
 
-Aghs.prototype.attach = function(obj, modulename) {
+Aghs.prototype.render = function(render) {
+  if (typeof render === "function") {
+    this.events.on("render", render);
+  }
+  return this;
+};
+
+Aghs.prototype.attach = function(modulename, obj) {
   var name;
   if (!obj) {
     return this;
@@ -415,9 +420,6 @@ Aghs.prototype.settings = function(config) {
 
 Aghs.prototype.layer = function(name, width, height) {
   var canvas, context;
-  if (height == null) {
-    height = this.config.height;
-  }
   if (width == null) {
     width = this.config.width;
   }
@@ -436,6 +438,7 @@ Aghs.prototype.layer = function(name, width, height) {
     canvas.height = height;
     context = canvas.getContext("2d");
     this.layers[name] = {
+      name: name,
       canvas: canvas,
       context: context
     };
@@ -510,18 +513,19 @@ Aghs.prototype.resize = function(width, height, allLayers) {
   return this;
 };
 
-Aghs.prototype.polygon = function(data) {
-  var datum, i, len, x, y;
-  this.beginPath();
-  x = data[0][0];
-  y = data[0][1];
-  this.moveTo(x, y);
-  for (i = 0, len = data.length; i < len; i++) {
-    datum = data[i];
-    x = datum[0];
-    y = datum[1];
-    this.lineTo(x, y);
+Aghs.prototype.polygon = function(points) {
+  if (points == null) {
+    points = [];
   }
+  if (!(points.length > 0)) {
+    console.warn("Missing Parameter 1 in Aghs.polygon");
+    return this;
+  }
+  this.beginPath();
+  this.moveTo(points[0].x, points[0].y);
+  points.forEach(function(pt) {
+    return this.lineTo(pt.x, pt.y);
+  });
   return this.closePath();
 };
 
@@ -555,38 +559,19 @@ Aghs.prototype.triangle = function(pt1, pt2, pt3) {
   return this;
 };
 
-Aghs.prototype.align = function(x, y) {
-  if (x === void 0 || x === null) {
-    return this;
-  }
-  if (y === void 0) {
-    y = x;
-  }
-  this.translate(this.config.width * x, this.config.height * y);
-  return this;
-};
-
-Aghs.prototype.origin = Aghs.prototype.align;
-
-Aghs.prototype.stars = function() {
+Aghs.prototype.strs = function() {
   var args;
   args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
   this.save();
   return this.tars.apply(this, args);
 };
 
-Aghs.prototype.tars = function(x, y, alignX, alignY, rotation, scale) {
+Aghs.prototype.trs = function(x, y, rotation, scale) {
   if (x == null) {
     x = 0;
   }
   if (y == null) {
     y = 0;
-  }
-  if (alignX == null) {
-    alignX = 0;
-  }
-  if (alignY == null) {
-    alignY = 0;
   }
   if (rotation == null) {
     rotation = 0;
@@ -594,7 +579,7 @@ Aghs.prototype.tars = function(x, y, alignX, alignY, rotation, scale) {
   if (scale == null) {
     scale = 1;
   }
-  this.translate(x, y).align(alignX, alignY).rotate(rotation).scale(scale, scale);
+  this.translate(x, y).rotate(rotation).scale(scale, scale);
   return this;
 };
 
@@ -602,12 +587,9 @@ Aghs.prototype["do"] = function() {
   var action, actions, i, len;
   actions = 1 <= arguments.length ? slice.call(arguments, 0) : [];
   this.save();
-  actions[0]();
-  if (actions.length > 1) {
-    for (i = 0, len = actions.length; i < len; i++) {
-      action = actions[i];
-      action();
-    }
+  for (i = 0, len = actions.length; i < len; i++) {
+    action = actions[i];
+    action();
   }
   this.restore();
   return this;
@@ -625,6 +607,13 @@ Aghs.prototype.fillWith = function(color) {
     color = "#000";
   }
   return this.fillStyle(color).fill();
+};
+
+Aghs.prototype.strokeWith = function(color) {
+  if (color == null) {
+    color = "#000";
+  }
+  return this.strokeStyle(color).stroke();
 };
 
 module.exports = Aghs;
