@@ -1,6 +1,4 @@
-# Aghs.js
-
-## About
+# About
 
 Aghs.js is my personal game engine that I'm developing. Having meddled with others, I was curious of the internal workings.
 It touts a few things, that I personally enjoy:
