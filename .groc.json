@@ -1,0 +1,7 @@
+{
+
+  "glob": ["docs-src/**/*.md", "README.md"],
+  "github": false,
+  "out": "docs"
+
+}

@@ -21,12 +21,12 @@ var build = {
       .pipe(gulp.dest('./bin'));
   },
   
-  documentation: function(){
+  // documentation: function(){
     
-    gulp.src("./docs/**/*.md")
-      .pipe(markdown(markdownConfig))
-      .pipe(gulp.dest('./docs'));
-  },
+  //   gulp.src("./docs/**/*.md")
+  //     .pipe(markdown(markdownConfig))
+  //     .pipe(gulp.dest('./docs'));
+  // },
   
   // live development
   // watches all files and things
@@ -54,5 +54,3 @@ gulp.task('dev', function() {
     build.livedev();
   })
 });
-
-gulp.task('docs', build.documentation)

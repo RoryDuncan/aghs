@@ -1,0 +1,304 @@
+<!DOCTYPE html><html lang="en"><head><title>api</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="api"><meta name="groc-project-path" content="docs-src/api.md"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">docs-src/api.md</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="aghsjs-api">Aghs.js API</h1>
+<h2 id="drawing-api">Drawing API</h2>
+<h3 id="extending-canvasrenderingcontext2d">Extending CanvasRenderingContext2D</h3>
+<p>The following methods are extensions of the <a href="https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D">CanvasRenderingContext2D</a>. The primary difference is that the methods below are chainable, unless they return a meaningful value. Those values are specified.</p>
+<p>You may refer to the excellent <a href="https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D">CanvasRenderingContext2D</a> documentation on Mozilla Developer Network (MDN).</p>
+<h4 id="globalalpha">globalAlpha</h4>
+<h4 id="globalcompositeoperation">globalCompositeOperation</h4>
+<h4 id="filter">filter</h4>
+<h4 id="imagesmoothingenabled">imageSmoothingEnabled</h4>
+<h4 id="imagesmoothingquality">imageSmoothingQuality</h4>
+<h4 id="strokestyle">strokeStyle</h4>
+<h4 id="fillstyle">fillStyle</h4>
+<h4 id="shadowoffsetx">shadowOffsetX</h4>
+<h4 id="shadowoffsety">shadowOffsetY</h4>
+<h4 id="shadowblur">shadowBlur</h4>
+<h4 id="shadowcolor">shadowColor</h4>
+<h4 id="linewidth">lineWidth</h4>
+<h4 id="linecap">lineCap</h4>
+<h4 id="linejoin">lineJoin</h4>
+<h4 id="miterlimit">miterLimit</h4>
+<h4 id="linedashoffset">lineDashOffset</h4>
+<h4 id="font">font</h4>
+<h4 id="textalign">textAlign</h4>
+<h4 id="textbaseline">textBaseline</h4>
+<h4 id="save">save</h4>
+<h4 id="restore">restore</h4>
+<h4 id="scale">scale</h4>
+<h4 id="rotate">rotate</h4>
+<h4 id="translate">translate</h4>
+<h4 id="transform">transform</h4>
+<h4 id="settransform">setTransform</h4>
+<h4 id="resettransform">resetTransform</h4>
+<h4 id="createlineargradient">createLinearGradient</h4>
+<h4 id="createradialgradient">createRadialGradient</h4>
+<h4 id="createpattern">createPattern</h4>
+<h4 id="clearrect">clearRect</h4>
+<h4 id="fillrect">fillRect</h4>
+<h4 id="strokerect">strokeRect</h4>
+<h4 id="beginpath">beginPath</h4>
+<h4 id="fill">fill</h4>
+<h4 id="stroke">stroke</h4>
+<h4 id="drawfocusifneeded">drawFocusIfNeeded</h4>
+<h4 id="clip">clip</h4>
+<h4 id="ispointinpath">isPointInPath</h4>
+<h4 id="ispointinstroke">isPointInStroke</h4>
+<h4 id="filltext">fillText</h4>
+<h4 id="stroketext">strokeText</h4>
+<h4 id="measuretext">measureText</h4>
+<h4 id="drawimage">drawImage</h4>
+<h4 id="createimagedata-non-chainable">createImageData (Non Chainable)</h4>
+<h4 id="getimagedata-non-chainable">getImageData (Non Chainable)</h4>
+<h4 id="putimagedata">putImageData</h4>
+<h4 id="setlinedash">setLineDash</h4>
+<h4 id="closepath">closePath</h4>
+<h4 id="moveto">moveTo</h4>
+<h4 id="lineto">lineTo</h4>
+<h4 id="quadraticcurveto">quadraticCurveTo</h4>
+<h4 id="beziercurveto">bezierCurveTo</h4>
+<h4 id="arcto">arcTo</h4>
+<h4 id="rect">rect</h4>
+<h4 id="arc">arc</h4>
+<h4 id="ellipse">ellipse</h4>
+<h4 id="getcontextattributes-non-chainable">getContextAttributes (Non Chainable)</h4>
+<h4 id="getlinedash-non-chainable">getLineDash (Non Chainable)</h4>
+<hr>
+<h2 id="methods">Methods</h2>
+<p>The following methods are also attached to the Aghs prototype Object.</p>
+<h4 id="aghsclear">Aghs.clear</h4>
+<p>Parameter: <code>String</code> color
+Default: <code>#fff</code>
+Shorthand method for quickly filling the entire drawing context, coined the &#39;screen&#39; with the fill color.</p>
+<h4 id="aghsfillwith">Aghs.fillWith</h4>
+<p>Parameter: <code>String</code> color
+Default: <code>#000000</code>
+Shorthand method for quickly setting <code>Aghs.fillStyle()</code> and then immediately filling.</p>
+<h4 id="aghsstrokewith">Aghs.strokeWith</h4>
+<p>Paramter: <code>String</code> color
+Default: <code>#000000</code>
+Shorthand method for quickly setting <code>Aghs.strokeStyle</code> and then immediately stroking.</p>
+<h4 id="aghsantialias">Aghs.antialias</h4>
+<p>Reinforces the configured <code>imageSmoothingEnabled</code> setting given at Aghs instantiation.
+See <code>Aghs.config.Smoothing</code> for the value that will be set. 
+Used internally when switching between layers. Use this if you&#39;ve changed the setting and want to set imageSmoothing to the current layer&#39;s imageSmoothing value.</p>
+<p><em>This method may be made private in the future.</em></p>
+<h4 id="aghsrender">Aghs.render</h4>
+<p>Parameter: <code>Function</code>
+Quick alias for <code>Aghs.events.on(&quot;render&quot;, &lt;parameter fn&gt;)</code>. Great for prototyping, but using gamestates is a more scalable and manageable affair. </p>
+<h4 id="aghsstep">Aghs.step</h4>
+<p>Parameter: <code>Function</code>
+Quick alias for <code>Aghs.events.on(&quot;step&quot;, &lt;parameter fn&gt;)</code>. Great for prototyping, but using gamestates is a more scalable and manageable affair.</p>
+<h4 id="aghsmodule">Aghs.module</h4>
+<p>Parameters: <code>String</code> name, <code>Object</code> thing
+Adds another object or function to the Aghs namespace. <code>name</code> is the key that will be added.
+moduling allows you to carry the single aghs instantiation as a single, holistic framework, and attach other smaller parts to it with ease.</p>
+<p>Example of adding a module:</p>
+<pre><code class="lang-coffee"><span class="hljs-function"><span class="hljs-title">log</span> = <span class="hljs-params">(a)</span> -&gt;</span> <span class="hljs-built_in">console</span>.log <span class="hljs-string">"log: ${a}"</span>
+aghs = <span class="hljs-keyword">new</span> Aghs(options);
+
+<span class="hljs-comment"># add the module</span>
+aghs.<span class="hljs-built_in">module</span> <span class="hljs-string">"log"</span>, log
+
+<span class="hljs-comment"># ...</span>
+<span class="hljs-comment"># then use it later</span>
+aghs.log <span class="hljs-string">"bang!"</span> <span class="hljs-comment"># "log: bang!"</span></code></pre>
+<p>Example 2:</p>
+<pre><code class="lang-coffee">aghs.<span class="hljs-built_in">module</span> <span class="hljs-string">"lifetimeStats"</span>, {
+  <span class="hljs-attribute">kills</span>: <span class="hljs-number">0</span>,
+  <span class="hljs-attribute">deaths</span>: <span class="hljs-number">0</span>,
+  <span class="hljs-attribute">assists</span>: <span class="hljs-number">0</span>
+}
+
+aghs.lifetimeStats.kills += <span class="hljs-number">1</span></code></pre>
+<p>_Note: Context isn&#39;t controlled or bound, so you can use a bound function for the second parameter freely.</p>
+<p>Example:</p>
+<pre><code class="lang-coffee">_players = players.bind(players)
+aghs.<span class="hljs-built_in">module</span> <span class="hljs-string">"players"</span>, _players</code></pre>
+<h4 id="aghschain">Aghs.chain</h4>
+<p>Parameters: <code>Function</code> func, <code>Boolean</code> hasReturnValue
+Returns a function that will always return the aghs instance—or whatever context it is called in.</p>
+<p><em>Note: This function is used internally, it may have access removed later</em></p>
+<p>Example:</p>
+<pre><code class="lang-coffee"><span class="hljs-function">
+<span class="hljs-title">openGameMenu</span> = <span class="hljs-params">()</span> -&gt;</span> 
+  <span class="hljs-comment"># made up things..</span>
+  game.pause()
+  menu.open()
+
+openGameMenu aghs.chain openGameMenu
+
+openGameMenu().clear(<span class="hljs-string">"#ccc"</span>).polygon(poly).fill()</code></pre>
+<h4 id="aghsextendcontext">Aghs.extendContext</h4>
+<p>Internal function used for extending <code>CanvasRenderingContext2D</code>. Not recommended to be called.
+This function will be remove from access in a future version.</p>
+<h4 id="aghsready">Aghs.ready</h4>
+<p>Parameter: <code>Function</code> callback
+Calls the argument function when the document, canvas, and aghs are all ready.
+If <code>Aghs.ready</code> is called after <code>Aghs.isReady</code> is already <code>true</code>, the argument function is called immediately, so you can be certain the function will always be executed.</p>
+<p>Example:
+A common usage would be to start aghs as soon as it is ready:</p>
+<pre><code class="lang-coffee">
+aghs.ready () -&gt;
+  aghs.start()</code></pre>
+<p>Each subsequent call to ready internally uses <code>Aghs.events.on(&quot;ready&quot;, &lt;parameter fn&gt;)</code>, so they will all queue and be executed on-ready.</p>
+<h4 id="aghsstart">Aghs.start</h4>
+<p>Begins the rendering loop. Don&#39;t forget to call this!</p>
+<h4 id="aghsstop">Aghs.stop</h4>
+<p>Stops the aghs step/render loop.
+Calling <code>Aghs.start()</code> again is like a soft-reset to the loop&#39;s internal clock, but other aghs properties may not be reset to their initial state.</p>
+<h4 id="aghsattach">Aghs.attach</h4>
+<p>Paramters: <code>String</code> name, <code>Object</code> module
+For modules that need to hook into the step or render events. These modules aren&#39;t added to the Aghs namespace, instead they&#39;re kept track of internally via <code>Aghs.__attached</code>. These modules can be more temporary, and can be added or removed using <code>.attach()</code> / <code>.unattach()</code></p>
+<h4 id="aghsunattach">Aghs.unattach</h4>
+<p>Parameter: <code>String</code> name
+Unbinds a module previously attached using <code>Aghs.attach()</code>, matching the paramter <code>name</code>. </p>
+<h4 id="aghsmaximize">Aghs.maximize</h4>
+<p>Sets the canvas and configuration so that it fills the entire page.</p>
+<h4 id="aghssettings">Aghs.settings</h4>
+<p>Parameter: <code>Object</code> config
+Update the current configuration with any value in the <code>config</code> parameter, and then update the aghs and canvas states to match.</p>
+<h4 id="aghslayer">Aghs.layer</h4>
+<p>Parameters: <code>String</code> name, 
+Optional Paramters:<code>Number</code> width, <code>Number</code> height - both inherited from Aghs.config if not given.</p>
+<p>Creates or switches to a new layer matching layer <code>name</code>.
+When creating:</p>
+<ol>
+<li>Creates a new canvas.</li>
+<li>Creates a new context from the new canvas; Sets to Aghs.context</li>
+<li>saves the canvas, context, and name as a new <em>layer</em>.</li>
+</ol>
+<p>Calling <code>Aghs.layer</code> with a name that already exists will switch to that layer.</p>
+<p>There is only one layer by default, named <code>screen</code>, which is the drawing layer.</p>
+<h4 id="aghsscreen">Aghs.screen</h4>
+<p>Shorthand for quickly switching to the drawing layer.</p>
+<h4 id="aghsdraw">Aghs.draw</h4>
+<p>Optional Parameters: </p>
+<ul>
+<li><code>Object</code> source = {x: 0, y: 0, width: layer.width, height: layer.height}</li>
+<li><code>Object</code> target = {x: 0, y: 0}</li>
+<li>Retrieves the current layer as imagedata and then draws it on the primary drawing canvas (layer <code>screen</code>)</li>
+</ul>
+<h4 id="aghsresize">Aghs.resize</h4>
+<p>Parameters: <code>Number</code> width, <code>Number</code> height, <code>Boolean</code> allLayers (defaults to false)
+Change&#39;s the current layer&#39;s width and height. If <code>allLayers</code> parameter is true it will resize all layers, including the <code>screen</code> layer.</p>
+<h4 id="aghspolygon">Aghs.polygon</h4>
+<p>Parameter: <code>Array</code> points
+Creates a CanvasRenderingContext2D path from an array of coordinates. The last point in the chain is then connected back to the first point, making the polygonal path.</p>
+<p>Example:</p>
+<pre><code>poly = [
+  { x: 18,   y: 90 },
+  { x: 50,   y: 90 },
+  { x: 103,  y: 60 },
+  { x: 216,  y: 60 } 
+]</code></pre>
+<p>Because Aghs utilizes chaining, you can then call your drawing methods afterwords after <code>Aghs.polygon()</code>.
+<em>Using the <code>poly</code> variable from the snippet above</em>:</p>
+<pre><code>aghs.polygon(poly).strokeWith(&quot;black&quot;).fillWith(&quot;green&quot;)</code></pre>
+<h4 id="aghstriangle">Aghs.triangle</h4>
+<p>Shorthand syntax for a 3 point polygon. See <code>Aghs.polygon()</code>.</p>
+<h4 id="aghsstrs">Aghs.strs</h4>
+<p>Performs a <code>s</code>ave, <code>t</code>ranslate, <code>r</code>otate, and <code>s</code>cale.
+Shorthand initialism and technique inspired by<a href="http://canvasquery.com/stars">CanvasQuery.js&#39;s STARS</a>.</p>
+<p>The difference being that Aghs does not use an internal align property, so it is without it.</p>
+<h4 id="aghstrs">Aghs.trs</h4>
+<p>Parameters: <code>Like</code>Aghs.strs()<code>, but without the</code>.save()`.</p>
+<h4 id="aghsdo">Aghs.do</h4>
+<p>Do is a way to quickly apply a save and restore around another set of actions.
+Rather than needing to do:</p>
+<pre><code class="lang-coffee">
+  aghs.save()
+  someFunc()
+  someOtherFunc()
+  etcFunc()
+  aghs.restore()</code></pre>
+<p>You can instead use <code>.do()</code>:</p>
+<pre><code class="lang-coffee">aghs.<span class="hljs-keyword">do</span> someFunc, someOtherFunc, etcFunc</code></pre>
+<hr>
+<h2 id="properties">Properties</h2>
+<p>These values are attached to the Aghs object...for now. They&#39;re currently accessible until deemed that they won&#39;t need to be accessed. Essentially: <strong>Access to some or all of these properties may be removed in later versions of Aghs</strong>.</p>
+<h4 id="aghsisready">Aghs.isReady</h4>
+<p>Type: <code>Boolean</code>
+Indicates if the Aghs instance is ready. Consequently, it also means that the <code>canvas</code> and <code>document</code> are also ready.
+If you wish to do something after Aghs is ready, it&#39;s suggested you use the <code>ready</code> event.</p>
+<h4 id="aghsrunning">Aghs.running</h4>
+<p>Type: <code>Boolean</code>
+Determines if Aghs should continue looping, or calling it&#39;s render and step loops.
+Rather than setting to false to stop the loop, you should use <code>Aghs.stop()</code> so other systems can gracefully stop.</p>
+<h4 id="aghsmodules">Aghs.modules</h4>
+<p>Type: <code>Array</code>
+List of the names of all modules currently added to the Aghs instance via <code>Aghs.module</code>.</p>
+<h4 id="aghscanvas">Aghs.canvas</h4>
+<p>Type: <code>HTMLCanvasElement</code>
+A reference to the current layer&#39;s canvas context.</p>
+<h4 id="aghscontext">Aghs.context</h4>
+<p>Type: <code>CanvasRenderingContext2D</code>
+A reference to the currently used layer&#39;s <em>canvas context</em>.
+Useful for referencing, but should not be modified.</p>
+<h4 id="aghs-">Aghs._</h4>
+<p>Type: <code>CanvasRenderingContext2D</code>
+A reference to the primary context (the one located on the DOM). Can be considered the drawing context.</p>
+<h4 id="-frame">__frame</h4>
+<p>Type: <code>Number</code> (integer)
+The current frame count since <code>Aghs.start</code> was called.</p>
+<h4 id="-attached">__attached</h4>
+<p>Type: <code>Object</code>
+Reference of all currently <em>attached</em> modules.
+Attached modules hook into the <code>render</code> or <code>step</code> events of Aghs.</p>
+<h4 id="chainingexceptions">chainingExceptions</h4>
+<p>type: <code>Object</code>
+A reference object used to specify which values should not be chained for the Drawing API.
+If you wish to specify chaining exceptions, do them before Aghs instantiation.</p>
+<h4 id="layers">layers</h4>
+<p>Type: <code>Object</code>
+A reference object containing all temporary canvases and contexts, coined &quot;layers&quot;. See <code>Aghs.Layer()</code> for more information.</p>
+<h4 id="currentlayer">currentLayer</h4>
+<p>Type: <code>String</code>
+A reference to the current layer. At Aghs instantiation it will be &quot;screen&quot;.
+<em>For advanced usage only:</em> <code>currentLayer</code> can be used to get the current layer, as seen below:</p>
+<pre><code class="lang-coffee">layer = <span class="hljs-property">@layers</span>[<span class="hljs-property">@currentLayer</span>]
+<span class="hljs-comment"># layer = {HTMLCanvasElement canvas, string name, CanvasRenderingContext2D context}</span></code></pre>
+<h4 id="config">config</h4>
+<p>Type: <code>Object</code>
+A reference to the configuration of the Aghs framework, including many Aghs instantiation arguments.</p>
+<p>The keys and their default values are below:</p>
+<h5 id="fullscreen">fullscreen</h5>
+<p>Type: <code>Boolean</code>
+Default: <code>true</code>
+Configuration value that determines if the canvas&#39;s width and height are maximized inside the window.</p>
+<h5 id="wrappedcontext">wrappedContext</h5>
+<p>Type: <code>Boolean</code>
+Default: <code>true</code>
+Determines if the CanvasRenderingContext2D methods are chained and extended onto the Aghs&#39; instance.</p>
+<h5 id="smoothing">smoothing</h5>
+<p>Type: <code>Boolean</code>
+Default: <code>true</code>
+Determines if <code>imageSmoothing</code> is enabled or disabled across all layers. By browser default, all new contexts are set to <code>imageSmoothing: false</code>.</p>
+<h5 id="width">width</h5>
+<p>Type: <code>Number</code>
+Default: Canvas Width
+The width of the canvas. If <code>Aghs.config.fullscreen</code> is true, it will overwrite this value.</p>
+<h5 id="height">height</h5>
+<p>Type: <code>Number</code>
+Default: Canvas Height
+Same as <code>Aghs.config.height</code>, above.</p>
+<h5 id="scale">scale</h5>
+<p>Type: <code>Number</code>
+Default: 1
+Scale is a multiplier for the values that the canvas uses. Refer to the CanvasRenderingContext2D&#39;s implementation for a better understanding.
+Value that is passed to <code>CanvasRenderingContext2D.scale</code>. Passed as both the x and y value.</p>
+<h5 id="frameskip">frameskip</h5>
+<p>Type: <code>Object</code>
+Contains three keys: <code>count</code>, <code>enabled</code>, and <code>threshold</code>–where:</p>
+<ul>
+<li><code>enabled</code> is whether frameskipping is used. Defaults to true.</li>
+<li><code>count</code>is the total number of frames skipped since <code>Aghs.start()</code> was called.</li>
+<li><code>threshold</code> is the amount milliseconds that is allowed in a single render, else the frame becomes skipped, where no rendering occurs. Defaults to 120ms.</li>
+</ul>
+<hr>
+<h2 id="internals">Internals</h2>
+<h4 id="aghsevents">Aghs.events</h4>
+<p>The events module is the only module used for the Aghs framework that is not readily swappable. It is instantiated within the constructor of the Aghs instance and has a hookable-events that can be utilized.</p>
+<h2 id="plugins">Plugins</h2>
+<h4 id="world">world</h4>
+<h4 id="utils">utils</h4>
+<h4 id="state">state</h4></div></div></div></div></body></html>
