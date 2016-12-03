@@ -25,7 +25,7 @@ var build = {
     
     gulp.src("./docs/**/*.md")
       .pipe(markdown(markdownConfig))
-      .pipe(gulp.dest('./generated-docs'));
+      .pipe(gulp.dest('./docs'));
   },
   
   // live development
@@ -56,6 +56,3 @@ gulp.task('dev', function() {
 });
 
 gulp.task('docs', build.documentation)
-gulp.task('publish', function(){
-  exec("git checkout gh-pages ./generated-docs/")
-})
