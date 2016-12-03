@@ -2,6 +2,15 @@ var gulp = require('gulp');
 var watch = require('gulp-watch');
 var coffee = require('gulp-coffee');
 var coffeeify = require('gulp-coffeeify');
+var exec = require('child_process').exec;
+
+var markdown = require('gulp-markdown');
+var markdownConfig = {
+  gfm: true,
+  tables: true,
+  breaks: true,
+  smartypants: true
+}
 
 var build = {
   
@@ -10,7 +19,14 @@ var build = {
     gulp.src('index.coffee')
       .pipe(coffeeify())
       .pipe(gulp.dest('./bin'));
-  } ,
+  },
+  
+  documentation: function(){
+    
+    gulp.src("./docs/**/*.md")
+      .pipe(markdown(markdownConfig))
+      .pipe(gulp.dest('./generated-docs'));
+  },
   
   // live development
   // watches all files and things
@@ -39,3 +55,7 @@ gulp.task('dev', function() {
   })
 });
 
+gulp.task('docs', build.documentation)
+gulp.task('publish', function(){
+  exec("git checkout gh-pages ./generated-docs/")
+})
