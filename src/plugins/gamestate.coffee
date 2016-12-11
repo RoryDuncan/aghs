@@ -2,7 +2,8 @@
 extend = require "extend"
 utils = require "../core/utils.coffee"
 
-#  triggered event functions
+# a list of events that are related to the game state
+# each game state has it's own independent gamestate events
 events =
   
   "state:init": () ->

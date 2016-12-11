@@ -6,7 +6,7 @@
 # module requires
 utils         = require "./src/core/utils.coffee"
 World         = require "./src/plugins/world.coffee"
-StateMachine  = require "./src/plugins/state.coffee"
+StateMachine  = require "./src/plugins/gamestate.coffee"
 
 # our core wrapper
 Aghs = require "./src/core/aghs.coffee"
