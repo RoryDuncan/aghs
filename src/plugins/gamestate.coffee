@@ -1,35 +1,46 @@
-
 extend = require "extend"
 utils = require "../core/utils.coffee"
 
-# a list of events that are related to the game state
-# each game state has it's own independent gamestate events
+#
+# a list of all handlers for each each event that 
+# a state may have
 events =
   
   "state:init": () ->
+    
     state = @states[@active]
+    state.initialized = true
     that = @
     
+    # we want to be certain that 'done' is only called once
+    asyncDone = false
     done = () ->
-      state.isReady = true
+      return if asyncDone
+      state.isReady = asyncDone = true
       that.events.trigger "state:ready"
-      
-    state.initialized = true
+    
     state.init.call(state, done)
+    # synchronous version
+    done() unless asyncDone
+    
     
   "step": (time) ->
+    return if @active is null
     state = @states[@active]
     state.step.call(state, time)
     
   "prerender": (time) ->
+    return if @active is null
     state = @states[@active]
     state.prerender.call(state, time)
     
   "render": (time) ->
+    return if @active is null
     state = @states[@active]
     state.render.call(state, time)
 
   "postrender": (time) ->
+    return if @active is null
     state = @states[@active]
     state.postrender.call(state, time)
     
@@ -43,19 +54,22 @@ events =
     state.enter.call(state)
     
   "state:leave": () ->
+    return if @active is null
     state = @states[@active]
     state.leave.call(state)
   
   "state:destroy": () ->
+    return if @active is null
     state = @states[@active]
     state.destroy.call(state)
 
 #
+# The state object, created with StateManager::add
 #
-#
-State = (aghs, options = {}) ->
+State = (aghs, @state, options = {}) ->
 
   @name = options.name
+  @isReady = if options.isReady then options.isReady else false
   config = {
     "fullscreen": options.fullscreen
     "width":      options.width
@@ -66,7 +80,6 @@ State = (aghs, options = {}) ->
   }
   extend(@, options)
   @initialized = false
-  @isReady = false
   @config = extend(config, aghs.config)
   
   return @
@@ -87,18 +100,15 @@ State::step       = utils.noop
 # StateMachine
 # Keeps track of state within the aghs app
 #
-StateMachine = (@aghs) ->
+StateMachine = (@aghs, @autostart = true) ->
   @events = @aghs.events
   @states = {}
   @length = 0
   # bind all events
-  @events.on eventname, callback, @ for eventname, callback of events
-  
-  # the state when first initialized
-  emptyState = "empty"
-  @add({name: emptyState})
-  @active = emptyState
-  
+  @events.on(eventname, callback, @) for eventname, callback of events
+  @active = null
+
+  @proxy = @proxy.bind(@)
   return @
 
 # StateMachine.add()
@@ -108,11 +118,13 @@ StateMachine::add = (options = {}) ->
   if not options.name?
     throw new Error "state 'name' is missing from options parameter."
   
-  state = new State(@aghs, options)
+  state = new State(@aghs, @, options)
   @states[state.name] = state
   @length += 1
   
-  @set(name) if length is 1
+  if @length is 1
+    @set(state.name)
+
   return state
   
 
@@ -127,9 +139,11 @@ StateMachine::set = (name) ->
     
     if state.initialized is false
       @events.trigger "state:init"
+      
     if state.isReady
-      @events.trigger "state:ready"
       @events.trigger "state:enter"
+  else
+    console.warn "A GameState with a name of '#{name}' doesn't exist yet"
   return @
   
   
@@ -151,8 +165,9 @@ StateMachine::proxy = () ->
     @set(arguments[0]) 
     return @
   # assume all other cases are state creations
+  @add(arguments[0])
   
-  return @add(arguments[0])
+  return @
 
 
 module.exports = StateMachine
