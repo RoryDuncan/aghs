@@ -1,4 +1,4 @@
-# Aghs.js API
+# API
 
 ## Drawing API
 
