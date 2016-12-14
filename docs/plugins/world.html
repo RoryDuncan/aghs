@@ -1,0 +1,68 @@
+<!DOCTYPE html><html lang="en"><head><title>plugins/world</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../"><meta name="groc-document-path" content="plugins/world"><meta name="groc-project-path" content="docs-src/plugins/world.md"><link rel="stylesheet" type="text/css" media="all" href="../assets/style.css"><script type="text/javascript" src="../assets/behavior.js"></script><body><div id="meta"><div class="file-path">docs-src/plugins/world.md</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="aghs-world-plugin">Aghs World Plugin</h1>
+<p>A gamestate plugin for the Aghs Framework.
+It essentially holds a cartesian coordinate system, and only renders at a specific &#39;view&#39; of the grid.</p>
+<p>Special notes:</p>
+<ul>
+<li>The cartesian grid is near-infinite (as per JS limit on floats.)</li>
+<li>Forces all grid positions to be integers as an act of to enforced simplicity.</li>
+</ul>
+<h1 id="api">API</h1>
+<h2 id="properties">Properties</h2>
+<h3 id="worldorientation">World.orientation</h3>
+<p>A scalar value used for all methods.
+<em>Not all circumstances of changing these values are fully tested.</em></p>
+<h3 id="worldorigin">World.origin</h3>
+<p>The starting position that determines where further calculates the current view. Generally these values should be set once and not changed again.
+When setting these values, also refer to <code>World.type</code> in case a preset exists that will fulfill your requirements.</p>
+<h3 id="worldview">World.view</h3>
+<p>The view can be considered the &#39;camera&#39; of the world. Objects placed on the world will only be on the visible canvas if within the view.</p>
+<p>The view is an object containing the following keys:</p>
+<ul>
+<li><code>x</code></li>
+<li><code>y</code></li>
+<li><code>z</code></li>
+<li><code>perspective</code></li>
+<li><code>width</code></li>
+<li><code>height</code></li>
+</ul>
+<h3 id="worldoffset">World.offset</h3>
+<p>Offset is the distance from the origin that has been calculated, and the inverse distance that the current view is calculated at.</p>
+<p>Offset is an object containing the following keys:</p>
+<ul>
+<li><code>x</code></li>
+<li><code>y</code></li>
+</ul>
+<h3 id="worldtype">World.type</h3>
+<p>String name depicting a preset that controls where the origin positions, offsets, and the like are set as and calculated.</p>
+<p>Defaults to &quot;cartesian&quot;.</p>
+<p>Use <code>World.preset()</code> to change to another type. </p>
+<h2 id="methods">Methods</h2>
+<h3 id="worldviewport">World.viewport()</h3>
+<p>Parameters: <code>int</code> width, <code>int</code> height.</p>
+<p>Sets the <code>World.view</code>&#39;s width and height, as well as the rendering canvas width and height via <code>Aghs.resize</code>.</p>
+<h3 id="worldinview">World.inView()</h3>
+<p>Parameters: <code>int</code> x, <code>int</code> y.</p>
+<p>Checks if the x and y positions are within the world&#39;s view.</p>
+<p>Non-optimized: Does not shortcut logic or calculations.</p>
+<h3 id="worldpreset">World.preset()</h3>
+<p>Parameter: <code>string</code> value</p>
+<p>the <code>value</code> parameter is the name of a <code>World.type</code> that <code>World</code> will be set as.</p>
+<h3 id="worldclean">World.clean()</h3>
+<p>Rounds all view and offset values to be integers, making it so you can expect integer values when working with the <code>World</code> plugin.
+Called after <code>World.move()</code> by default. 
+Uses <code>Math.round</code> for rounding.</p>
+<h3 id="worldmove">World.move()</h3>
+<p>Parameters: <code>int</code> x <code>int</code> y</p>
+<p>Moves the viewport by the <code>x</code> and <code>y</code> parameter amount. Inversely moves the offset by the specified amount.</p>
+<p>Calls <code>World.clean</code> after each call.</p>
+<h3 id="worldcalc">World.calc()</h3>
+<p>Parameters: <code>int</code> x <code>int</code> y
+Returns: <code>Array</code> [x, y]
+Calculates the <code>x</code> and <code>y</code> values relative to the world&#39;s offsets and origin.
+All <code>World</code> methods already use <code>World.calc</code> under the surface.</p>
+<h3 id="worldset">World.set()</h3>
+<p>Parameters: <code>int</code> x <code>int</code> y</p>
+<p>Sets the world coordinates to the parameter <code>x</code> and <code>y</code> positions.</p>
+<h2 id="drawing-api">Drawing API</h2>
+<p>Drawing API methods operate on the HTMLCanvasRendering Context of an Aghs primary renderer.</p>
+<p>These methods, such as <code>World.translate</code> and <code>World.fillRect</code>, can be used to draw relative to the World location.</p></div></div></div></div></body></html>

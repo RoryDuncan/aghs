@@ -1,0 +1,143 @@
+<!DOCTYPE html><html lang="en"><head><title>plugins/gamestate</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../"><meta name="groc-document-path" content="plugins/gamestate"><meta name="groc-project-path" content="docs-src/plugins/gamestate.md"><link rel="stylesheet" type="text/css" media="all" href="../assets/style.css"><script type="text/javascript" src="../assets/behavior.js"></script><body><div id="meta"><div class="file-path">docs-src/plugins/gamestate.md</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="aghs-gamestate-plugin">Aghs Gamestate Plugin</h1>
+<p>A gamestate plugin for the Aghs Framework.
+It is essentially a customized State Machine.</p>
+<p>While these docs provide a high-level overview, viewing the actual sourcecode may be just as easily grokked, as it is fairly straight-forward code.</p>
+<h2 id="gamestate-object">GameState Object</h2>
+<p>A manager that attaches an <code>Aghs</code> instance to itself, and listens and triggers events of the Aghs instance. Keeps a dictionary object of created states, so that the may be switched between freely.</p>
+<p>Instantiation looks like:</p>
+<pre><code class="lang-coffee">
+states = <span class="hljs-keyword">new</span> GameState(aghsInstance [, setFirstGameState])</code></pre>
+<p><code>setFirstGameState</code> is a boolean that determines if the first gamestate is added, shoudl also be set. Defaults to true.</p>
+<h2 id="using-proxy-api">Using Proxy API</h2>
+<p>This plugin has a proxy method used for a simpler API with the Aghs framework.</p>
+<p>Using <code>Aghs::module</code>, add the module like so:</p>
+<p><em>Note: Assume all code samples already have an Aghs object instantiated, as <code>aghs</code>.</em></p>
+<pre><code class="lang-coffee"><span class="hljs-comment"># import gamestate</span>
+GameState = <span class="hljs-built_in">require</span> <span class="hljs-string">'../gamestate.coffee'</span>
+
+<span class="hljs-comment"># instantiate, then pass the proxy method</span>
+aghs.<span class="hljs-built_in">module</span> <span class="hljs-string">"state"</span>, <span class="hljs-keyword">new</span> GameState(aghs).proxy</code></pre>
+<p>The proxy method is only sugar for setting and getting states quickly. 
+It&#39;s function is below:</p>
+<h4 id="if-an-object-is-passed-create-a-new-gamestate-with-the-object39s-properties">If an object is passed, create a new gamestate with the object&#39;s properties.</h4>
+<p>The object is passed to the <code>.add</code> method</p>
+<pre><code class="lang-coffee"><span class="hljs-comment"># using parens and curly braces to show that an object is pased:</span>
+aghs.state({
+  <span class="hljs-attribute">name</span>: <span class="hljs-string">"title screen"</span>
+  ...
+})</code></pre>
+<h4 id="if-a-string-is-passed-activate-the-state-with-a-name-matching-the-argument">If a string is passed, activate the state with a name matching the argument</h4>
+<p>The string is passed to the <code>.get</code> method</p>
+<pre><code class="lang-coffee">aghs.state <span class="hljs-string">"title screen"</span> <span class="hljs-comment"># changes to the "title screen" gamestate</span></code></pre>
+<h4 id="if-no-arguments-are-passed-return-the-gamestate-object">If no arguments are passed: Return the gamestate object.</h4>
+<p>Allowing chaining of the methods of the GameState object.</p>
+<pre><code class="lang-coffee">gamestate = aghs.state() <span class="hljs-comment"># -&gt; returns the GameState object</span>
+
+gamestate.add( ... )
+gamestate.set( ... )</code></pre>
+<h2 id="methods">Methods</h2>
+<h3 id="gamestateadd">GameState.add</h3>
+<p>Parameter: <code>Object</code> Options  </p>
+<p><code>options.name</code> is the only required key, and is expected to be a unique string.</p>
+<p>Creates a new State object and adds it to the GameStates&#39; list of managed states. If it is the first gamestate added, it will also be set using <code>GameState.set</code>.</p>
+<h4 id="state-object">State Object</h4>
+<p>The state object is created with the <code>GameState.add()</code> method. Any options are added to the state.</p>
+<p>Options can have any keys that you require for your gamestate, but note the following <strong>overrides</strong>: </p>
+<pre><code>fullscreen
+width
+height
+frameskip
+smoothing
+scale</code></pre>
+<p>Add a new gamestate to the gamestate manager. The state is created based on a passed-in options object.</p>
+<h4 id="overrides">Overrides</h4>
+<p>The overrides are applied during a gamestate switch, and are <em>by default</em> the same as the Agh&#39;s instances&#39;.</p>
+<h3 id="gamestateset">GameState.set</h3>
+<p>Parameter: <code>String</code> name</p>
+<p>Changes the currently active gamestate to the one matching the <code>name</code> parameter, if it exists.</p>
+<p>Changing the gamestate triggers the following events, as ordered:</p>
+<ol>
+<li>The <code>state:leave</code> event of the currently actuve gamestate( now the previous state)</li>
+<li>The <code>state:init</code> event of the next gamestate, if <code>state.initialized</code> is <code>false</code>.</li>
+<li>The <code>state:ready</code> event of the next gamestate, if <code>state.isReady</code> is <code>false</code>.</li>
+<li>The <code>state:enter</code> event of the next gamestate, which is now the currently active gamestate.</li>
+</ol>
+<h3 id="gamestateget">GameState.get</h3>
+<p>Parameter: <code>String</code> name
+Retrieves the State object matching the parameter <code>name</code>, or <code>null</code> if not found.
+You can make modifications to the returned object, to affect the state.</p>
+<h2 id="gamestate-lifecycle">GameState Lifecycle</h2>
+<p>A gamestate has a specific lifecycle, based on the following events:</p>
+<ol>
+<li><code>state:init</code> - Called the first time that an event is changed to, before all other states.</li>
+<li><code>state:ready</code> - called after <code>state:init</code> has been called.</li>
+<li><code>state:enter</code> - Called every time that the state is changed <strong>to</strong>.</li>
+<li><code>state:leave</code> - Called every time that the state is changed <strong>from</strong>.</li>
+<li><code>state:destroy</code> Not implemented.</li>
+</ol>
+<h2 id="gamestate-events">GameState Events</h2>
+<p>See the GameState Lifecycle section for details on the below events.</p>
+<ul>
+<li><code>state:init</code></li>
+<li><code>state:ready</code></li>
+<li><code>state:enter</code></li>
+<li><code>state:leave</code></li>
+<li><code>state:destroy</code></li>
+</ul>
+<p>The following events are based on the Aghs&#39; internal step and render loop.</p>
+<ul>
+<li><code>prerender</code></li>
+<li><code>render</code></li>
+<li><code>postrender</code></li>
+<li><code>step</code></li>
+</ul>
+<h2 id="getting-started">Getting Started</h2>
+<p>The code below will show you how to setup, and the examples of using the GameState object.</p>
+<h4 id="example-1-creating-a-gamestate">Example 1: Creating a Gamestate</h4>
+<pre><code class="lang-coffee">
+<span class="hljs-comment"># since this is the first gamestate created, it is automatically set after it is added</span>
+aghs.state 
+
+  <span class="hljs-comment"># the unique name of the gamestate</span>
+  <span class="hljs-attribute">name</span>: <span class="hljs-string">"title screen"</span>,
+
+  <span class="hljs-comment"># Any data we want associated with this state</span>
+  <span class="hljs-attribute">trees</span>: <span class="hljs-number">10</span>
+  <span class="hljs-attribute">foxes</span>: <span class="hljs-number">2</span>
+  <span class="hljs-attribute">colors</span>: [<span class="hljs-string">"red"</span>, <span class="hljs-string">"blue"</span>]
+
+  <span class="hljs-comment"># the step and render functions to call while this state is active</span>
+
+  <span class="hljs-attribute">init</span>: <span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span> <span class="hljs-built_in">console</span>.log <span class="hljs-string">"init <span class="hljs-subst">#{<span class="hljs-property">@name</span>}</span>"</span>
+  <span class="hljs-attribute">ready</span>: <span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span> <span class="hljs-built_in">console</span>.log <span class="hljs-string">"ready <span class="hljs-subst">#{<span class="hljs-property">@name</span>}</span>"</span>
+  <span class="hljs-attribute">enter</span>: <span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span> <span class="hljs-built_in">console</span>.log <span class="hljs-string">"enter <span class="hljs-subst">#{<span class="hljs-property">@name</span>}</span>"</span>
+  <span class="hljs-attribute">step</span>: <span class="hljs-function"><span class="hljs-params">(time)</span> -&gt;</span> <span class="hljs-keyword">return</span> 
+  <span class="hljs-attribute">render</span>: <span class="hljs-function"><span class="hljs-params">(time)</span> -&gt;</span> <span class="hljs-keyword">return</span>
+  <span class="hljs-attribute">leave</span>: <span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span> <span class="hljs-built_in">console</span>.log <span class="hljs-string">"leave <span class="hljs-subst">#{<span class="hljs-property">@name</span>}</span>"</span></code></pre>
+<h4 id="example-2-changing-between-gamestates">Example 2: Changing between Gamestates</h4>
+<p>Continueing from the code from example one, we can then add another gamestate:</p>
+<pre><code class="lang-coffee">
+<span class="hljs-comment"># create the second gamestate</span>
+aghs.state 
+
+  <span class="hljs-attribute">name</span>: <span class="hljs-string">"level select"</span>,
+  <span class="hljs-attribute">init</span>: <span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span> <span class="hljs-built_in">console</span>.log <span class="hljs-string">"init <span class="hljs-subst">#{<span class="hljs-property">@name</span>}</span>"</span>
+  <span class="hljs-attribute">ready</span>: <span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span> <span class="hljs-built_in">console</span>.log <span class="hljs-string">"ready <span class="hljs-subst">#{<span class="hljs-property">@name</span>}</span>"</span>
+  <span class="hljs-attribute">enter</span>: <span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span> <span class="hljs-built_in">console</span>.log <span class="hljs-string">"enter <span class="hljs-subst">#{<span class="hljs-property">@name</span>}</span>"</span>
+  <span class="hljs-attribute">step</span>: <span class="hljs-function"><span class="hljs-params">(time)</span> -&gt;</span> <span class="hljs-keyword">return</span> 
+  <span class="hljs-attribute">render</span>: <span class="hljs-function"><span class="hljs-params">(time)</span> -&gt;</span> <span class="hljs-keyword">return</span>
+  <span class="hljs-attribute">leave</span>: <span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span> <span class="hljs-built_in">console</span>.log <span class="hljs-string">"leave <span class="hljs-subst">#{<span class="hljs-property">@name</span>}</span>"</span>
+
+
+<span class="hljs-comment"># then switch to it, using the 'set' method</span>
+aghs.state().set(gamestate2.name)</code></pre>
+<p>The above example, in conjunction with the first example, will print the following to the console:</p>
+<pre><code>init overworld
+ready overworld
+enter overworld
+leave overworld
+init title screen
+ready title screen
+enter title screen</code></pre>
+<p>If you were to change to &#39;overworld&#39; gamestate again you would notice that the <code>init overworld</code> and <code>init ready</code> event phases are not output to the console.</p>
+<p>The <code>init</code> and <code>ready</code> events are for preparing gamestates the first time they are activated. <code>init</code> is a great time to load images or make async calls, while the <code>ready</code> event phase could be used to prepare those images- like assigning them to sprite objects, or what have you.</p></div></div></div></div></body></html>
