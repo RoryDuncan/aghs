@@ -1929,182 +1929,27 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
         }
       ]
     }, {
-      "type": "folder",
+      "type": "file",
       "data": {
-        "path": "plugins",
-        "title": "plugins"
-      },
-      "depth": 1,
-      "children": [
-        {
-          "type": "file",
+        "language": {
+          "nameMatchers": [".md", ".markdown", ".mkd", ".mkdn", ".mdown"],
+          "commentsOnly": true,
+          "name": "Markdown"
+        },
+        "sourcePath": "/home/ubuntu/workspace/app/docs-src/gamestate.md",
+        "projectPath": "docs-src/gamestate.md",
+        "targetPath": "gamestate",
+        "pageTitle": "gamestate",
+        "firstHeader": {
+          "type": "heading",
           "data": {
-            "language": {
-              "nameMatchers": [".md", ".markdown", ".mkd", ".mkdn", ".mdown"],
-              "commentsOnly": true,
-              "name": "Markdown"
-            },
-            "sourcePath": "/home/ubuntu/workspace/app/docs-src/plugins/gamestate.md",
-            "projectPath": "docs-src/plugins/gamestate.md",
-            "targetPath": "plugins/gamestate",
-            "pageTitle": "plugins/gamestate",
-            "firstHeader": {
-              "type": "heading",
-              "data": {
-                "level": 1,
-                "title": "Aghs Gamestate Plugin",
-                "slug": "aghs-gamestate-plugin",
-                "isFileHeader": true
-              },
-              "depth": 1,
-              "children": [
-                {
-                  "type": "heading",
-                  "data": {
-                    "level": 2,
-                    "title": "GameState Object",
-                    "slug": "gamestate-object"
-                  },
-                  "depth": 2
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 2,
-                    "title": "Using Proxy API",
-                    "slug": "using-proxy-api"
-                  },
-                  "depth": 2,
-                  "children": [
-                    {
-                      "type": "heading",
-                      "data": {
-                        "level": 4,
-                        "title": "If an object is passed, create a new gamestate with the object&#39;s properties.",
-                        "slug": "if-an-object-is-passed-create-a-new-gamestate-with-the-object39s-properties"
-                      },
-                      "depth": 4
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 4,
-                        "title": "If a string is passed, activate the state with a name matching the argument",
-                        "slug": "if-a-string-is-passed-activate-the-state-with-a-name-matching-the-argument"
-                      },
-                      "depth": 4
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 4,
-                        "title": "If no arguments are passed: Return the gamestate object.",
-                        "slug": "if-no-arguments-are-passed-return-the-gamestate-object"
-                      },
-                      "depth": 4
-                    }
-                  ]
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 2,
-                    "title": "Methods",
-                    "slug": "methods"
-                  },
-                  "depth": 2,
-                  "children": [
-                    {
-                      "type": "heading",
-                      "data": {
-                        "level": 3,
-                        "title": "GameState.add",
-                        "slug": "gamestateadd"
-                      },
-                      "depth": 3,
-                      "children": [
-                        {
-                          "type": "heading",
-                          "data": {
-                            "level": 4,
-                            "title": "State Object",
-                            "slug": "state-object"
-                          },
-                          "depth": 4
-                        }, {
-                          "type": "heading",
-                          "data": {
-                            "level": 4,
-                            "title": "Overrides",
-                            "slug": "overrides"
-                          },
-                          "depth": 4
-                        }
-                      ]
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 3,
-                        "title": "GameState.set",
-                        "slug": "gamestateset"
-                      },
-                      "depth": 3
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 3,
-                        "title": "GameState.get",
-                        "slug": "gamestateget"
-                      },
-                      "depth": 3
-                    }
-                  ]
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 2,
-                    "title": "GameState Lifecycle",
-                    "slug": "gamestate-lifecycle"
-                  },
-                  "depth": 2
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 2,
-                    "title": "GameState Events",
-                    "slug": "gamestate-events"
-                  },
-                  "depth": 2
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 2,
-                    "title": "Getting Started",
-                    "slug": "getting-started"
-                  },
-                  "depth": 2,
-                  "children": [
-                    {
-                      "type": "heading",
-                      "data": {
-                        "level": 4,
-                        "title": "Example 1: Creating a Gamestate",
-                        "slug": "example-1-creating-a-gamestate"
-                      },
-                      "depth": 4
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 4,
-                        "title": "Example 2: Changing between Gamestates",
-                        "slug": "example-2-changing-between-gamestates"
-                      },
-                      "depth": 4
-                    }
-                  ]
-                }
-              ]
-            },
-            "title": "Aghs Gamestate Plugin"
+            "level": 1,
+            "title": "Aghs Gamestate Plugin",
+            "slug": "aghs-gamestate-plugin",
+            "isFileHeader": true
           },
-          "depth": 2,
-          "outline": [
+          "depth": 1,
+          "children": [
             {
               "type": "heading",
               "data": {
@@ -2247,169 +2092,314 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
               ]
             }
           ]
-        }, {
-          "type": "file",
+        },
+        "title": "Aghs Gamestate Plugin"
+      },
+      "depth": 1,
+      "outline": [
+        {
+          "type": "heading",
           "data": {
-            "language": {
-              "nameMatchers": [".md", ".markdown", ".mkd", ".mkdn", ".mdown"],
-              "commentsOnly": true,
-              "name": "Markdown"
-            },
-            "sourcePath": "/home/ubuntu/workspace/app/docs-src/plugins/world.md",
-            "projectPath": "docs-src/plugins/world.md",
-            "targetPath": "plugins/world",
-            "pageTitle": "plugins/world",
-            "firstHeader": {
-              "type": "heading",
-              "data": {
-                "level": 1,
-                "title": "Aghs World Plugin",
-                "slug": "aghs-world-plugin",
-                "isFileHeader": true
-              },
-              "depth": 1
-            },
-            "title": "Aghs World Plugin"
+            "level": 2,
+            "title": "GameState Object",
+            "slug": "gamestate-object"
+          },
+          "depth": 2
+        }, {
+          "type": "heading",
+          "data": {
+            "level": 2,
+            "title": "Using Proxy API",
+            "slug": "using-proxy-api"
           },
           "depth": 2,
-          "outline": [
+          "children": [
             {
               "type": "heading",
               "data": {
-                "level": 1,
-                "title": "API",
-                "slug": "api"
+                "level": 4,
+                "title": "If an object is passed, create a new gamestate with the object&#39;s properties.",
+                "slug": "if-an-object-is-passed-create-a-new-gamestate-with-the-object39s-properties"
               },
-              "depth": 1,
+              "depth": 4
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "If a string is passed, activate the state with a name matching the argument",
+                "slug": "if-a-string-is-passed-activate-the-state-with-a-name-matching-the-argument"
+              },
+              "depth": 4
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "If no arguments are passed: Return the gamestate object.",
+                "slug": "if-no-arguments-are-passed-return-the-gamestate-object"
+              },
+              "depth": 4
+            }
+          ]
+        }, {
+          "type": "heading",
+          "data": {
+            "level": 2,
+            "title": "Methods",
+            "slug": "methods"
+          },
+          "depth": 2,
+          "children": [
+            {
+              "type": "heading",
+              "data": {
+                "level": 3,
+                "title": "GameState.add",
+                "slug": "gamestateadd"
+              },
+              "depth": 3,
               "children": [
                 {
                   "type": "heading",
                   "data": {
-                    "level": 2,
-                    "title": "Properties",
-                    "slug": "properties"
+                    "level": 4,
+                    "title": "State Object",
+                    "slug": "state-object"
                   },
-                  "depth": 2,
-                  "children": [
-                    {
-                      "type": "heading",
-                      "data": {
-                        "level": 3,
-                        "title": "World.orientation",
-                        "slug": "worldorientation"
-                      },
-                      "depth": 3
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 3,
-                        "title": "World.origin",
-                        "slug": "worldorigin"
-                      },
-                      "depth": 3
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 3,
-                        "title": "World.view",
-                        "slug": "worldview"
-                      },
-                      "depth": 3
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 3,
-                        "title": "World.offset",
-                        "slug": "worldoffset"
-                      },
-                      "depth": 3
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 3,
-                        "title": "World.type",
-                        "slug": "worldtype"
-                      },
-                      "depth": 3
-                    }
-                  ]
+                  "depth": 4
                 }, {
                   "type": "heading",
                   "data": {
-                    "level": 2,
-                    "title": "Methods",
-                    "slug": "methods"
+                    "level": 4,
+                    "title": "Overrides",
+                    "slug": "overrides"
                   },
-                  "depth": 2,
-                  "children": [
-                    {
-                      "type": "heading",
-                      "data": {
-                        "level": 3,
-                        "title": "World.viewport()",
-                        "slug": "worldviewport"
-                      },
-                      "depth": 3
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 3,
-                        "title": "World.inView()",
-                        "slug": "worldinview"
-                      },
-                      "depth": 3
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 3,
-                        "title": "World.preset()",
-                        "slug": "worldpreset"
-                      },
-                      "depth": 3
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 3,
-                        "title": "World.clean()",
-                        "slug": "worldclean"
-                      },
-                      "depth": 3
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 3,
-                        "title": "World.move()",
-                        "slug": "worldmove"
-                      },
-                      "depth": 3
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 3,
-                        "title": "World.calc()",
-                        "slug": "worldcalc"
-                      },
-                      "depth": 3
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 3,
-                        "title": "World.set()",
-                        "slug": "worldset"
-                      },
-                      "depth": 3
-                    }
-                  ]
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 2,
-                    "title": "Drawing API",
-                    "slug": "drawing-api"
-                  },
-                  "depth": 2
+                  "depth": 4
                 }
               ]
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 3,
+                "title": "GameState.set",
+                "slug": "gamestateset"
+              },
+              "depth": 3
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 3,
+                "title": "GameState.get",
+                "slug": "gamestateget"
+              },
+              "depth": 3
+            }
+          ]
+        }, {
+          "type": "heading",
+          "data": {
+            "level": 2,
+            "title": "GameState Lifecycle",
+            "slug": "gamestate-lifecycle"
+          },
+          "depth": 2
+        }, {
+          "type": "heading",
+          "data": {
+            "level": 2,
+            "title": "GameState Events",
+            "slug": "gamestate-events"
+          },
+          "depth": 2
+        }, {
+          "type": "heading",
+          "data": {
+            "level": 2,
+            "title": "Getting Started",
+            "slug": "getting-started"
+          },
+          "depth": 2,
+          "children": [
+            {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "Example 1: Creating a Gamestate",
+                "slug": "example-1-creating-a-gamestate"
+              },
+              "depth": 4
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "Example 2: Changing between Gamestates",
+                "slug": "example-2-changing-between-gamestates"
+              },
+              "depth": 4
+            }
+          ]
+        }
+      ]
+    }, {
+      "type": "file",
+      "data": {
+        "language": {
+          "nameMatchers": [".md", ".markdown", ".mkd", ".mkdn", ".mdown"],
+          "commentsOnly": true,
+          "name": "Markdown"
+        },
+        "sourcePath": "/home/ubuntu/workspace/app/docs-src/world.md",
+        "projectPath": "docs-src/world.md",
+        "targetPath": "world",
+        "pageTitle": "world",
+        "firstHeader": {
+          "type": "heading",
+          "data": {
+            "level": 1,
+            "title": "Aghs World Plugin",
+            "slug": "aghs-world-plugin",
+            "isFileHeader": true
+          },
+          "depth": 1
+        },
+        "title": "Aghs World Plugin"
+      },
+      "depth": 1,
+      "outline": [
+        {
+          "type": "heading",
+          "data": {
+            "level": 1,
+            "title": "API",
+            "slug": "api"
+          },
+          "depth": 1,
+          "children": [
+            {
+              "type": "heading",
+              "data": {
+                "level": 2,
+                "title": "Properties",
+                "slug": "properties"
+              },
+              "depth": 2,
+              "children": [
+                {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "World.orientation",
+                    "slug": "worldorientation"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "World.origin",
+                    "slug": "worldorigin"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "World.view",
+                    "slug": "worldview"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "World.offset",
+                    "slug": "worldoffset"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "World.type",
+                    "slug": "worldtype"
+                  },
+                  "depth": 3
+                }
+              ]
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 2,
+                "title": "Methods",
+                "slug": "methods"
+              },
+              "depth": 2,
+              "children": [
+                {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "World.viewport()",
+                    "slug": "worldviewport"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "World.inView()",
+                    "slug": "worldinview"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "World.preset()",
+                    "slug": "worldpreset"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "World.clean()",
+                    "slug": "worldclean"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "World.move()",
+                    "slug": "worldmove"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "World.calc()",
+                    "slug": "worldcalc"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "World.set()",
+                    "slug": "worldset"
+                  },
+                  "depth": 3
+                }
+              ]
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 2,
+                "title": "Drawing API",
+                "slug": "drawing-api"
+              },
+              "depth": 2
             }
           ]
         }
