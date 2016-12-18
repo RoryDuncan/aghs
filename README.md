@@ -9,7 +9,7 @@ Aghs is a 2D coffeescript game framework, with a straight-forward plugin system.
 ### Roadmap
 
 - [x] Cartesian World Plugin
-- [ ] GameState Plugin
+- [x] GameState Plugin
 - [ ] Keyboard Plugin
 - [ ] Documentation and Annotated Source
 - [ ] Reliable Errors
