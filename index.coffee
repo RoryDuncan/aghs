@@ -7,6 +7,7 @@
 utils         = require "./src/core/utils.coffee"
 World         = require "./src/plugins/world.coffee"
 StateMachine  = require "./src/plugins/gamestate.coffee"
+Keyboard      = require "./src/plugins/keyboard.coffee"
 
 # our core wrapper
 Aghs = require "./src/core/aghs.coffee"
@@ -21,6 +22,7 @@ aghs = new Aghs()
 aghs.module "world", new World(aghs)
 aghs.module "utils", utils
 aghs.module "state", new StateMachine(aghs).proxy
+aghs.module "keyboard", new Keyboard()
 
 # Add window accessibility.
 window.Aghs = () -> 
