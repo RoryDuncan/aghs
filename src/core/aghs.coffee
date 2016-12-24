@@ -192,16 +192,17 @@ Aghs::start = () ->
     'id':             null
   }
   
-  # called before the user-defined render
-
+  @time = () -> return time
+  
+  # the internal step function, private to Aghs::start
+  # called before the step event
   step = (e) ->
     return unless @running is true
-    @events.trigger "step", time
     _now = now()
     time.now = _now
     time.delta = (_now - time.lastCalled)
     time.elapsed += time.delta
-
+    @events.trigger "step", time
     
     if skipFrame(time.delta)
       @config.frameskip.count += 1
