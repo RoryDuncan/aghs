@@ -1,40 +1,43 @@
-
-
 # essentially a fork of playground.js's keyboard, but adapted for use with Aghs
 # ( and rewritten in coffeescript )
 # ->  https://github.com/rezoner/playground/blob/master/src/Keyboard.js
-# 
+ 
 
 
-# list of our event names
-eventnames = [ 
-  "keyup",
-  "keydown",
-  "keypress"
-]
 
 
+# Keyboard
 #
 #
-#
-Keyboard = () ->
-  console.log @
+Keyboard = (@options = {}) ->
+  
+  # state
   @pressed = []
-  @handler = @handler.bind(@)
   @keys = {}
-  @disabled = false
+  @disabled = @options.disabled or false
   
   # add each keycode name to the keys object
   for k, v of @keycodes
     @keys[v] = false
   
-  # begin watching
+  # bindings
+  @handler = @handler.bind(@)
+  
+  # begin listening
   @capture()
   return @
 
 #
-#
+# Defined on the prototype as an optimization, so that the JIT compiler needs to only create 1 internal class
 Keyboard::keys = {}
+Keyboard::pressed = []
+
+
+#
+# Keys that shouldn't be default prevented, and prevented from propagating
+Keyboard::allowBubbling = [
+  "ctrl"    
+]
 
 #
 #
@@ -50,9 +53,10 @@ Keyboard::handler = (e) ->
     key = String.fromCharCode(char).toLowerCase()
   else 
     key = @keycodes[char]
-  
-  # e.preventDefault()
-  # e.stopPropagation()
+
+  unless @allowBubbling.indexOf key > 0  
+    e.preventdefault()
+    e.stoppropagation()
   
   
   @keys[key] = pressed;
@@ -61,7 +65,9 @@ Keyboard::handler = (e) ->
   for k, v of @keys
     @pressed.push k if v
   
-  return 
+  return
+
+
 #
 #
 Keyboard::capture = () ->
