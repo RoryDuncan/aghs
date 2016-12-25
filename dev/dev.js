@@ -1,5 +1,5 @@
 (function() {
-  var app, errorMessage, examples, keyboard, world;
+  var app, errorMessage, examples, keyboard, square, world;
   errorMessage = "index.js may be missing. Make sure to run 'npm run dev' to begin development.";
   if (!window.Aghs) {
     return console.alert(errorMessage);
@@ -10,6 +10,12 @@
   keyboard = app.keyboard;
   console.log(app);
   examples = {};
+  square = {
+    x: 0,
+    y: 0,
+    w: 20,
+    h: 20
+  };
   examples.movingSquareWithKeyboard = function(time) {
     app.clear("#fff");
     if (keyboard.keys.up) {
@@ -24,6 +30,13 @@
     if (keyboard.keys.right) {
       world.move(-5, 0);
     }
+    if (keyboard.command(["a", "s", "d"], false)) {
+      square.w += 1;
+      square.h += 1;
+    }
+    if (square.w > 50) {
+      square.w = square.h = 15;
+    }
     if (world.view.x * -1 > world.view.width) {
       world.set(0, world.view.y);
     }
@@ -37,7 +50,7 @@
       world.set(world.view.x, -world.view.height);
     }
     app.fillStyle("#ccc");
-    world.fillRect(0, 0, 20, 20);
+    world.fillRect(square.x, square.y, square.w, square.h);
     return world.debug();
   };
   app.render(examples.movingSquareWithKeyboard);

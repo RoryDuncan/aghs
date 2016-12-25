@@ -16,15 +16,29 @@ do () ->
   # examples namespace
   examples = {}
   
+  square = 
+    x: 0
+    y: 0
+    w: 20
+    h: 20
+  
   # move a square visually, by moving the world
   # 
   examples.movingSquareWithKeyboard = (time) ->
+    
     app.clear("#fff")
     
     world.move(0, 5)  if keyboard.keys.up
     world.move(0, -5) if keyboard.keys.down
     world.move(5, 0)  if keyboard.keys.left
     world.move(-5, 0) if keyboard.keys.right
+    
+    if keyboard.command(["a", "s", "d"], false)
+      square.w += 1
+      square.h += 1
+      
+    if square.w > 50
+      square.w = square.h = 15
     
     
     # wrap screen - if you reach the edge move back to the start, and vice-versa
@@ -36,7 +50,7 @@ do () ->
     world.set(world.view.x, -world.view.height) if world.view.y * -1 < 0
     
     app.fillStyle "#ccc"
-    world.fillRect(0, 0, 20, 20)
+    world.fillRect(square.x, square.y, square.w, square.h)
     world.debug()
   
   # change the function below to view different examples
