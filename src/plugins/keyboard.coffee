@@ -46,7 +46,22 @@ Keyboard::clear = () ->
   return @
 
 #
+# Helper method to see if a set of keys are being pressed
+Keyboard::command = (keys, exact = true) ->
+  
+  return false if exact and keys.length != @pressed.length
+  
+  matching = true
+  
+  for key in keys
+    continue if @keys[key] 
+    matching = false
+    break
+    
+  return matching
+
 #
+# handler function for event listeners
 Keyboard::handler = (e) ->
   @clear()
   return if @disabled
