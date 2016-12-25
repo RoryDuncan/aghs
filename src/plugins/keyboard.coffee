@@ -40,9 +40,15 @@ Keyboard::allowBubbling = [
 ]
 
 #
+# clears out the list of pressed keys
+Keyboard::clear = () ->
+  @pressed = []
+  return @
+
+#
 #
 Keyboard::handler = (e) ->
-  
+  @clear()
   return if @disabled
   
   pressed = (if e.type is "keyup" then false else true)
@@ -61,12 +67,11 @@ Keyboard::handler = (e) ->
   
   @keys[key] = pressed;
   
-  @pressed = []
+  
   for k, v of @keys
     @pressed.push k if v
   
   return
-
 
 #
 #
