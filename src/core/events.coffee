@@ -18,7 +18,7 @@ EventEmitter::addEventListener = (name, fn, context = null) ->
     throw new SyntaxError("EventEmitter.on is missing a required parameter.")
   
   @__events[name] = @__events[name] or []
-  @__events[name].push {event, fn, context}
+  @__events[name].push {event: name, fn, context}
   
   # don't override any disables by adding a new event
   @__allowed[name] = true if @__allowed[name] is undefined

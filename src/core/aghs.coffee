@@ -1,6 +1,7 @@
 extend = require "extend"
 utils = require "./utils.coffee"
 EventEmitter = require "./events.coffee"
+Renderer = require "./renderer.coffee"
 
 
 # Helpers
@@ -22,25 +23,14 @@ chain = utils.chain
 #     scale: 1
 
 Aghs = (options = {}) ->
-  
-  that = @
-  # create a canvas element if an element or selector is not passed in
-  if options.el is undefined
-    canvas = document.createElement('canvas')
-    canvas.id = "screen"
-    document.body.appendChild(canvas)
-  else if typeof options.el is "string" and options.el[0] is "#"
-    canvas = document.getElementById options.el
-  else
-    canvas = options.el
 
-  @isReady = false
-  @canvas = canvas
+  # here we go
+
   @modules = []
-  @module("events", new EventEmitter())
-  @context = @_ = context = canvas.getContext "2d"
-  # only do on instantiation
-  @extendContext() unless options.wrapContext is false
+  @module "events",     new EventEmitter() unless options.events is false
+  @module "renderer",   new Renderer(options) unless options.renderer is false
+  
+  @isReady = false
   
   # begin readiness detection
   triggerReady = () ->
@@ -49,7 +39,7 @@ Aghs = (options = {}) ->
       that.events.trigger "ready"
     return
   
-  # if already ready..
+  # if ready when called..
   if document.readyState is "complete" 
     triggerReady()
   else # wait for readiness
@@ -70,8 +60,7 @@ Aghs = (options = {}) ->
   # apply the config
   config = 
     "fullscreen":     true
-    "wrappedContext": true
-    'smoothing':      true
+    "smoothing":      true
     "width":          options.width or canvas.width
     "height":         options.height or canvas.height
     "scale":          options.scale or 1
@@ -85,7 +74,7 @@ Aghs = (options = {}) ->
   
   # these settings default to true, so overwrite if they exist in the options
   config.fullscreen = options.fullscreen if options.fullscreen?
-  config.wrappedContext = options.wrappedContext if options.wrappedContext?
+  config.wrappedContext = options.wrappedContext if options.wrapper?
   config.smoothing = options.smoothing if options.smoothing?
   
   @settings(config)
@@ -103,58 +92,7 @@ Aghs::module = (name, obj) ->
   return @
 
 
-# Aghs.chain
-#
-# Meta programming function, used internally. Can be used to chain any function to Aghs
-Aghs::chain = (func, hasReturnValue) ->
-  source = @
-  if hasReturnValue
-    return (args...) ->
-      return func.apply(source.context, args)
-  else return (args...) ->
-    func.apply(source.context, args)
-    return source
 
-# Aghs.chainingExceptions
-#
-# these functions have meaningful return values (don't chain them)
-Aghs::chainingExceptions = {
-  "getImageData",
-  "createImageData",
-  "isPointInStroke",
-  "isPointInPath"
-}
-
-# Aghs.extendContext
-#
-# Extend the Canvas.getContext("2d") prototype to also be attached to Aghs
-Aghs::extendContext = () ->
-
-  that = @
-  ctx = @context
-  
-  makeSetGetFunction = (keyname) ->
-    return (value) ->
-      return that.context[keyname] if value is undefined
-      that.context[keyname] = value
-      return that
-
-  if not ctx
-    throw new Error("Illegal Invocation: extendContext. Call after instantiation.")
-
-  # Iterate over all canvas context methods
-  for key, value of ctx
-    
-    if typeof value is "function"
-      hasReturn = false
-      for exceptionName of @chainingExceptions
-        if key is exceptionName
-          hasReturn = true
-      @[key] = @chain(value, hasReturn)
-    else 
-      if key isnt "canvas"
-        @[key] = makeSetGetFunction(key)
-  return @
 
 # Aghs.ready()
 #

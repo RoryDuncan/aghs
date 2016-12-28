@@ -12,11 +12,11 @@ throttle = (func = null, delay = 250, ctx = null, returnValue = null) ->
     lastCalled = now
     return func.apply(ctx, args)
 
-chain = (wrapper, host, func) ->
+chain = (wrapper, context, func) ->
   # could use fast.js optimization 
   #    (switch statement with + .call for small args)
   return (args...) ->
-    func.apply(host, args)
+    func.apply(context, args)
     return wrapper
 
 
