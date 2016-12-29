@@ -21,16 +21,69 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
           "type": "heading",
           "data": {
             "level": 1,
-            "title": "About",
-            "slug": "about",
+            "title": "Aghs",
+            "slug": "aghs",
             "isFileHeader": true
           },
-          "depth": 1
+          "depth": 1,
+          "children": [
+            {
+              "type": "heading",
+              "data": {
+                "level": 3,
+                "title": "Aghs intends to provide",
+                "slug": "aghs-intends-to-provide"
+              },
+              "depth": 3
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 3,
+                "title": "Roadmap",
+                "slug": "roadmap"
+              },
+              "depth": 3
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 3,
+                "title": "Webkit focus",
+                "slug": "webkit-focus"
+              },
+              "depth": 3
+            }
+          ]
         },
-        "title": "About"
+        "title": "Aghs"
       },
       "depth": 1,
-      "outline": []
+      "outline": [
+        {
+          "type": "heading",
+          "data": {
+            "level": 3,
+            "title": "Aghs intends to provide",
+            "slug": "aghs-intends-to-provide"
+          },
+          "depth": 3
+        }, {
+          "type": "heading",
+          "data": {
+            "level": 3,
+            "title": "Roadmap",
+            "slug": "roadmap"
+          },
+          "depth": 3
+        }, {
+          "type": "heading",
+          "data": {
+            "level": 3,
+            "title": "Webkit focus",
+            "slug": "webkit-focus"
+          },
+          "depth": 3
+        }
+      ]
     }, {
       "type": "file",
       "data": {
@@ -46,7 +99,33 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
         "title": "index"
       },
       "depth": 1,
-      "outline": []
+      "outline": [
+        {
+          "type": "heading",
+          "data": {
+            "level": 3,
+            "title": "Aghs intends to provide",
+            "slug": "aghs-intends-to-provide"
+          },
+          "depth": 3
+        }, {
+          "type": "heading",
+          "data": {
+            "level": 3,
+            "title": "Roadmap",
+            "slug": "roadmap"
+          },
+          "depth": 3
+        }, {
+          "type": "heading",
+          "data": {
+            "level": 3,
+            "title": "Webkit focus",
+            "slug": "webkit-focus"
+          },
+          "depth": 3
+        }
+      ]
     }, {
       "type": "file",
       "data": {
@@ -70,6 +149,903 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
           "depth": 1,
           "children": [
             {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "Aghs.render",
+                "slug": "aghsrender"
+              },
+              "depth": 4
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "Aghs.step",
+                "slug": "aghsstep"
+              },
+              "depth": 4
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "Aghs.module",
+                "slug": "aghsmodule"
+              },
+              "depth": 4
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "Aghs.antialias",
+                "slug": "aghsantialias"
+              },
+              "depth": 4
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "Aghs.ready",
+                "slug": "aghsready"
+              },
+              "depth": 4
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "Aghs.start",
+                "slug": "aghsstart"
+              },
+              "depth": 4
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "Aghs.stop",
+                "slug": "aghsstop"
+              },
+              "depth": 4
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "Aghs.attach",
+                "slug": "aghsattach"
+              },
+              "depth": 4
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "Aghs.unattach",
+                "slug": "aghsunattach"
+              },
+              "depth": 4
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "Aghs.maximize",
+                "slug": "aghsmaximize"
+              },
+              "depth": 4
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "Aghs.configure",
+                "slug": "aghsconfigure"
+              },
+              "depth": 4
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "Aghs.layer",
+                "slug": "aghslayer"
+              },
+              "depth": 4
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "Aghs.screen",
+                "slug": "aghsscreen"
+              },
+              "depth": 4
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "Aghs.draw",
+                "slug": "aghsdraw"
+              },
+              "depth": 4
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "Aghs.resize",
+                "slug": "aghsresize"
+              },
+              "depth": 4
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 2,
+                "title": "Properties",
+                "slug": "properties"
+              },
+              "depth": 2,
+              "children": [
+                {
+                  "type": "heading",
+                  "data": {
+                    "level": 4,
+                    "title": "Aghs.isReady",
+                    "slug": "aghsisready"
+                  },
+                  "depth": 4
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 4,
+                    "title": "Aghs.running",
+                    "slug": "aghsrunning"
+                  },
+                  "depth": 4
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 4,
+                    "title": "Aghs.modules",
+                    "slug": "aghsmodules"
+                  },
+                  "depth": 4
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 4,
+                    "title": "Aghs.canvas",
+                    "slug": "aghscanvas"
+                  },
+                  "depth": 4
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 4,
+                    "title": "__frame",
+                    "slug": "-frame"
+                  },
+                  "depth": 4
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 4,
+                    "title": "__attached",
+                    "slug": "-attached"
+                  },
+                  "depth": 4
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 4,
+                    "title": "chainingExceptions",
+                    "slug": "chainingexceptions"
+                  },
+                  "depth": 4
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 4,
+                    "title": "layers",
+                    "slug": "layers"
+                  },
+                  "depth": 4
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 4,
+                    "title": "currentLayer",
+                    "slug": "currentlayer"
+                  },
+                  "depth": 4
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 4,
+                    "title": "config",
+                    "slug": "config"
+                  },
+                  "depth": 4,
+                  "children": [
+                    {
+                      "type": "heading",
+                      "data": {
+                        "level": 5,
+                        "title": "fullscreen",
+                        "slug": "fullscreen"
+                      },
+                      "depth": 5
+                    }, {
+                      "type": "heading",
+                      "data": {
+                        "level": 5,
+                        "title": "renderer",
+                        "slug": "renderer"
+                      },
+                      "depth": 5
+                    }, {
+                      "type": "heading",
+                      "data": {
+                        "level": 5,
+                        "title": "smoothing",
+                        "slug": "smoothing"
+                      },
+                      "depth": 5
+                    }, {
+                      "type": "heading",
+                      "data": {
+                        "level": 5,
+                        "title": "width",
+                        "slug": "width"
+                      },
+                      "depth": 5
+                    }, {
+                      "type": "heading",
+                      "data": {
+                        "level": 5,
+                        "title": "height",
+                        "slug": "height"
+                      },
+                      "depth": 5
+                    }, {
+                      "type": "heading",
+                      "data": {
+                        "level": 5,
+                        "title": "scale",
+                        "slug": "scale"
+                      },
+                      "depth": 5
+                    }, {
+                      "type": "heading",
+                      "data": {
+                        "level": 5,
+                        "title": "frameskip",
+                        "slug": "frameskip"
+                      },
+                      "depth": 5
+                    }
+                  ]
+                }
+              ]
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 2,
+                "title": "Internals",
+                "slug": "internals"
+              },
+              "depth": 2,
+              "children": [
+                {
+                  "type": "heading",
+                  "data": {
+                    "level": 4,
+                    "title": "Aghs.events",
+                    "slug": "aghsevents"
+                  },
+                  "depth": 4
+                }
+              ]
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 2,
+                "title": "Plugins",
+                "slug": "plugins"
+              },
+              "depth": 2,
+              "children": [
+                {
+                  "type": "heading",
+                  "data": {
+                    "level": 4,
+                    "title": "world",
+                    "slug": "world"
+                  },
+                  "depth": 4
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 4,
+                    "title": "utils",
+                    "slug": "utils"
+                  },
+                  "depth": 4
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 4,
+                    "title": "state",
+                    "slug": "state"
+                  },
+                  "depth": 4
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 4,
+                    "title": "keyboard",
+                    "slug": "keyboard"
+                  },
+                  "depth": 4
+                }
+              ]
+            }
+          ]
+        },
+        "title": "API"
+      },
+      "depth": 1,
+      "outline": [
+        {
+          "type": "heading",
+          "data": {
+            "level": 4,
+            "title": "Aghs.render",
+            "slug": "aghsrender"
+          },
+          "depth": 4
+        }, {
+          "type": "heading",
+          "data": {
+            "level": 4,
+            "title": "Aghs.step",
+            "slug": "aghsstep"
+          },
+          "depth": 4
+        }, {
+          "type": "heading",
+          "data": {
+            "level": 4,
+            "title": "Aghs.module",
+            "slug": "aghsmodule"
+          },
+          "depth": 4
+        }, {
+          "type": "heading",
+          "data": {
+            "level": 4,
+            "title": "Aghs.antialias",
+            "slug": "aghsantialias"
+          },
+          "depth": 4
+        }, {
+          "type": "heading",
+          "data": {
+            "level": 4,
+            "title": "Aghs.ready",
+            "slug": "aghsready"
+          },
+          "depth": 4
+        }, {
+          "type": "heading",
+          "data": {
+            "level": 4,
+            "title": "Aghs.start",
+            "slug": "aghsstart"
+          },
+          "depth": 4
+        }, {
+          "type": "heading",
+          "data": {
+            "level": 4,
+            "title": "Aghs.stop",
+            "slug": "aghsstop"
+          },
+          "depth": 4
+        }, {
+          "type": "heading",
+          "data": {
+            "level": 4,
+            "title": "Aghs.attach",
+            "slug": "aghsattach"
+          },
+          "depth": 4
+        }, {
+          "type": "heading",
+          "data": {
+            "level": 4,
+            "title": "Aghs.unattach",
+            "slug": "aghsunattach"
+          },
+          "depth": 4
+        }, {
+          "type": "heading",
+          "data": {
+            "level": 4,
+            "title": "Aghs.maximize",
+            "slug": "aghsmaximize"
+          },
+          "depth": 4
+        }, {
+          "type": "heading",
+          "data": {
+            "level": 4,
+            "title": "Aghs.configure",
+            "slug": "aghsconfigure"
+          },
+          "depth": 4
+        }, {
+          "type": "heading",
+          "data": {
+            "level": 4,
+            "title": "Aghs.layer",
+            "slug": "aghslayer"
+          },
+          "depth": 4
+        }, {
+          "type": "heading",
+          "data": {
+            "level": 4,
+            "title": "Aghs.screen",
+            "slug": "aghsscreen"
+          },
+          "depth": 4
+        }, {
+          "type": "heading",
+          "data": {
+            "level": 4,
+            "title": "Aghs.draw",
+            "slug": "aghsdraw"
+          },
+          "depth": 4
+        }, {
+          "type": "heading",
+          "data": {
+            "level": 4,
+            "title": "Aghs.resize",
+            "slug": "aghsresize"
+          },
+          "depth": 4
+        }, {
+          "type": "heading",
+          "data": {
+            "level": 2,
+            "title": "Properties",
+            "slug": "properties"
+          },
+          "depth": 2,
+          "children": [
+            {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "Aghs.isReady",
+                "slug": "aghsisready"
+              },
+              "depth": 4
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "Aghs.running",
+                "slug": "aghsrunning"
+              },
+              "depth": 4
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "Aghs.modules",
+                "slug": "aghsmodules"
+              },
+              "depth": 4
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "Aghs.canvas",
+                "slug": "aghscanvas"
+              },
+              "depth": 4
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "__frame",
+                "slug": "-frame"
+              },
+              "depth": 4
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "__attached",
+                "slug": "-attached"
+              },
+              "depth": 4
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "chainingExceptions",
+                "slug": "chainingexceptions"
+              },
+              "depth": 4
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "layers",
+                "slug": "layers"
+              },
+              "depth": 4
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "currentLayer",
+                "slug": "currentlayer"
+              },
+              "depth": 4
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "config",
+                "slug": "config"
+              },
+              "depth": 4,
+              "children": [
+                {
+                  "type": "heading",
+                  "data": {
+                    "level": 5,
+                    "title": "fullscreen",
+                    "slug": "fullscreen"
+                  },
+                  "depth": 5
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 5,
+                    "title": "renderer",
+                    "slug": "renderer"
+                  },
+                  "depth": 5
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 5,
+                    "title": "smoothing",
+                    "slug": "smoothing"
+                  },
+                  "depth": 5
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 5,
+                    "title": "width",
+                    "slug": "width"
+                  },
+                  "depth": 5
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 5,
+                    "title": "height",
+                    "slug": "height"
+                  },
+                  "depth": 5
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 5,
+                    "title": "scale",
+                    "slug": "scale"
+                  },
+                  "depth": 5
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 5,
+                    "title": "frameskip",
+                    "slug": "frameskip"
+                  },
+                  "depth": 5
+                }
+              ]
+            }
+          ]
+        }, {
+          "type": "heading",
+          "data": {
+            "level": 2,
+            "title": "Internals",
+            "slug": "internals"
+          },
+          "depth": 2,
+          "children": [
+            {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "Aghs.events",
+                "slug": "aghsevents"
+              },
+              "depth": 4
+            }
+          ]
+        }, {
+          "type": "heading",
+          "data": {
+            "level": 2,
+            "title": "Plugins",
+            "slug": "plugins"
+          },
+          "depth": 2,
+          "children": [
+            {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "world",
+                "slug": "world"
+              },
+              "depth": 4
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "utils",
+                "slug": "utils"
+              },
+              "depth": 4
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "state",
+                "slug": "state"
+              },
+              "depth": 4
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "keyboard",
+                "slug": "keyboard"
+              },
+              "depth": 4
+            }
+          ]
+        }
+      ]
+    }, {
+      "type": "file",
+      "data": {
+        "language": {
+          "nameMatchers": [".md", ".markdown", ".mkd", ".mkdn", ".mdown"],
+          "commentsOnly": true,
+          "name": "Markdown"
+        },
+        "sourcePath": "/home/ubuntu/workspace/app/docs-src/gamestate.md",
+        "projectPath": "docs-src/gamestate.md",
+        "targetPath": "gamestate",
+        "pageTitle": "gamestate",
+        "title": "gamestate"
+      },
+      "depth": 1
+    }, {
+      "type": "file",
+      "data": {
+        "language": {
+          "nameMatchers": [".md", ".markdown", ".mkd", ".mkdn", ".mdown"],
+          "commentsOnly": true,
+          "name": "Markdown"
+        },
+        "sourcePath": "/home/ubuntu/workspace/app/docs-src/keyboard.md",
+        "projectPath": "docs-src/keyboard.md",
+        "targetPath": "keyboard",
+        "pageTitle": "keyboard",
+        "firstHeader": {
+          "type": "heading",
+          "data": {
+            "level": 1,
+            "title": "Aghs Keyboard Plugin",
+            "slug": "aghs-keyboard-plugin",
+            "isFileHeader": true
+          },
+          "depth": 1
+        },
+        "title": "Aghs Keyboard Plugin"
+      },
+      "depth": 1,
+      "outline": [
+        {
+          "type": "heading",
+          "data": {
+            "level": 1,
+            "title": "API",
+            "slug": "api"
+          },
+          "depth": 1,
+          "children": [
+            {
+              "type": "heading",
+              "data": {
+                "level": 2,
+                "title": "Properties",
+                "slug": "properties"
+              },
+              "depth": 2,
+              "children": [
+                {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "Keyboard.disabled",
+                    "slug": "keyboarddisabled"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "Keyboard.keys",
+                    "slug": "keyboardkeys"
+                  },
+                  "depth": 3,
+                  "children": [
+                    {
+                      "type": "heading",
+                      "data": {
+                        "level": 4,
+                        "title": "keys reference",
+                        "slug": "keys-reference"
+                      },
+                      "depth": 4
+                    }
+                  ]
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "Keyboard.pressed",
+                    "slug": "keyboardpressed"
+                  },
+                  "depth": 3
+                }
+              ]
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 2,
+                "title": "Methods",
+                "slug": "methods"
+              },
+              "depth": 2,
+              "children": [
+                {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "Keyboard.capture()",
+                    "slug": "keyboardcapture"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "Keyboard.release()",
+                    "slug": "keyboardrelease"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "Keyboard.clear()",
+                    "slug": "keyboardclear"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "Keyboard.command()",
+                    "slug": "keyboardcommand"
+                  },
+                  "depth": 3
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 3,
+                    "title": "Exposed Internals",
+                    "slug": "exposed-internals"
+                  },
+                  "depth": 3
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }, {
+      "type": "file",
+      "data": {
+        "language": {
+          "nameMatchers": [".md", ".markdown", ".mkd", ".mkdn", ".mdown"],
+          "commentsOnly": true,
+          "name": "Markdown"
+        },
+        "sourcePath": "/home/ubuntu/workspace/app/docs-src/renderer.md",
+        "projectPath": "docs-src/renderer.md",
+        "targetPath": "renderer",
+        "pageTitle": "renderer",
+        "firstHeader": {
+          "type": "heading",
+          "data": {
+            "level": 1,
+            "title": "Aghs.Renderer",
+            "slug": "aghsrenderer",
+            "isFileHeader": true
+          },
+          "depth": 1,
+          "children": [
+            {
+              "type": "heading",
+              "data": {
+                "level": 2,
+                "title": "Methods",
+                "slug": "methods"
+              },
+              "depth": 2,
+              "children": [
+                {
+                  "type": "heading",
+                  "data": {
+                    "level": 4,
+                    "title": "Renderer.clear",
+                    "slug": "rendererclear"
+                  },
+                  "depth": 4
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 4,
+                    "title": "Renderer.fillWith",
+                    "slug": "rendererfillwith"
+                  },
+                  "depth": 4
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 4,
+                    "title": "Renderer.strokeWith",
+                    "slug": "rendererstrokewith"
+                  },
+                  "depth": 4
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 4,
+                    "title": "Renderer.chain",
+                    "slug": "rendererchain"
+                  },
+                  "depth": 4
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 4,
+                    "title": "Renderer.extendContext",
+                    "slug": "rendererextendcontext"
+                  },
+                  "depth": 4
+                }
+              ]
+            }, {
               "type": "heading",
               "data": {
                 "level": 2,
@@ -563,445 +1539,65 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                   ]
                 }
               ]
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 2,
-                "title": "Methods",
-                "slug": "methods"
-              },
-              "depth": 2,
-              "children": [
-                {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "Aghs.clear",
-                    "slug": "aghsclear"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "Aghs.fillWith",
-                    "slug": "aghsfillwith"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "Aghs.strokeWith",
-                    "slug": "aghsstrokewith"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "Aghs.antialias",
-                    "slug": "aghsantialias"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "Aghs.render",
-                    "slug": "aghsrender"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "Aghs.step",
-                    "slug": "aghsstep"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "Aghs.module",
-                    "slug": "aghsmodule"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "Aghs.chain",
-                    "slug": "aghschain"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "Aghs.extendContext",
-                    "slug": "aghsextendcontext"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "Aghs.ready",
-                    "slug": "aghsready"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "Aghs.start",
-                    "slug": "aghsstart"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "Aghs.stop",
-                    "slug": "aghsstop"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "Aghs.attach",
-                    "slug": "aghsattach"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "Aghs.unattach",
-                    "slug": "aghsunattach"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "Aghs.maximize",
-                    "slug": "aghsmaximize"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "Aghs.settings",
-                    "slug": "aghssettings"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "Aghs.layer",
-                    "slug": "aghslayer"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "Aghs.screen",
-                    "slug": "aghsscreen"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "Aghs.draw",
-                    "slug": "aghsdraw"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "Aghs.resize",
-                    "slug": "aghsresize"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "Aghs.polygon",
-                    "slug": "aghspolygon"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "Aghs.triangle",
-                    "slug": "aghstriangle"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "Aghs.strs",
-                    "slug": "aghsstrs"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "Aghs.trs",
-                    "slug": "aghstrs"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "Aghs.do",
-                    "slug": "aghsdo"
-                  },
-                  "depth": 4
-                }
-              ]
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 2,
-                "title": "Properties",
-                "slug": "properties"
-              },
-              "depth": 2,
-              "children": [
-                {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "Aghs.isReady",
-                    "slug": "aghsisready"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "Aghs.running",
-                    "slug": "aghsrunning"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "Aghs.modules",
-                    "slug": "aghsmodules"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "Aghs.canvas",
-                    "slug": "aghscanvas"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "Aghs.context",
-                    "slug": "aghscontext"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "Aghs._",
-                    "slug": "aghs-"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "__frame",
-                    "slug": "-frame"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "__attached",
-                    "slug": "-attached"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "chainingExceptions",
-                    "slug": "chainingexceptions"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "layers",
-                    "slug": "layers"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "currentLayer",
-                    "slug": "currentlayer"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "config",
-                    "slug": "config"
-                  },
-                  "depth": 4,
-                  "children": [
-                    {
-                      "type": "heading",
-                      "data": {
-                        "level": 5,
-                        "title": "fullscreen",
-                        "slug": "fullscreen"
-                      },
-                      "depth": 5
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 5,
-                        "title": "wrappedContext",
-                        "slug": "wrappedcontext"
-                      },
-                      "depth": 5
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 5,
-                        "title": "smoothing",
-                        "slug": "smoothing"
-                      },
-                      "depth": 5
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 5,
-                        "title": "width",
-                        "slug": "width"
-                      },
-                      "depth": 5
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 5,
-                        "title": "height",
-                        "slug": "height"
-                      },
-                      "depth": 5
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 5,
-                        "title": "scale",
-                        "slug": "scale"
-                      },
-                      "depth": 5
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 5,
-                        "title": "frameskip",
-                        "slug": "frameskip"
-                      },
-                      "depth": 5
-                    }
-                  ]
-                }
-              ]
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 2,
-                "title": "Internals",
-                "slug": "internals"
-              },
-              "depth": 2,
-              "children": [
-                {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "Aghs.events",
-                    "slug": "aghsevents"
-                  },
-                  "depth": 4
-                }
-              ]
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 2,
-                "title": "Plugins",
-                "slug": "plugins"
-              },
-              "depth": 2,
-              "children": [
-                {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "world",
-                    "slug": "world"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "utils",
-                    "slug": "utils"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "state",
-                    "slug": "state"
-                  },
-                  "depth": 4
-                }
-              ]
             }
           ]
         },
-        "title": "API"
+        "title": "Aghs.Renderer"
       },
       "depth": 1,
       "outline": [
         {
+          "type": "heading",
+          "data": {
+            "level": 2,
+            "title": "Methods",
+            "slug": "methods"
+          },
+          "depth": 2,
+          "children": [
+            {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "Renderer.clear",
+                "slug": "rendererclear"
+              },
+              "depth": 4
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "Renderer.fillWith",
+                "slug": "rendererfillwith"
+              },
+              "depth": 4
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "Renderer.strokeWith",
+                "slug": "rendererstrokewith"
+              },
+              "depth": 4
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "Renderer.chain",
+                "slug": "rendererchain"
+              },
+              "depth": 4
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 4,
+                "title": "Renderer.extendContext",
+                "slug": "rendererextendcontext"
+              },
+              "depth": 4
+            }
+          ]
+        }, {
           "type": "heading",
           "data": {
             "level": 2,
@@ -1493,748 +2089,6 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                   "depth": 4
                 }
               ]
-            }
-          ]
-        }, {
-          "type": "heading",
-          "data": {
-            "level": 2,
-            "title": "Methods",
-            "slug": "methods"
-          },
-          "depth": 2,
-          "children": [
-            {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "Aghs.clear",
-                "slug": "aghsclear"
-              },
-              "depth": 4
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "Aghs.fillWith",
-                "slug": "aghsfillwith"
-              },
-              "depth": 4
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "Aghs.strokeWith",
-                "slug": "aghsstrokewith"
-              },
-              "depth": 4
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "Aghs.antialias",
-                "slug": "aghsantialias"
-              },
-              "depth": 4
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "Aghs.render",
-                "slug": "aghsrender"
-              },
-              "depth": 4
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "Aghs.step",
-                "slug": "aghsstep"
-              },
-              "depth": 4
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "Aghs.module",
-                "slug": "aghsmodule"
-              },
-              "depth": 4
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "Aghs.chain",
-                "slug": "aghschain"
-              },
-              "depth": 4
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "Aghs.extendContext",
-                "slug": "aghsextendcontext"
-              },
-              "depth": 4
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "Aghs.ready",
-                "slug": "aghsready"
-              },
-              "depth": 4
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "Aghs.start",
-                "slug": "aghsstart"
-              },
-              "depth": 4
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "Aghs.stop",
-                "slug": "aghsstop"
-              },
-              "depth": 4
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "Aghs.attach",
-                "slug": "aghsattach"
-              },
-              "depth": 4
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "Aghs.unattach",
-                "slug": "aghsunattach"
-              },
-              "depth": 4
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "Aghs.maximize",
-                "slug": "aghsmaximize"
-              },
-              "depth": 4
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "Aghs.settings",
-                "slug": "aghssettings"
-              },
-              "depth": 4
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "Aghs.layer",
-                "slug": "aghslayer"
-              },
-              "depth": 4
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "Aghs.screen",
-                "slug": "aghsscreen"
-              },
-              "depth": 4
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "Aghs.draw",
-                "slug": "aghsdraw"
-              },
-              "depth": 4
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "Aghs.resize",
-                "slug": "aghsresize"
-              },
-              "depth": 4
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "Aghs.polygon",
-                "slug": "aghspolygon"
-              },
-              "depth": 4
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "Aghs.triangle",
-                "slug": "aghstriangle"
-              },
-              "depth": 4
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "Aghs.strs",
-                "slug": "aghsstrs"
-              },
-              "depth": 4
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "Aghs.trs",
-                "slug": "aghstrs"
-              },
-              "depth": 4
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "Aghs.do",
-                "slug": "aghsdo"
-              },
-              "depth": 4
-            }
-          ]
-        }, {
-          "type": "heading",
-          "data": {
-            "level": 2,
-            "title": "Properties",
-            "slug": "properties"
-          },
-          "depth": 2,
-          "children": [
-            {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "Aghs.isReady",
-                "slug": "aghsisready"
-              },
-              "depth": 4
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "Aghs.running",
-                "slug": "aghsrunning"
-              },
-              "depth": 4
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "Aghs.modules",
-                "slug": "aghsmodules"
-              },
-              "depth": 4
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "Aghs.canvas",
-                "slug": "aghscanvas"
-              },
-              "depth": 4
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "Aghs.context",
-                "slug": "aghscontext"
-              },
-              "depth": 4
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "Aghs._",
-                "slug": "aghs-"
-              },
-              "depth": 4
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "__frame",
-                "slug": "-frame"
-              },
-              "depth": 4
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "__attached",
-                "slug": "-attached"
-              },
-              "depth": 4
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "chainingExceptions",
-                "slug": "chainingexceptions"
-              },
-              "depth": 4
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "layers",
-                "slug": "layers"
-              },
-              "depth": 4
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "currentLayer",
-                "slug": "currentlayer"
-              },
-              "depth": 4
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "config",
-                "slug": "config"
-              },
-              "depth": 4,
-              "children": [
-                {
-                  "type": "heading",
-                  "data": {
-                    "level": 5,
-                    "title": "fullscreen",
-                    "slug": "fullscreen"
-                  },
-                  "depth": 5
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 5,
-                    "title": "wrappedContext",
-                    "slug": "wrappedcontext"
-                  },
-                  "depth": 5
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 5,
-                    "title": "smoothing",
-                    "slug": "smoothing"
-                  },
-                  "depth": 5
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 5,
-                    "title": "width",
-                    "slug": "width"
-                  },
-                  "depth": 5
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 5,
-                    "title": "height",
-                    "slug": "height"
-                  },
-                  "depth": 5
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 5,
-                    "title": "scale",
-                    "slug": "scale"
-                  },
-                  "depth": 5
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 5,
-                    "title": "frameskip",
-                    "slug": "frameskip"
-                  },
-                  "depth": 5
-                }
-              ]
-            }
-          ]
-        }, {
-          "type": "heading",
-          "data": {
-            "level": 2,
-            "title": "Internals",
-            "slug": "internals"
-          },
-          "depth": 2,
-          "children": [
-            {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "Aghs.events",
-                "slug": "aghsevents"
-              },
-              "depth": 4
-            }
-          ]
-        }, {
-          "type": "heading",
-          "data": {
-            "level": 2,
-            "title": "Plugins",
-            "slug": "plugins"
-          },
-          "depth": 2,
-          "children": [
-            {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "world",
-                "slug": "world"
-              },
-              "depth": 4
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "utils",
-                "slug": "utils"
-              },
-              "depth": 4
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "state",
-                "slug": "state"
-              },
-              "depth": 4
-            }
-          ]
-        }
-      ]
-    }, {
-      "type": "file",
-      "data": {
-        "language": {
-          "nameMatchers": [".md", ".markdown", ".mkd", ".mkdn", ".mdown"],
-          "commentsOnly": true,
-          "name": "Markdown"
-        },
-        "sourcePath": "/home/ubuntu/workspace/app/docs-src/gamestate.md",
-        "projectPath": "docs-src/gamestate.md",
-        "targetPath": "gamestate",
-        "pageTitle": "gamestate",
-        "firstHeader": {
-          "type": "heading",
-          "data": {
-            "level": 1,
-            "title": "Aghs Gamestate Plugin",
-            "slug": "aghs-gamestate-plugin",
-            "isFileHeader": true
-          },
-          "depth": 1,
-          "children": [
-            {
-              "type": "heading",
-              "data": {
-                "level": 2,
-                "title": "GameState Object",
-                "slug": "gamestate-object"
-              },
-              "depth": 2
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 2,
-                "title": "Using Proxy API",
-                "slug": "using-proxy-api"
-              },
-              "depth": 2,
-              "children": [
-                {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "If an object is passed, create a new gamestate with the object&#39;s properties.",
-                    "slug": "if-an-object-is-passed-create-a-new-gamestate-with-the-object39s-properties"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "If a string is passed, activate the state with a name matching the argument",
-                    "slug": "if-a-string-is-passed-activate-the-state-with-a-name-matching-the-argument"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "If no arguments are passed: Return the gamestate object.",
-                    "slug": "if-no-arguments-are-passed-return-the-gamestate-object"
-                  },
-                  "depth": 4
-                }
-              ]
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 2,
-                "title": "Methods",
-                "slug": "methods"
-              },
-              "depth": 2,
-              "children": [
-                {
-                  "type": "heading",
-                  "data": {
-                    "level": 3,
-                    "title": "GameState.add",
-                    "slug": "gamestateadd"
-                  },
-                  "depth": 3,
-                  "children": [
-                    {
-                      "type": "heading",
-                      "data": {
-                        "level": 4,
-                        "title": "State Object",
-                        "slug": "state-object"
-                      },
-                      "depth": 4
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 4,
-                        "title": "Overrides",
-                        "slug": "overrides"
-                      },
-                      "depth": 4
-                    }
-                  ]
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 3,
-                    "title": "GameState.set",
-                    "slug": "gamestateset"
-                  },
-                  "depth": 3
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 3,
-                    "title": "GameState.get",
-                    "slug": "gamestateget"
-                  },
-                  "depth": 3
-                }
-              ]
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 2,
-                "title": "GameState Lifecycle",
-                "slug": "gamestate-lifecycle"
-              },
-              "depth": 2
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 2,
-                "title": "GameState Events",
-                "slug": "gamestate-events"
-              },
-              "depth": 2
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 2,
-                "title": "Getting Started",
-                "slug": "getting-started"
-              },
-              "depth": 2,
-              "children": [
-                {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "Example 1: Creating a Gamestate",
-                    "slug": "example-1-creating-a-gamestate"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "Example 2: Changing between Gamestates",
-                    "slug": "example-2-changing-between-gamestates"
-                  },
-                  "depth": 4
-                }
-              ]
-            }
-          ]
-        },
-        "title": "Aghs Gamestate Plugin"
-      },
-      "depth": 1,
-      "outline": [
-        {
-          "type": "heading",
-          "data": {
-            "level": 2,
-            "title": "GameState Object",
-            "slug": "gamestate-object"
-          },
-          "depth": 2
-        }, {
-          "type": "heading",
-          "data": {
-            "level": 2,
-            "title": "Using Proxy API",
-            "slug": "using-proxy-api"
-          },
-          "depth": 2,
-          "children": [
-            {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "If an object is passed, create a new gamestate with the object&#39;s properties.",
-                "slug": "if-an-object-is-passed-create-a-new-gamestate-with-the-object39s-properties"
-              },
-              "depth": 4
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "If a string is passed, activate the state with a name matching the argument",
-                "slug": "if-a-string-is-passed-activate-the-state-with-a-name-matching-the-argument"
-              },
-              "depth": 4
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "If no arguments are passed: Return the gamestate object.",
-                "slug": "if-no-arguments-are-passed-return-the-gamestate-object"
-              },
-              "depth": 4
-            }
-          ]
-        }, {
-          "type": "heading",
-          "data": {
-            "level": 2,
-            "title": "Methods",
-            "slug": "methods"
-          },
-          "depth": 2,
-          "children": [
-            {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "GameState.add",
-                "slug": "gamestateadd"
-              },
-              "depth": 3,
-              "children": [
-                {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "State Object",
-                    "slug": "state-object"
-                  },
-                  "depth": 4
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 4,
-                    "title": "Overrides",
-                    "slug": "overrides"
-                  },
-                  "depth": 4
-                }
-              ]
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "GameState.set",
-                "slug": "gamestateset"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "GameState.get",
-                "slug": "gamestateget"
-              },
-              "depth": 3
-            }
-          ]
-        }, {
-          "type": "heading",
-          "data": {
-            "level": 2,
-            "title": "GameState Lifecycle",
-            "slug": "gamestate-lifecycle"
-          },
-          "depth": 2
-        }, {
-          "type": "heading",
-          "data": {
-            "level": 2,
-            "title": "GameState Events",
-            "slug": "gamestate-events"
-          },
-          "depth": 2
-        }, {
-          "type": "heading",
-          "data": {
-            "level": 2,
-            "title": "Getting Started",
-            "slug": "getting-started"
-          },
-          "depth": 2,
-          "children": [
-            {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "Example 1: Creating a Gamestate",
-                "slug": "example-1-creating-a-gamestate"
-              },
-              "depth": 4
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 4,
-                "title": "Example 2: Changing between Gamestates",
-                "slug": "example-2-changing-between-gamestates"
-              },
-              "depth": 4
             }
           ]
         }

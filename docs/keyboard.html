@@ -1,0 +1,92 @@
+<!DOCTYPE html><html lang="en"><head><title>keyboard</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="keyboard"><meta name="groc-project-path" content="docs-src/keyboard.md"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">docs-src/keyboard.md</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="aghs-keyboard-plugin">Aghs Keyboard Plugin</h1>
+<p>A plugin that allows access to a human-friendly reference of keys, and their state.</p>
+<p>In essence, it is a fork of <a href="https://github.com/rezoner/playground/blob/master/src/Keyboard.js">Playground.js&#39;s keyboard</a>, but rewritten in coffeescript.</p>
+<h1 id="api">API</h1>
+<h2 id="properties">Properties</h2>
+<h3 id="keyboarddisabled">Keyboard.disabled</h3>
+<p>If set to <code>true</code> keyboard will not register any further keys as pressed.<br>Defaults to <code>false</code>.</p>
+<h3 id="keyboardkeys">Keyboard.keys</h3>
+<p>An object consisting of lowercase and trimmed <em>name</em> of all keyboard buttons as keys and a value of either <code>true</code>/<code>false</code>. <code>Keyboard.keys</code> will allow you to access individual keys to determine if they&#39;re currently pressed. See the usage section for examples. Below are the names of the keys</p>
+<h4 id="keys-reference">keys reference</h4>
+<ul>
+<li><code>left</code></li>
+<li><code>up</code></li>
+<li><code>right</code></li>
+<li><code>down</code></li>
+<li><code>insert</code></li>
+<li><code>delete</code></li>
+<li><code>backspace</code></li>
+<li><code>tab</code></li>
+<li><code>enter</code></li>
+<li><code>shift</code></li>
+<li><code>ctrl</code></li>
+<li><code>alt</code></li>
+<li><code>pause</code></li>
+<li><code>caps-lock</code></li>
+<li><code>escape</code></li>
+<li><code>space</code></li>
+<li><code>pageup</code></li>
+<li><code>pagedown</code></li>
+<li><code>end</code></li>
+<li><code>home</code></li>
+<li><code>numpad_0</code></li>
+<li><code>numpad_1</code></li>
+<li><code>numpad_2</code></li>
+<li><code>numpad_3</code></li>
+<li><code>numpad_4</code></li>
+<li><code>numpad_5</code></li>
+<li><code>numpad_6</code></li>
+<li><code>numpad_7</code></li>
+<li><code>numpad_8</code></li>
+<li><code>numpad_9</code></li>
+<li><code>numpad_mul</code></li>
+<li><code>numpad_add</code></li>
+<li><code>numpad_sub</code></li>
+<li><code>numpad_dec</code></li>
+<li><code>numpad_div</code></li>
+<li><code>f1</code></li>
+<li><code>f2</code></li>
+<li><code>f3</code></li>
+<li><code>f4</code></li>
+<li><code>f5</code></li>
+<li><code>f6</code></li>
+<li><code>f7</code></li>
+<li><code>f8</code></li>
+<li><code>f9</code></li>
+<li><code>f10</code></li>
+<li><code>f11</code></li>
+<li><code>f12</code></li>
+<li><code>numlock</code></li>
+<li><code>scrolllock</code></li>
+<li><code>semicolon</code></li>
+<li><code>equal</code></li>
+<li><code>comma</code></li>
+<li><code>dash</code></li>
+<li><code>period</code></li>
+<li><code>slash</code></li>
+<li><code>grave-accent</code></li>
+<li><code>open-bracket</code></li>
+<li><code>backslash</code></li>
+<li><code>closebracket</code></li>
+<li><code>singlequote</code></li>
+</ul>
+<h3 id="keyboardpressed">Keyboard.pressed</h3>
+<p>An array of all keys that are pressed.</p>
+<h2 id="methods">Methods</h2>
+<h3 id="keyboardcapture">Keyboard.capture()</h3>
+<p>Add event listeners, to begin watching for keyup and keydown changes.<br><em>Note: <code>keypress</code> changes aren&#39;t listened for.</em></p>
+<h3 id="keyboardrelease">Keyboard.release()</h3>
+<p>Functionally, the inverse of <code>Keyboard.capture()</code> Removes &quot;keydown&quot; and &quot;keyup&quot; event listeners from the document.</p>
+<h3 id="keyboardclear">Keyboard.clear()</h3>
+<p>Resets the state of the <code>Keyboard.pressed</code> to an empty array.</p>
+<h3 id="keyboardcommand">Keyboard.command()</h3>
+<p>Parameters: <code>array</code> keys, <code>bool</code> exactMatch <em>default: <code>true</code></em></p>
+<p>Returns <code>true</code> if all key names in the parameter <code>keys</code> array are pressed-otherwise <code>false</code>.</p>
+<p>A few examples:</p>
+<pre><code>aghs.keyboard.command([&quot;ctrl&quot;, &quot;alt&quot;, &quot;left&quot;])
+aghs.keyboard.command([&quot;left&quot;, &quot;up&quot;])</code></pre>
+<h3 id="exposed-internals">Exposed Internals</h3>
+<h3 id="-on-prototype-keyboard-handler-"><code>[on prototype]</code> Keyboard.handler()</h3>
+<p>The callback for the event listeners related <code>keyup</code> / <code>keydown</code>.</p>
+<h3 id="-on-prototype-keyboard-keycodes"><code>[on prototype]</code> Keyboard.keycodes</h3>
+<p>An object containing keys for each keyboard charactor code, and values for their name.</p></div></div></div></div></body></html>

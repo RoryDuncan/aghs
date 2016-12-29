@@ -1,0 +1,85 @@
+<!DOCTYPE html><html lang="en"><head><title>renderer</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="renderer"><meta name="groc-project-path" content="docs-src/renderer.md"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">docs-src/renderer.md</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="aghsrenderer">Aghs.Renderer</h1>
+<h2 id="methods">Methods</h2>
+<p>The following methods are attached to the Renderer&#39;s prototype.</p>
+<h4 id="rendererclear">Renderer.clear</h4>
+<p>Parameter: <code>String</code> color
+Default: <code>#fff</code>
+Shorthand method for quickly filling the entire drawing context with the fill color.</p>
+<h4 id="rendererfillwith">Renderer.fillWith</h4>
+<p>Parameter: <code>String</code> color
+Default: <code>#000000</code>
+Shorthand method for quickly setting <code>fillStyle()</code> and then immediately filling via <code>.fill()</code>.</p>
+<h4 id="rendererstrokewith">Renderer.strokeWith</h4>
+<p>Paramter: <code>String</code> color
+Default: <code>#000000</code>
+Shorthand method for quickly setting <code>strokeStyle</code> and then immediately stroking via <code>.stroke()</code>.</p>
+<h4 id="rendererchain">Renderer.chain</h4>
+<p>Parameters: <code>Function</code> func, <code>Boolean</code> hasReturnValue
+Returns a function that will always return the Renderer instance.</p>
+<p><em>Note: This function is used internally, it may have access removed later</em></p>
+<h4 id="rendererextendcontext">Renderer.extendContext</h4>
+<p>Internal function used for extending <code>CanvasRenderingContext2D</code>. Not recommended to be called.
+This function will be remove from access in a future version.</p>
+<h2 id="drawing-api">Drawing API</h2>
+<h3 id="extending-canvasrenderingcontext2d">Extending CanvasRenderingContext2D</h3>
+<p>The following methods are extensions of the <a href="https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D">CanvasRenderingContext2D</a>. The primary difference is that the methods below are chainable, unless they return a meaningful value. Methods with a meaningful return value are on <code>Renderer.chainingExceptions</code>.</p>
+<p>You may refer to the excellent <a href="https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D">CanvasRenderingContext2D</a> documentation on Mozilla Developer Network (MDN).</p>
+<h4 id="globalalpha">globalAlpha</h4>
+<h4 id="globalcompositeoperation">globalCompositeOperation</h4>
+<h4 id="filter">filter</h4>
+<h4 id="imagesmoothingenabled">imageSmoothingEnabled</h4>
+<h4 id="imagesmoothingquality">imageSmoothingQuality</h4>
+<h4 id="strokestyle">strokeStyle</h4>
+<h4 id="fillstyle">fillStyle</h4>
+<h4 id="shadowoffsetx">shadowOffsetX</h4>
+<h4 id="shadowoffsety">shadowOffsetY</h4>
+<h4 id="shadowblur">shadowBlur</h4>
+<h4 id="shadowcolor">shadowColor</h4>
+<h4 id="linewidth">lineWidth</h4>
+<h4 id="linecap">lineCap</h4>
+<h4 id="linejoin">lineJoin</h4>
+<h4 id="miterlimit">miterLimit</h4>
+<h4 id="linedashoffset">lineDashOffset</h4>
+<h4 id="font">font</h4>
+<h4 id="textalign">textAlign</h4>
+<h4 id="textbaseline">textBaseline</h4>
+<h4 id="save">save</h4>
+<h4 id="restore">restore</h4>
+<h4 id="scale">scale</h4>
+<h4 id="rotate">rotate</h4>
+<h4 id="translate">translate</h4>
+<h4 id="transform">transform</h4>
+<h4 id="settransform">setTransform</h4>
+<h4 id="resettransform">resetTransform</h4>
+<h4 id="createlineargradient">createLinearGradient</h4>
+<h4 id="createradialgradient">createRadialGradient</h4>
+<h4 id="createpattern">createPattern</h4>
+<h4 id="clearrect">clearRect</h4>
+<h4 id="fillrect">fillRect</h4>
+<h4 id="strokerect">strokeRect</h4>
+<h4 id="beginpath">beginPath</h4>
+<h4 id="fill">fill</h4>
+<h4 id="stroke">stroke</h4>
+<h4 id="drawfocusifneeded">drawFocusIfNeeded</h4>
+<h4 id="clip">clip</h4>
+<h4 id="ispointinpath">isPointInPath</h4>
+<h4 id="ispointinstroke">isPointInStroke</h4>
+<h4 id="filltext">fillText</h4>
+<h4 id="stroketext">strokeText</h4>
+<h4 id="measuretext">measureText</h4>
+<h4 id="drawimage">drawImage</h4>
+<h4 id="createimagedata-non-chainable">createImageData (Non Chainable)</h4>
+<h4 id="getimagedata-non-chainable">getImageData (Non Chainable)</h4>
+<h4 id="putimagedata">putImageData</h4>
+<h4 id="setlinedash">setLineDash</h4>
+<h4 id="closepath">closePath</h4>
+<h4 id="moveto">moveTo</h4>
+<h4 id="lineto">lineTo</h4>
+<h4 id="quadraticcurveto">quadraticCurveTo</h4>
+<h4 id="beziercurveto">bezierCurveTo</h4>
+<h4 id="arcto">arcTo</h4>
+<h4 id="rect">rect</h4>
+<h4 id="arc">arc</h4>
+<h4 id="ellipse">ellipse</h4>
+<h4 id="getcontextattributes-non-chainable">getContextAttributes (Non Chainable)</h4>
+<h4 id="getlinedash-non-chainable">getLineDash (Non Chainable)</h4></div></div></div></div></body></html>
