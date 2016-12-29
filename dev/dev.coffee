@@ -7,7 +7,7 @@ do () ->
   
   app = window.Aghs()
   world = app.world
-  # world.viewport(400, 400)
+  world.viewport(window.innerWidth - 20, window.innerHeight - 20)
   keyboard = app.keyboard
   console.log(app)
   
