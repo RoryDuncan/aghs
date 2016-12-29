@@ -22,12 +22,13 @@ int = (v) -> return Math.round(v);
 # World Object
 # An object to execute CanvasRenderingContext2D methods relative to a coordinate system.
 #
-World = (@aghs = null, options = {}) ->
+World = (@aghs, options = {}) ->
 
   throw new TypeError "Missing Agh.js Instance as first parameter." unless @aghs
   
   # operates on the primary context, not other layers
-  @_ = @aghs._
+  @$ = @aghs.renderer
+  
   @type = "cartesian"
   
   @orientation = 
@@ -44,8 +45,8 @@ World = (@aghs = null, options = {}) ->
     y: 0
     z: 0
     perspective: 1000
-    width: options.width or @aghs.width
-    height: options.height or @aghs.height
+    width: @$.canvas.width
+    height: @$.canvas.height
   
   # offsets are added to each x and y calculation
   @offset = 
@@ -134,7 +135,7 @@ World::set = (x, y) ->
 # show relevant information rendered onto the canvas.
 World::debug = () ->
   size = 12
-  @aghs.fillStyle "#000"
+  @$.fillStyle "#000"
   .font("#{size}px Small Fonts")
   .fillText("view: x: #{@view.x}, y: #{@view.y} w: #{@view.width} h: #{@view.height}", size, @view.height - size*2)
   .fillText("offset: #{@offset.x}, #{@offset.y}", size, @view.height - size)
@@ -152,35 +153,35 @@ Methods that operate on the HTMLCanvasRendering Context
 #
 # this, ctx.translate(x, y);
 World::translate = (x = 0, y = 0) ->
-  @_.translate.apply(@_, @calc(x, y))
+  @$.translate.apply(@$, @calc(x, y))
   return @
 
 #
 # this, ctx.fillRect(x, y, width, height);
 World::fillRect = (x = 0, y = 0, w, h) ->
   [calcX, calcY] = @calc x, y
-  @aghs.fillRect(calcX, calcY, w, h)
+  @$.fillRect(calcX, calcY, w, h)
   return @
 
 #
 # void ctx.strokeRect(x, y, width, height);
 World::strokeRect = (x, y, w, h) -> 
   [calcX, calcY] = @calc x, y
-  @aghs.strokeRect(calcX, calcY, w, h)
+  @$.strokeRect(calcX, calcY, w, h)
   return @
 
 #
 # void ctx.moveTo(x, y);
 World::moveTo = (x, y) -> 
   [calcX, calcY] = @calc x, y
-  @_.moveTo.apply(@_, @calc(x, y))
+  @$.moveTo.apply(@_, @calc(x, y))
   return @
 
 #
 # void ctx.lineTo(x, y);
 World::lineTo = (x, y) ->
   [calcX, calcY] = @calc x, y
-  @_.lineTo.apply(@_, @calc(x, y))
+  @$.lineTo.apply(@_, @calc(x, y))
   return @
 
 #
@@ -188,7 +189,7 @@ World::lineTo = (x, y) ->
 World::quadraticCurveTo = (cpx, cpy, x, y) ->
   [_cpx, _cpy] = @calc(cpx, cpy)
   [_x, _y] = @calc(x, y)
-  @_.quadraticCurveTo(_cpx, _cpy, _x, _y)
+  @$.quadraticCurveTo(_cpx, _cpy, _x, _y)
   return @
   
 
@@ -198,7 +199,7 @@ World::bezierCurveTo = (cp1x, cp1y, cp2x, cp2y, x, y) ->
   [_cp1x, _cp1y] = @calc(cp1x, cp1y)
   [_cp2x, _cp2y] = @calc(cp2x, cp2y)
   [_x, _y] = @calc(x, y)
-  @_.bezierCurveTo(_cp1x, _cp1y, _cp2x, _cp2y, _x, _y)
+  @$.bezierCurveTo(_cp1x, _cp1y, _cp2x, _cp2y, _x, _y)
   return @
 
 #
@@ -206,34 +207,34 @@ World::bezierCurveTo = (cp1x, cp1y, cp2x, cp2y, x, y) ->
 World::arcTo = (x1, y1, x2, y2, radius) ->
   [startx, starty] = @calc(x1, y1)
   [endx, endy] = @calc(x2, y2)
-  @_.arcTo(startx, starty, endx, endy, radius)
+  @$.arcTo(startx, starty, endx, endy, radius)
   return @
 #
 # void ctx.rect(x, y, width, height);
 World::rect = (x, y, width, height) ->
   [_x, _y] = @calc(x,y)
-  @_.rect(_x, _y, width, height)
+  @$.rect(_x, _y, width, height)
   return @
 
 #
 # void ctx.arc(x, y, radius, startAngle, endAngle, anticlockwise);
 World::arc = (x, y, radius, startAngle, endAngle, anticlockwise) ->
   [_x, _y] = @calc(x, y);
-  @_.arc(_x, _y, radius, startAngle, endAngle, anticlockwise)
+  @$.arc(_x, _y, radius, startAngle, endAngle, anticlockwise)
   return @
 
 #
 # void ctx.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, anticlockwise);
 World::ellipse = (x, y, radiusX, radiusY, rotation, startAngle, endAngle, anticlockwise) ->
   [_x, _y] = @calc(x, y)
-  @_.ellipse(_x, _y, radiusX, radiusY, rotation, startAngle, endAngle, anticlockwise)
+  @$.ellipse(_x, _y, radiusX, radiusY, rotation, startAngle, endAngle, anticlockwise)
   return @
 
 #
 # ImageData ctx.getImageData(sx, sy, sw, sh);
 World::getImageData = (sx, sy, sw, sh) ->
   [x, y] = @calc(sx, sy)
-  @_.getImageData(x, y, sw, sh)
+  @$.getImageData(x, y, sw, sh)
   return @
 
 #
@@ -241,7 +242,7 @@ World::getImageData = (sx, sy, sw, sh) ->
 # void ctx.putImageData(imagedata, dx, dy, dirtyX, dirtyY, dirtyWidth, dirtyHeight);
 World::putImageData = (imgdata, dx, dy, dirtyX, dirtyY, dirtyWidth, dirtyHeight) ->
   [x, y] = @calc(dx, dy)
-  @_.putImageData(imgdata, x, y, dirtyX, dirtyY, dirtyWidth, dirtyHeight)
+  @$.putImageData(imgdata, x, y, dirtyX, dirtyY, dirtyWidth, dirtyHeight)
   return @
 
 #

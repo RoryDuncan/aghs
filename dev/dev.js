@@ -6,7 +6,6 @@
   }
   app = window.Aghs();
   world = app.world;
-  world.viewport(400, 400);
   keyboard = app.keyboard;
   console.log(app);
   examples = {};

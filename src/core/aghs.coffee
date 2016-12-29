@@ -31,6 +31,7 @@ Aghs = (options = {}) ->
   @module "events",     new EventEmitter() unless options.events is false
   @module "renderer",   new Renderer(options) unless options.renderer is false
   @$ = @renderer
+  @canvas = @renderer.CANVAS
   @isReady = false
   
   # begin readiness detection
@@ -55,7 +56,7 @@ Aghs = (options = {}) ->
   screen = 
     canvas:   @renderer.canvas
     context:  @renderer.context
-
+    
   @layers = {screen}
   
   # internal events
@@ -67,9 +68,6 @@ Aghs = (options = {}) ->
   @configure(new Configuration(options))
   
   return @
-
-Aghs::canvas = () ->
-  return @renderer.canvas
 
 Aghs::Configuration = (options = {}) ->
   
@@ -215,9 +213,8 @@ Aghs::unattach = (modulename) ->
 #
 # change the canvas to fit the viewport
 Aghs::maximize = () ->
-  canvas = @canvas()
-  canvas.width = window.innerWidth
-  canvas.height = window.innerHeight
+  @canvas.width = window.innerWidth
+  @canvas.height = window.innerHeight
   @events.trigger "resize"
   return @
 

@@ -75,9 +75,9 @@ Keyboard::handler = (e) ->
   else 
     key = @keycodes[char]
 
-  unless @allowBubbling.indexOf key > 0  
-    e.preventdefault()
-    e.stoppropagation()
+  if @allowBubbling.indexOf(key) < 0
+    e.preventDefault()
+    e.stopPropagation()
   
   
   @keys[key] = pressed;
