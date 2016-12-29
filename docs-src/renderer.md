@@ -99,3 +99,62 @@ You may refer to the excellent [CanvasRenderingContext2D](https://developer.mozi
 #### ellipse
 #### getContextAttributes (Non Chainable)
 #### getLineDash (Non Chainable)
+
+
+#### Renderer.polygon
+Parameter: `Array` points
+Creates a `CanvasRenderingContext2D` path from an array of coordinates. The last point in the chain is then connected back to the first point, making the polygonal path.
+
+Example:
+
+```
+poly = [
+  { x: 18,   y: 90 },
+  { x: 50,   y: 90 },
+  { x: 103,  y: 60 },
+  { x: 216,  y: 60 } 
+]
+```
+
+Because Renderer utilizes chaining, you can then call your drawing methods afterwords after `Renderer.polygon()`.
+_Using the `poly` variable from the snippet above_:
+
+```
+Renderer.polygon(poly).strokeWith("black").fillWith("green")
+
+```
+
+#### Renderer.triangle
+Shorthand syntax for a 3 point polygon. See `Renderer.polygon()`.
+
+#### Renderer.strs
+
+Performs a `s`ave, `t`ranslate, `r`otate, and `s`cale.
+Shorthand initialism and technique inspired by[CanvasQuery.js's STARS](http://canvasquery.com/stars).
+
+The difference being that Aghs does not use an internal align property, so it is without it.
+
+#### Aghs.trs
+Parameters: `
+Like `Renderer.strs()`, but without the `.save()`.
+
+#### Aghs.do
+
+Do is a way to quickly apply a save and restore around another set of actions.
+Rather than needing to do:
+
+``` coffee
+  
+  aghs.save()
+  someFunc()
+  someOtherFunc()
+  etcFunc()
+  aghs.restore()
+
+```
+
+You can instead use `.do()`:
+
+``` coffee
+Renderer.do someFunc, someOtherFunc, etcFunc
+```
