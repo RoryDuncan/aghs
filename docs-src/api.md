@@ -1,100 +1,6 @@
 # API
 
-## Drawing API
-
-### Extending CanvasRenderingContext2D
-
-The following methods are extensions of the [CanvasRenderingContext2D](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D). The primary difference is that the methods below are chainable, unless they return a meaningful value. Those values are specified.
-
-You may refer to the excellent [CanvasRenderingContext2D](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D) documentation on Mozilla Developer Network (MDN).
-
-#### globalAlpha
-#### globalCompositeOperation
-#### filter
-#### imageSmoothingEnabled
-#### imageSmoothingQuality
-#### strokeStyle
-#### fillStyle
-#### shadowOffsetX
-#### shadowOffsetY
-#### shadowBlur
-#### shadowColor
-#### lineWidth
-#### lineCap
-#### lineJoin
-#### miterLimit
-#### lineDashOffset
-#### font
-#### textAlign
-#### textBaseline
-#### save
-#### restore
-#### scale
-#### rotate
-#### translate
-#### transform
-#### setTransform
-#### resetTransform
-#### createLinearGradient
-#### createRadialGradient
-#### createPattern
-#### clearRect
-#### fillRect
-#### strokeRect
-#### beginPath
-#### fill
-#### stroke
-#### drawFocusIfNeeded
-#### clip
-#### isPointInPath
-#### isPointInStroke
-#### fillText
-#### strokeText
-#### measureText
-#### drawImage
-#### createImageData (Non Chainable)
-#### getImageData (Non Chainable)
-#### putImageData
-#### setLineDash
-#### closePath
-#### moveTo
-#### lineTo
-#### quadraticCurveTo
-#### bezierCurveTo
-#### arcTo
-#### rect
-#### arc
-#### ellipse
-#### getContextAttributes (Non Chainable)
-#### getLineDash (Non Chainable)
-
 ---
-
-## Methods
-
-The following methods are also attached to the Aghs prototype Object.
-
-#### Aghs.clear
-Parameter: `String` color
-Default: `#fff`
-Shorthand method for quickly filling the entire drawing context, coined the 'screen' with the fill color.
-
-#### Aghs.fillWith
-Parameter: `String` color
-Default: `#000000`
-Shorthand method for quickly setting `Aghs.fillStyle()` and then immediately filling.
-
-#### Aghs.strokeWith
-Paramter: `String` color
-Default: `#000000`
-Shorthand method for quickly setting `Aghs.strokeStyle` and then immediately stroking.
-
-#### Aghs.antialias
-Reinforces the configured `imageSmoothingEnabled` setting given at Aghs instantiation.
-See `Aghs.config.Smoothing` for the value that will be set. 
-Used internally when switching between layers. Use this if you've changed the setting and want to set imageSmoothing to the current layer's imageSmoothing value.
-
-_This method may be made private in the future._
 
 #### Aghs.render
 Parameter: `Function`
@@ -145,30 +51,12 @@ _players = players.bind(players)
 aghs.module "players", _players
 ```
 
-#### Aghs.chain
-Parameters: `Function` func, `Boolean` hasReturnValue
-Returns a function that will always return the aghs instance—or whatever context it is called in.
+#### Aghs.antialias
+Reinforces the configured `imageSmoothingEnabled` setting given at Aghs instantiation.
+See `Aghs.config.smoothing` for the value that will be set. 
+Used internally when switching between layers. Use this if you've changed the setting and want to set imageSmoothing to the current layer's imageSmoothing value.
 
-_Note: This function is used internally, it may have access removed later_
-
-Example:
-
-``` coffee
-
-openGameMenu = () -> 
-  # made up things..
-  game.pause()
-  menu.open()
-
-openGameMenu aghs.chain openGameMenu
-
-openGameMenu().clear("#ccc").polygon(poly).fill()
-
-```
-
-#### Aghs.extendContext
-Internal function used for extending `CanvasRenderingContext2D`. Not recommended to be called.
-This function will be remove from access in a future version.
+_This method may be made private in the future._
 
 
 #### Aghs.ready
@@ -208,7 +96,7 @@ Unbinds a module previously attached using `Aghs.attach()`, matching the paramte
 
 Sets the canvas and configuration so that it fills the entire page.
 
-#### Aghs.settings
+#### Aghs.configure
 Parameter: `Object` config
 Update the current configuration with any value in the `config` parameter, and then update the aghs and canvas states to match.
 
@@ -241,63 +129,6 @@ Retrieves the current layer as imagedata and then draws it on the primary drawin
 Parameters: `Number` width, `Number` height, `Boolean` allLayers (defaults to false)
 Change's the current layer's width and height. If `allLayers` parameter is true it will resize all layers, including the `screen` layer.
 
-#### Aghs.polygon
-Parameter: `Array` points
-Creates a CanvasRenderingContext2D path from an array of coordinates. The last point in the chain is then connected back to the first point, making the polygonal path.
-
-Example:
-
-```
-poly = [
-  { x: 18,   y: 90 },
-  { x: 50,   y: 90 },
-  { x: 103,  y: 60 },
-  { x: 216,  y: 60 } 
-]
-```
-
-Because Aghs utilizes chaining, you can then call your drawing methods afterwords after `Aghs.polygon()`.
-_Using the `poly` variable from the snippet above_:
-
-```
-aghs.polygon(poly).strokeWith("black").fillWith("green")
-
-```
-
-#### Aghs.triangle
-Shorthand syntax for a 3 point polygon. See `Aghs.polygon()`.
-
-#### Aghs.strs
-
-Performs a `s`ave, `t`ranslate, `r`otate, and `s`cale.
-Shorthand initialism and technique inspired by[CanvasQuery.js's STARS](http://canvasquery.com/stars).
-
-The difference being that Aghs does not use an internal align property, so it is without it.
-
-#### Aghs.trs
-Parameters: `
-Like `Aghs.strs()`, but without the `.save()`.
-
-#### Aghs.do
-
-Do is a way to quickly apply a save and restore around another set of actions.
-Rather than needing to do:
-
-``` coffee
-  
-  aghs.save()
-  someFunc()
-  someOtherFunc()
-  etcFunc()
-  aghs.restore()
-
-```
-
-You can instead use `.do()`:
-
-``` coffee
-aghs.do someFunc, someOtherFunc, etcFunc
-```
 
 ---
 
@@ -324,16 +155,7 @@ List of the names of all modules currently added to the Aghs instance via `Aghs.
 
 #### Aghs.canvas
 Type: `HTMLCanvasElement`
-A reference to the current layer's canvas context.
-
-#### Aghs.context
-Type: `CanvasRenderingContext2D`
-A reference to the currently used layer's _canvas context_.
-Useful for referencing, but should not be modified.
-
-#### Aghs._
-Type: `CanvasRenderingContext2D`
-A reference to the primary context (the one located on the DOM). Can be considered the drawing context.
+A reference to the Renderer's primary canvas, found on the DOM.
 
 #### __frame
 Type: `Number` (integer)
@@ -375,10 +197,10 @@ Type: `Boolean`
 Default: `true`
 Configuration value that determines if the canvas's width and height are maximized inside the window.
 
-##### wrappedContext
+##### renderer
 Type: `Boolean`
 Default: `true`
-Determines if the CanvasRenderingContext2D methods are chained and extended onto the Aghs' instance.
+Determines if the CanvasRenderingContext2D methods are chained and extended onto a new Renderer instance.
 
 ##### smoothing
 Type: `Boolean`
@@ -428,3 +250,4 @@ The events module is the only module used for the Aghs framework that is not rea
 #### world
 #### utils
 #### state
+#### keyboard

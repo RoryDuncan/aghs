@@ -19,6 +19,18 @@ Paramter: `String` color
 Default: `#000000`
 Shorthand method for quickly setting `strokeStyle` and then immediately stroking via `.stroke()`.
 
+#### Renderer.chain
+Parameters: `Function` func, `Boolean` hasReturnValue
+Returns a function that will always return the Renderer instance.
+
+_Note: This function is used internally, it may have access removed later_
+
+
+#### Renderer.extendContext
+Internal function used for extending `CanvasRenderingContext2D`. Not recommended to be called.
+This function will be remove from access in a future version.
+
+
 ## Drawing API
 
 ### Extending CanvasRenderingContext2D
