@@ -18,11 +18,28 @@ Renderer = (options = {}) ->
   else
     canvas = options.el
   
-  @canvas = canvas  
-  @context = @_ = context = canvas.getContext("2d")
+  # set primary canvas and context
+  @CANVAS   = canvas  
+  @CONTEXT  = canvas.getContext("2d")
+  
+  @canvas = canvas
+  @context = @CONTEXT
+  
   @extendContext()
   return @
 
+#
+#
+#
+Renderer::_change = (@state, @canvas, @context) ->
+  return @
+  
+Renderer::_create = (width, height) ->
+    canvas = document.createElement("canvas")
+    canvas.width = width
+    canvas.height = height
+    context = canvas.getContext "2d"
+    return [canvas, context]
 
 # Renderer.extendContext
 #
@@ -78,6 +95,81 @@ Renderer::chainingExceptions = {
   "isPointInStroke",
   "isPointInPath"
 }
+
+
+# Renderer.polygon()
+#
+# Draw a polygonal path from a a chain of coordinates
+Renderer::polygon = (points = []) ->
+  
+  unless points.length > 0 
+    console.warn "Missing Parameter 1 in Renderer.polygon"
+    return @ # do nothing
+  
+  
+  # init path, then move to the starting point
+  @beginPath()
+  @moveTo(points[0].x, points[0].y)
+  # lineTo all points
+  points.forEach (pt) -> @lineTo(pt.x, pt.y)
+  # closePath automatically closes returns from the last point to the first one
+  # so yay to that
+  return @closePath()
+
+# Renderer.triangle()
+#
+# shorthand and alternate syntax for creating a triangle path
+Renderer::triangle = (pt1 = {x: 0, y: 0}, pt2 = {x:0, y:0}, pt3 = {x:0, y:0}) ->
+  # if a matrix is passed in
+  if typeof pt1 is "object" and pt1.length isnt undefined
+    return @polygon(pt1)
+  # else do
+  @beginPath()
+  @moveTo(pt1.x, pt1.y)
+  @lineTo(pt2.x, pt2.y)
+  @lineTo(pt3.x, pt3.y)
+  @closePath()
+  return @
+
+
+# Renderer.strs()
+# save, translate, rotate, scale!
+Renderer::strs = (args...) ->
+  @save()
+  return @tars.apply(@, args)
+  
+# Renderer.tars
+# Translate, rotate, scale!
+Renderer::trs = (x = 0, y = 0, rotation = 0, scale = 1) ->
+  @translate x, y
+  .rotate(rotation)
+  .scale(scale, scale)
+  return @
+
+
+# Renderer.do()
+# Execute a fn or set of fn's in between a save and restore.
+Renderer::do = (actions...) ->
+  
+  @save()
+  action() for action in actions
+  @restore()
+  return @
+
+#
+# 
+Renderer::clear = (fill = "#fff") ->
+  return @fillStyle(fill).fillRect(0, 0, @canvas.width, @canvas.height)
+
+#
+#
+Renderer::fillWith = (color = "#000") ->
+  return @fillStyle(color).fill()
+  
+#
+#
+Renderer::strokeWith = (color = "#000") ->
+  return @strokeStyle(color).stroke()
 
 
 module.exports = Renderer

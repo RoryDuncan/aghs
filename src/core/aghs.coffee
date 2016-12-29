@@ -25,17 +25,19 @@ chain = utils.chain
 Aghs = (options = {}) ->
 
   # here we go
-
+  that = @
   @modules = []
+  @config = {}
   @module "events",     new EventEmitter() unless options.events is false
   @module "renderer",   new Renderer(options) unless options.renderer is false
-  
+  @$ = @renderer
   @isReady = false
   
   # begin readiness detection
   triggerReady = () ->
     utils.defer () ->
       that.isReady = true
+      # knees weak:
       that.events.trigger "ready"
     return
   
@@ -49,37 +51,41 @@ Aghs = (options = {}) ->
   # layers, modules
   @__attached = {};
   @currentLayer = "screen";
-  @layers = 
-    "screen": {canvas, context}
+  
+  screen = 
+    canvas:   @renderer.canvas
+    context:  @renderer.context
+
+  @layers = {screen}
   
   # internal events
   @events.on "resize", () ->
     that.config.width   = that.canvas.width
-    that.config.height  = that.canvas.width
+    that.config.height  = that.canvas.height
   
-  # apply the config
+  Configuration = @Configuration
+  @configure(new Configuration(options))
+  
+  return @
+
+Aghs::canvas = () ->
+  return @renderer.canvas
+
+Aghs::Configuration = (options = {}) ->
+  
   config = 
-    "fullscreen":     true
-    "smoothing":      true
-    "width":          options.width or canvas.width
-    "height":         options.height or canvas.height
-    "scale":          options.scale or 1
+    "fullscreen": true
+    "smoothing": true
+    "width": window.innerWidth
+    "height": window.innerHeight
+    "scale": 1
     
     "frameskip":
       "count":        0
-      "enabled":      options.frameskip or true
+      "enabled":      true
       "threshold":    120
-  
-  @config = extend {}, @config, config
-  
-  # these settings default to true, so overwrite if they exist in the options
-  config.fullscreen = options.fullscreen if options.fullscreen?
-  config.wrappedContext = options.wrappedContext if options.wrapper?
-  config.smoothing = options.smoothing if options.smoothing?
-  
-  @settings(config)
-  return @
-  
+    
+  return extend {}, options, config
 
 # Aghs.module
 #
@@ -146,10 +152,10 @@ Aghs::start = () ->
       @config.frameskip.count += 1
       time.elapsed -= time.delta
     else
-      @events.trigger "prerender", time
-      @events.trigger "render", time
+      @events.trigger "prerender", time, @renderer, @
+      @events.trigger "render", time, @renderer, @
     time.lastCalled = _now
-    @events.trigger "postrender", time
+    @events.trigger "postrender", time, @renderer, @
     
     time.id = window.requestAnimationFrame boundStep
     @__frame = time.id
@@ -209,8 +215,9 @@ Aghs::unattach = (modulename) ->
 #
 # change the canvas to fit the viewport
 Aghs::maximize = () ->
-  @canvas.width = window.innerWidth
-  @canvas.height = window.innerHeight
+  canvas = @canvas()
+  canvas.width = window.innerWidth
+  canvas.height = window.innerHeight
   @events.trigger "resize"
   return @
 
@@ -218,48 +225,57 @@ Aghs::maximize = () ->
 #
 # Sets or reinforces the configured smoothing setting
 Aghs::antialias = () ->
-  @imageSmoothingEnabled(@config.smoothing)
+  @renderer.imageSmoothingEnabled(@config.smoothing)
   return @
 
-# Aghs.settings()
+# Aghs.configure()
 #
 # Quick-apply a new configuration
-Aghs::settings = (config = {}) ->
-  extend @config, config
-  @screen()
+Aghs::configure = (@config) ->
+  
+  throw new Error("Invalid config passed to Aghs::configure") unless @config
+  
+  @screen() # change to primary renderer
+  
   if @config.fullscreen
     @maximize()
   else
     @resize(@config.width, @config.height)
   
-  @scale(@config.scale, @config.scale)
+  @renderer.scale(@config.scale, @config.scale)
   @antialias()
   return @
 
 # Aghs.layer()
 # Switch to another canvas and context
 #
-Aghs::layer = (name, width, height) ->
+Aghs::layer = (name = "screen", width, height) ->
   
   width = @config.width unless width?
   height = @config.height unless height?
   
-  if not name or name is "screen"
-    @context = @_
-    @currentLayer = "screen"
-    return @
+  canvas = null
+  context = null
   
-  @currentLayer = name
+  if name is "screen"
+    
+    canvas = @renderer.CANVAS
+    context = @renderer.CONTEXT
   
-  unless @layers[name] # create a new layer
-    canvas = document.createElement("canvas")
-    canvas.width = width
-    canvas.height = height
-    context = canvas.getContext "2d"
-    @layers[name] = {name, canvas, context}
-    @context = @layers[name].context
   else
-    @context = @layers[name].context
+    
+    if @layers[name]
+      layer = @layers[name]
+      canvas = layer.canvas
+      context = layer.context
+
+    else # then create a new layer
+      [canvas, context] = @renderer._create(width, height)
+      @layers[name] = {name, canvas, context}
+
+  @currentLayer = name
+  @renderer._change(name, canvas, context)
+  
   return @
 
 # Aghs.screen
@@ -270,25 +286,25 @@ Aghs::screen = () -> return @layer("screen")
 
 # Aghs.draw()
 #
-# retrieve the current layer as imagedata and draw it on the primary canvas
+# retrieve the current layer as imagedata and draw it on the target canvas
 Aghs::draw = (source = {x: 0, y: 0}, target = {x: 0, y: 0}) ->
   
-  layer = @layers[@currentLayer]
+  _source = @renderer.context
   
-  unless target.layer
-    target.layer = @_
+  # target can be an object containing x, y, and/or name
+  if target.name?
+    _target = @layers[target.name].context
   else
-    if @layers[target.layer]
-      target.layer = @layers[target.layer].context
+    _target = @renderer.CONTEXT
   
-  unless source.width
-    source.width = layer.canvas.width
+  if not source.width
+    source.width = @renderer.canvas.width
   
-  unless source.height
-    source.height = layer.canvas.height
+  if not source.height
+    source.height = @renderer.canvas.height
   
-  data = @context.getImageData(0, 0, source.width, source.height)
-  target.layer.putImageData(data, target.x, target.y)
+  data = _source.getImageData(source.x, source.y, source.width, source.height)
+  _target.putImageData(data, target.x || 0, target.y || 0)
   
   return @
 
@@ -309,85 +325,9 @@ Aghs::resize = (width, height, allLayers = false) ->
   if allLayers 
     cacheResizeAndRender(layer) for name, layer of @layers
   else 
-    cacheResizeAndRender(@layers[@currentLayer] or @_)
+    cacheResizeAndRender(@layers[@currentLayer])
     @events.trigger "resize"
 
   return @
-
-# Aghs.polygon()
-#
-# Draw a polygonal path from a a chain of coordinates
-Aghs::polygon = (points = []) ->
-  
-  unless points.length > 0 
-    console.warn "Missing Parameter 1 in Aghs.polygon"
-    return @ # do nothing
-  
-  
-  # init path, then move to the starting point
-  @beginPath()
-  @moveTo(points[0].x, points[0].y)
-  # lineTo all points
-  points.forEach (pt) -> @lineTo(pt.x, pt.y)
-  # closePath automatically closes returns from the last point to the first one
-  # so yay to that
-  return @closePath()
-
-# Aghs.triangle()
-#
-# shorthand and alternate syntax for creating a triangle path
-Aghs::triangle = (pt1 = {x: 0, y: 0}, pt2 = {x:0, y:0}, pt3 = {x:0, y:0}) ->
-  # if a matrix is passed in
-  if typeof pt1 is "object" and pt1.length isnt undefined
-    return @polygon(pt1)
-  # else do
-  @beginPath()
-  @moveTo(pt1.x, pt1.y)
-  @lineTo(pt2.x, pt2.y)
-  @lineTo(pt3.x, pt3.y)
-  @closePath()
-  return @
-
-
-# Aghs.strs()
-# save, translate, rotate, scale!
-Aghs::strs = (args...) ->
-  @save()
-  return @tars.apply(@, args)
-  
-# Aghs.tars
-# Translate, rotate, scale!
-Aghs::trs = (x = 0, y = 0, rotation = 0, scale = 1) ->
-  @translate x, y
-  .rotate(rotation)
-  .scale(scale, scale)
-  return @
-
-
-# Aghs.do()
-# Execute a fn or set of fn's in between a save and restore.
-Aghs::do = (actions...) ->
-  
-  @save()
-  action() for action in actions
-  @restore()
-  return @
-
-#
-# 
-Aghs::clear = (fill = "#fff") ->
-  return @fillStyle(fill).fillRect(0, 0, @config.width, @config.height)
-
-#
-#
-Aghs::fillWith = (color = "#000") ->
-  return @fillStyle(color).fill()
-  
-#
-#
-Aghs::strokeWith = (color = "#000") ->
-  return @strokeStyle(color).stroke()
-
-
 
 module.exports = Aghs
