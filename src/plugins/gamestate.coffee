@@ -24,44 +24,44 @@ events =
     done() unless asyncDone
     
     
-  "step": (time) ->
+  "step": (params...) ->
     return if @active is null
     state = @states[@active]
-    state.step.call(state, time)
+    state.step.call(state, params...)
     
-  "prerender": (time) ->
+  "prerender": (params...) ->
     return if @active is null
     state = @states[@active]
-    state.prerender.call(state, time)
+    state.prerender.call(state, params...)
     
-  "render": (time) ->
+  "render": (params...) ->
     return if @active is null
     state = @states[@active]
-    state.render.call(state, time)
+    state.render.call(state, params...)
 
-  "postrender": (time) ->
+  "postrender": (params...) ->
     return if @active is null
     state = @states[@active]
-    state.postrender.call(state, time)
+    state.postrender.call(state, params...)
     
-  "state:ready": () ->
+  "state:ready": (params...) ->
     state = @states[@active]
-    state.ready.call(state)
+    state.ready.call(state, params...)
     
-  "state:enter": () ->
+  "state:enter": (params...) ->
     state = @states[@active]
-    @aghs.settings state.config
-    state.enter.call(state)
+    @aghs.configure state.config
+    state.enter.call(state, params...)
     
-  "state:leave": () ->
+  "state:leave": (params...) ->
     return if @active is null
     state = @states[@active]
-    state.leave.call(state)
+    state.leave.call(state, params...)
   
-  "state:destroy": () ->
+  "state:destroy": (time, renderer, aghs) ->
     return if @active is null
     state = @states[@active]
-    state.destroy.call(state)
+    state.destroy.call(state, params...)
 
 #
 # The state object, created with StateManager::add

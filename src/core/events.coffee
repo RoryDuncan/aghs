@@ -58,7 +58,8 @@ EventEmitter::trigger = (event, data...) ->
   # only trigger allowed events
   return @ unless @__allowed[event] is true
   
-  @__events[event].forEach (el, i, arr) -> el.fn.apply(el.context, data)
+  # console.log "#{event} triggered with", data
+  @__events[event].forEach (el, i, arr) -> el.fn.call(el.context, data...)
   return @
 
 # EventEmitter.enable()
