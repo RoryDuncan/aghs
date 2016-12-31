@@ -516,7 +516,8 @@ EventEmitter.prototype.trigger = function() {
     return this;
   }
   this.__events[event].forEach(function(el, i, arr) {
-    return el.fn.apply(el.context, data);
+    var ref;
+    return (ref = el.fn).call.apply(ref, [el.context].concat(slice.call(data)));
   });
   return this;
 };
@@ -806,7 +807,8 @@ module.exports = {
 };
 
 },{}],7:[function(require,module,exports){
-var State, StateMachine, events, extend, utils;
+var State, StateMachine, events, extend, utils,
+  slice = [].slice;
 
 extend = require("extend");
 
@@ -831,64 +833,71 @@ events = {
       return done();
     }
   },
-  "step": function(time) {
-    var state;
+  "step": function() {
+    var params, ref, state;
+    params = 1 <= arguments.length ? slice.call(arguments, 0) : [];
     if (this.active === null) {
       return;
     }
     state = this.states[this.active];
-    return state.step.call(state, time);
+    return (ref = state.step).call.apply(ref, [state].concat(slice.call(params)));
   },
-  "prerender": function(time) {
-    var state;
+  "prerender": function() {
+    var params, ref, state;
+    params = 1 <= arguments.length ? slice.call(arguments, 0) : [];
     if (this.active === null) {
       return;
     }
     state = this.states[this.active];
-    return state.prerender.call(state, time);
+    return (ref = state.prerender).call.apply(ref, [state].concat(slice.call(params)));
   },
-  "render": function(time) {
-    var state;
+  "render": function() {
+    var params, ref, state;
+    params = 1 <= arguments.length ? slice.call(arguments, 0) : [];
     if (this.active === null) {
       return;
     }
     state = this.states[this.active];
-    return state.render.call(state, time);
+    return (ref = state.render).call.apply(ref, [state].concat(slice.call(params)));
   },
-  "postrender": function(time) {
-    var state;
+  "postrender": function() {
+    var params, ref, state;
+    params = 1 <= arguments.length ? slice.call(arguments, 0) : [];
     if (this.active === null) {
       return;
     }
     state = this.states[this.active];
-    return state.postrender.call(state, time);
+    return (ref = state.postrender).call.apply(ref, [state].concat(slice.call(params)));
   },
   "state:ready": function() {
-    var state;
+    var params, ref, state;
+    params = 1 <= arguments.length ? slice.call(arguments, 0) : [];
     state = this.states[this.active];
-    return state.ready.call(state);
+    return (ref = state.ready).call.apply(ref, [state].concat(slice.call(params)));
   },
   "state:enter": function() {
-    var state;
+    var params, ref, state;
+    params = 1 <= arguments.length ? slice.call(arguments, 0) : [];
     state = this.states[this.active];
-    this.aghs.settings(state.config);
-    return state.enter.call(state);
+    this.aghs.configure(state.config);
+    return (ref = state.enter).call.apply(ref, [state].concat(slice.call(params)));
   },
   "state:leave": function() {
-    var state;
+    var params, ref, state;
+    params = 1 <= arguments.length ? slice.call(arguments, 0) : [];
     if (this.active === null) {
       return;
     }
     state = this.states[this.active];
-    return state.leave.call(state);
+    return (ref = state.leave).call.apply(ref, [state].concat(slice.call(params)));
   },
-  "state:destroy": function() {
-    var state;
+  "state:destroy": function(time, renderer, aghs) {
+    var ref, state;
     if (this.active === null) {
       return;
     }
     state = this.states[this.active];
-    return state.destroy.call(state);
+    return (ref = state.destroy).call.apply(ref, [state].concat(slice.call(params)));
   }
 };
 
