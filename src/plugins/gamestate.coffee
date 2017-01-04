@@ -12,16 +12,15 @@ events =
     state.initialized = true
     that = @
     
-    # we want to be certain that 'done' is only called once
-    asyncDone = false
     done = () ->
-      return if asyncDone
       state.isReady = asyncDone = true
       that.events.trigger "state:ready"
+      
+    state.init.call(state, if state.async then done else null)
     
-    state.init.call(state, done)
     # synchronous version
-    done() unless asyncDone
+    done() if not state.async
+    
     
     
   "step": (params...) ->
@@ -67,9 +66,9 @@ events =
 # The state object, created with StateManager::add
 #
 State = (aghs, @state, options = {}) ->
-
   @name = options.name
   @isReady = if options.isReady then options.isReady else false
+  @async = false
   config = {
     "fullscreen": options.fullscreen
     "width":      options.width
@@ -141,7 +140,7 @@ StateMachine::set = (name) ->
       @events.trigger "state:init"
       
     if state.isReady
-      @events.trigger "state:enter"
+      @events.trigger "state:enter", @aghs.time(), @aghs.renderer
   else
     console.warn "A GameState with a name of '#{name}' doesn't exist yet"
   return @
