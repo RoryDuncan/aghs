@@ -10,7 +10,7 @@ do () ->
   world.viewport(window.innerWidth - 20, window.innerHeight - 20)
   keyboard = app.keyboard
   console.log(app)
-  
+  animation = app.animation
   
   # Examples
   # examples namespace
@@ -38,7 +38,6 @@ do () ->
     world.move(5, 0)  if keyboard.keys.left
     world.move(-5, 0) if keyboard.keys.right
     
-    
     # wrap screen - if you reach the edge move back to the start, and vice-versa
     # x's
     world.set(0, world.view.y) if world.view.x * -1 > world.view.width
@@ -51,6 +50,31 @@ do () ->
     world.fillRect(0, 0, 25, 25)
     world.debug()
   
-  # change the function below to view different examples
-  app.render(examples.movingSquareWithKeyboard)
+  
+  tween = new animation.Tween()
+  
+  console.log(tween)
+  
+  thing = {
+    x: 0,
+    y: 0
+  }
+  
+  tween
+  .from(thing)
+  .to({x: 500, y: 500})
+  .for(1000).init().start()
+  
+  #
+  #
+  examples.basicTween = (time, $) ->
+    $.clear("#088")
+    $.fillStyle("#fff")
+    $.fillRect(thing.x, thing.y, 10, 10)
+  
+  
+  
+  
+  # change the function argument below to view different examples
+  app.render(examples.basicTween)
   app.start()

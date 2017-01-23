@@ -1,5 +1,5 @@
 (function() {
-  var app, errorMessage, examples, keyboard, log, world;
+  var animation, app, errorMessage, examples, keyboard, log, thing, tween, world;
   errorMessage = "index.js may be missing. Make sure to run 'npm run dev' to begin development.";
   if (!window.Aghs) {
     return console.error(errorMessage);
@@ -9,6 +9,7 @@
   world.viewport(window.innerWidth - 20, window.innerHeight - 20);
   keyboard = app.keyboard;
   console.log(app);
+  animation = app.animation;
   examples = {};
   log = false;
   examples.basicDraw = function(time, $) {
@@ -48,6 +49,21 @@
     world.fillRect(0, 0, 25, 25);
     return world.debug();
   };
-  app.render(examples.movingSquareWithKeyboard);
+  tween = new animation.Tween();
+  console.log(tween);
+  thing = {
+    x: 0,
+    y: 0
+  };
+  tween.from(thing).to({
+    x: 500,
+    y: 500
+  })["for"](1000).init().start();
+  examples.basicTween = function(time, $) {
+    $.clear("#088");
+    $.fillStyle("#fff");
+    return $.fillRect(thing.x, thing.y, 10, 10);
+  };
+  app.render(examples.basicTween);
   return app.start();
 })();

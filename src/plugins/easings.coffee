@@ -1,3 +1,6 @@
+# reference:
+# http://upshots.org/actionscript/jsas-understanding-easing
+
 module.exports = {
   
   'linear': (t) ->

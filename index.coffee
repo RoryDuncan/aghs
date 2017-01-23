@@ -8,6 +8,7 @@ utils         = require "./src/core/utils.coffee"
 World         = require "./src/plugins/world.coffee"
 StateMachine  = require "./src/plugins/gamestate.coffee"
 Keyboard      = require "./src/plugins/keyboard.coffee"
+Tweening      = require "./src/plugins/tween.coffee"
 
 # our core wrapper
 Aghs = require "./src/core/aghs.coffee"
@@ -23,6 +24,7 @@ aghs.module "world", new World(aghs)
 aghs.module "utils", utils
 aghs.module "state", new StateMachine(aghs).proxy
 aghs.module "keyboard", new Keyboard()
+aghs.module "animation", new Tweening.Animation(aghs)
 
 # Add window accessibility.
 window.Aghs = () -> 
