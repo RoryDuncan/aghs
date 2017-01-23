@@ -49,7 +49,6 @@ do () ->
     
     render: (time, $) ->
       $.fillStyle(@color).fillRect(@x, @y, @width, @height)
-      secret($) if window.location.search.length > 0 and snake.length >= 4
   
   
   powerup = 
@@ -102,7 +101,7 @@ do () ->
       
       
       # out of bounds
-      unless board.width > @position.x > 0 and board.height > @position.y > 0
+      unless board.width > @position.x >= 0 and board.height > @position.y >= 0
         aghs.state("endscreen")
       
       # collide with tail
@@ -154,6 +153,16 @@ do () ->
       
       $.fillStyle("#aaa").fillText("score: #{@length - 3}", x, y)
       
+      size = 1
+      $.font("#{size}px 'Press Start 2P'")
+      
+      metrics = $.context.measureText("score: #{@length - 3}")
+      
+      x = (board.width - metrics.width) / 2
+      y = board.height + (size * 4)
+      
+      $.fillStyle("#aaa").fillText("time: #{time.elapsed}", x, y)
+      
       
       @history.forEach (history) -> 
         $.fillStyle(that.historyColor).fillRect(history.position.x, history.position.y, 1, 1)
@@ -189,7 +198,6 @@ do () ->
     name: "gameplay"
     
     enter: (state) ->
-      console.log "secret active" if window.location.search.length > 0
       aghs.renderer.scale(10,10)
       powerup.reposition()
       
@@ -253,26 +261,8 @@ do () ->
       y = (board.height + 1) / 2
       
       $.fillStyle("#eee").fillText("Press SPACE BAR to play again", x, y + size)
-      
-  secret = ($) ->
-    size = 8
-    c = "#33334#{Math.min(snake.length, 9)}"
-    $.font("#{size}px 'Press Start 2P'")
-    
-    metrics = $.context.measureText("SEND")
-    
-    x = (board.width - metrics.width) / 2
-    y = (board.height - size) / 2
-    
-    $.fillStyle(c).fillText("SEND", x, y)
-    
-    metrics = $.context.measureText("NUDES")
-    
-    x = (board.width - metrics.width) / 2
-    y = (board.height + size) / 2
-    
-    $.fillStyle(c).fillText("NUDES", x, y)
   
+
   
   # set game state
   aghs.state(game)
