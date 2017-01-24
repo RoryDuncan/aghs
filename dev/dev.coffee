@@ -7,7 +7,7 @@ do () ->
   
   app = window.Aghs()
   world = app.world
-  world.viewport(window.innerWidth - 20, window.innerHeight - 20)
+  world.viewport(window.innerWidth, window.innerHeight)
   keyboard = app.keyboard
   console.log(app)
   animation = app.animation
@@ -51,20 +51,27 @@ do () ->
     world.debug()
   
   
-  tween = new animation.Tween()
-  
-  console.log(tween)
-  
+  # basic tween example setup
+  # uncomment to use
+  ###
   thing = {
     x: 0,
     y: 0
   }
-  
-  tween
-  .from(thing)
-  .to({x: 500, y: 500})
-  .for(1000).init().start()
-  
+    
+  document.body.addEventListener "click", () ->
+    tween = new animation.Tween()
+    
+    console.log(tween)
+    
+    thing.x = ~~(Math.random() * window.innerWidth)
+    thing.y = ~~(Math.random() * window.innerHeight)
+    console.log thing.x, thing.y
+    tween
+    .from(thing)
+    .to({x: 500, y: 500})
+    .for(1000).init().start()
+  ###
   #
   #
   examples.basicTween = (time, $) ->
@@ -73,8 +80,27 @@ do () ->
     $.fillRect(thing.x, thing.y, 10, 10)
   
   
+  thing = {
+    x: 0,
+    y: window.innerHeight
+  }
+  tween = new animation.Tween()
+  tween.from(thing).to({x: window.innerWidth, y: 0}).for(1000).init()
+  
+  document.body.addEventListener "click", () ->
+    thing.x = 0
+    thing.y = window.innerHeight
+    tween.start()
+  
+  examples.tweenSteps = (time, $) ->
+    $.clear("#fff")
+    for step in tween.data.steps
+      $.fillStyle("#d2d2d2")
+      $.fillRect(step.$x - 5, step.$y - 5, 20, 20)
+    $.fillStyle("#08b")
+    $.fillRect(thing.x, thing.y, 10, 10)
   
   
   # change the function argument below to view different examples
-  app.render(examples.basicTween)
+  app.render(examples.tweenSteps)
   app.start()

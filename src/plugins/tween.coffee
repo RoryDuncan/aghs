@@ -111,7 +111,15 @@ Tween::set = (start, target, options) ->
 #
 Tween::start = () ->
   @active = true
-  @Manager.add(@) if @Manager
+  @reset() if @done
+  @Manager.add(@) if @Manager # automatically removed from manager when done
+  return @
+
+Tween::reset = () ->
+  @time.start = null
+  @time.end = null
+  @done = false
+  @data.reset()
   return @
 
 #
@@ -129,7 +137,7 @@ Tween::step = (time) ->
   
   # check if we're done
   if @state.done
-    console.log "completed tween at #{time.elapsed}"
+    console.log @
     @active = false
     @done   = true
     @time.end = time.elapsed
@@ -140,8 +148,7 @@ Tween::step = (time) ->
   
   # logic for determining the current state
   interval = @data.interval
-  console.log @state
-  nextElapsedStep = @state.value.elapsed + interval
+  nextElapsedStep = @time.start + @state.value.elapsed + interval
   
   # check if we should go to the next step-state
   if time.elapsed >= nextElapsedStep
@@ -200,13 +207,15 @@ TweenData = (options) ->
 
     step.elapsed  = elapsed
     step.delta    = delta
-    
     # add to our list
     @steps.push(step)
   
+  @reset()
   console.log @
-  @step = @iterate()
   return @
+
+TweenData::reset = () ->
+  @step = @iterate()
 
 # iterate
 # Generator Fn - initialized within constructor
