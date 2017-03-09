@@ -85,7 +85,7 @@ do () ->
     y: window.innerHeight
   }
   tween = new animation.Tween()
-  tween.from(thing).to({x: window.innerWidth, y: 0}).for(1000).init()
+  tween.from(thing).to({x: window.innerWidth, y: 0}).for(5000, "inOutElastic").init()
   
   document.body.addEventListener "click", () ->
     thing.x = 0

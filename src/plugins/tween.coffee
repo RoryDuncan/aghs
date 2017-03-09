@@ -170,6 +170,11 @@ Tween::step = (time) ->
 #
 TweenData = (options) ->
   
+  @easing = options.easing
+  ease = Easings[options.easing]
+  unless ease
+    throw new Error("TweenData-> Invalid easing provided: #{options.easing}")
+  
   # since we render our steps beforehand we utilize a floor interval :
   # each step will occur, at most, once per 'minStepInterval'
   minStepInterval = @interval = 20 # milliseconds
@@ -189,6 +194,7 @@ TweenData = (options) ->
     elapsed = i * minStepInterval
     # the progress value, represent what % through the tween we are
     delta   = (elapsed / duration)
+    easedDelta = ease(delta)
     
     # add the change of each key (for this step) to the step obj
     for key, value of options.to
@@ -200,7 +206,7 @@ TweenData = (options) ->
         
       else
         # limit state to 2 decimal places
-        state = +((change * delta + startingValue).toFixed(2))
+        state = +((change * easedDelta + startingValue).toFixed(2))
       
       # set the key-value to be the state of the tween at that step
       step["$#{key}"] = state

@@ -82,7 +82,7 @@
   tween.from(thing).to({
     x: window.innerWidth,
     y: 0
-  })["for"](1000).init();
+  })["for"](5000, "inOutElastic").init();
   document.body.addEventListener("click", function() {
     thing.x = 0;
     thing.y = window.innerHeight;
