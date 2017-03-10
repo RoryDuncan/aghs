@@ -66,39 +66,41 @@ Tween::constructor = Tween
 # Manager, ya-know
 Tween::Manager = null
 
-#
-#
+# Tween.from()
+# Pass in the starting object, from which the tween will originate
 Tween::from = (options, @affectSource = true) ->
   @options.from = options
   return @
 
-#
-# 
+# Tween.to()
+# Pass in the target object of the animation
+# the value of the object are compared with the object passed in to Tween.from()
 Tween::to = (options) ->
   @options.to = options
   return @
 
-#
-#  
+# Tween.for()
+# Pass in the duration and easing of the animation
 Tween::for = (duration, easing = "linear") ->
   @options.duration = duration
   @options.easing = easing
   return @
 
-#
-#
+# Tween.partial()
+# Conditional check fn, determining if this tween is still a partial tween
 Tween::partial = () ->
   return not (@options.from and @options.to and @options.duration and @options.easing)
 
-#
-#
+# Tween.init()
+# Compiles the partial tween state, initiating all the data into a TweenData 
+# object
 Tween::init = () ->
   throw new Error "Tween is still a partial" if @partial()
   @data = new TweenData(@options)
   return @
 
-#
-#
+# Tween.set()
+# shorthand for setting the Tween.from(), Tween.to(), and Tween.for()
 Tween::set = (start, target, options) ->
 
   @from(start)
@@ -107,14 +109,16 @@ Tween::set = (start, target, options) ->
   
   return @
 
-#
-#
+# Tween.start()
+# Indicates that the tween's animation should begin animating
 Tween::start = () ->
   @active = true
   @reset() if @done
   @Manager.add(@) if @Manager # automatically removed from manager when done
   return @
 
+# Tween.reset()
+# Reset the animation, so that it can be animated again
 Tween::reset = () ->
   @time.start = null
   @time.end = null
@@ -122,8 +126,8 @@ Tween::reset = () ->
   @data.reset()
   return @
 
-#
-#
+# Tween.step()
+# interval fn that updates the state of the tween based on it's tween data
 Tween::step = (time) ->
   
   return @ unless @active
@@ -137,7 +141,6 @@ Tween::step = (time) ->
   
   # check if we're done
   if @state.done
-    console.log @
     @active = false
     @done   = true
     @time.end = time.elapsed
@@ -166,8 +169,10 @@ Tween::step = (time) ->
     
   
 
-#
-#
+# TweenData
+# internal object for a tween animation
+# pre-calculates the steps of the tween upon instantiation
+# created via Tween.init()
 TweenData = (options) ->
   
   @easing = options.easing
