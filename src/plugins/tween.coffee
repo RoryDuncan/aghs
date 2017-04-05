@@ -3,12 +3,12 @@
 extend = require "extend"
 Easings = require "./easings.coffee"
 # we utilize an event manager independent of aghs
-Events = require "../core/events.coffee"
+EventEmitter = require "../core/events.coffee"
 
 
 
 TweenManager = () ->
-  Events.call(this)
+  EventEmitter.call(this)
   @tweens = []
   return @
 
